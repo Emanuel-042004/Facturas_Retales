@@ -1,0 +1,149 @@
+<?php
+
+namespace App\Http\Controllers;
+use App\Models\Factura;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\InvoiceDelivered;
+use App\Models\User;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
+
+class PendientesController extends Controller
+{
+    
+
+public function index(Request $request)
+{
+    $query = Factura::where('status', 'pending');
+
+    $area = $request->input('area');
+
+    if ($area) {
+        $query->where('area', $area);
+    }
+
+    $perPage = 10; // Número de elementos por página
+    $page = $request->input('page', 1); // Página actual, por defecto es 1
+
+    $total = $query->count();
+    $results = $query->skip(($page - 1) * $perPage)->take($perPage)->get();
+
+    $pendientes = new LengthAwarePaginator($results, $total, $perPage, $page, [
+        'path' => LengthAwarePaginator::resolveCurrentPath(),
+    ]);
+
+    return view('pendientes.pendientes', compact('pendientes', 'area'));
+}
+
+
+   public function entregarFactura( $id)
+{
+    // Valida y guarda el archivo PDF
+  
+
+    $factura = Factura::find($id);
+
+    // Actualiza la base de datos con los datos de entrega
+    
+    $factura->name;
+    $factura->type;
+    $factura->folio;
+    $factura->issuer_nit;
+    $factura->issuer_name;
+    $factura->cude;
+    $factura->area;
+    $factura->delivery_date = now();
+    $user = Auth::user();
+    $factura->delivered_by = $user->name;
+   
+
+    // Cambia el estado de la factura a 'delivered'
+    $factura->status = 'delivered';
+
+    $factura->save();
+
+    // Obtén el nombre del usuario financiero
+    $usuarioFinanciero = User::where('area', 'Financiera')->first();
+
+    // Cambia el saludo del correo según el nombre del usuario que entregó y del usuario financiero
+    $userSalutation = "Hola $user->name";
+    $financieroSalutation = "Hola $usuarioFinanciero->name";
+
+    // Envía el correo al usuario que entregó la factura
+    Mail::to($user->email)->send(new InvoiceDelivered($factura, $user, $userSalutation));
+
+    // Envía el correo al usuario financiero
+    Mail::to($usuarioFinanciero->email)->send(new InvoiceDelivered($factura, $usuarioFinanciero, $financieroSalutation));
+
+
+    return redirect()->back()->with('success', 'Factura entregada con éxito.');
+}
+
+    public function eliminarFactura($id)
+{
+    $factura = Factura::find($id);
+
+    if ($factura) {
+        $factura->delete();
+
+        return redirect()->back()->with('destroy', 'Factura eliminada con éxito.');
+    } else {
+        return redirect()->back()->with('error', 'No se pudo encontrar la factura.');
+    }
+}
+
+public function asignarArea($id)
+{
+    $factura = Factura::find($id);
+
+    // Verifica que la factura exista
+    if (!$factura) {
+        return redirect()->back()->with('error', 'No se pudo encontrar la factura.');
+    }
+
+    // Asigna el área del usuario autenticado a la factura
+    $user = Auth::user();
+    $factura->area = $user->area;
+
+    // Guarda la factura en la base de datos
+    $factura->save();
+
+    return redirect()->back()->with('asignar', 'Factura asignada a tu área con éxito.');}
+
+
+    public function eliminarSeleccion(Request $request)
+{
+    $selectedFacturas = $request->input('selectedFacturas', []);
+    $action = $request->input('action');
+
+    if ($action === 'delete') {
+        // Lógica para eliminar las facturas seleccionadas
+        Factura::whereIn('id', $selectedFacturas)->delete();
+
+        return redirect()->route('pendientes.index')->with('destroy', 'Facturas eliminadas correctamente.');
+    }
+
+    // Manejo de otra acción o escenario
+    return redirect()->route('pendientes.index')->with('error', 'Acción no válida.');
+}
+
+
+    public function entregar_seleccion (Request $request){
+    $selectedFacturas = $request->input('selectedFacturas', []);
+    $action = $request->input('action');
+
+    if ($action === 'submit') {
+        // Lógica para entregar las facturas seleccionadas
+        Factura::whereIn('id', $selectedFacturas)->delete();
+
+        return redirect()->route('pendientes.index')->with('destroy', 'Facturas eliminadas correctamente.');
+    }
+    }
+    
+   /*public function edit(Factura $factura)
+    {
+        //
+    }*/
+}

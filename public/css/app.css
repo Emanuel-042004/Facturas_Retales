@@ -1,0 +1,225 @@
+body {
+ 
+  font-family: 'Afacad', sans-serif;
+font-family: 'Roboto Condensed', sans-serif;
+
+
+}
+label {
+  font-weight: bold;
+}
+
+.bd-callout {
+  padding: 1.25rem;
+  margin-left: -150px;
+  max-width: 200px;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+  border: 1px solid #eee;
+  border-left-width: .25rem;
+  border-radius: .80rem;
+  -webkit-border-radius: .80rem;
+  -moz-border-radius: .80rem;
+  -ms-border-radius: .80rem;
+  -o-border-radius: .80rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.bd-callout:hover {
+  background-color: #f8f9fa;
+  transform: scale(1.05);
+}
+.bd-callout-danger:hover {
+  background-color: #f8f9fa;
+  transform: scale(1.05);
+  box-shadow: 0 0 10px #d9534f;
+}
+
+.bd-callout-warning:hover {
+  background-color: #f8f9fa;
+  transform: scale(1.05);
+  box-shadow: 0 0 10px #f0ad4e; 
+}
+
+.bd-callout-success:hover {
+  background-color: #f8f9fa; 
+  transform: scale(1.05);
+  box-shadow: 0 0 10px #28a745; 
+}
+
+  
+.bd-callout h4 {
+  margin-top: 0;
+  margin-bottom: .25rem;
+  font-weight: bold;
+}
+
+  
+  .bd-callout p:last-child {
+  margin-bottom: 0
+  }
+  
+  .bd-callout code {
+  border-radius: .25rem
+  }
+  
+  .bd-callout+.bd-callout {
+  margin-top: -.25rem
+  }
+  .bd-callout-warning {
+  border-left-color: #f0ad4e
+  }
+  
+  .bd-callout-warning h4 {
+  color: #f0ad4e
+  }
+
+
+.tr-entre td {
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+  -webkit-transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+  -moz-transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+  -ms-transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+  -o-transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.tr-warning:hover td {
+  background-color: #fff0bf;
+  transform: scale(1.05);
+}
+
+.tr-danger:hover td {
+  background-color: #f8caca;
+  transform: scale(1.05);
+}
+
+.tr-success:hover td {
+  background-color: #d1f6c9;
+  transform: scale(1.05);
+}
+
+
+  
+  .bd-callout-danger {
+  border-left-color: #d9534f
+  }
+  
+  .bd-callout-danger h4 {
+  color: #d9534f
+  }
+
+  
+  .bd-callout-success{
+  border-left-color: #28a745
+  }
+  
+  .bd-callout-success h4 {
+  color: #28a745
+  }
+  
+  #imagen {
+    filter: brightness(100%);
+    transition: filter 0.3s ease;
+    -webkit-filter: brightness(100%);
+}
+#imagen:hover {
+    filter: brightness(80%);
+    -webkit-filter: brightness(80%);
+}
+
+.list-unstyled {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+.list-unstyled li {
+  flex: 1 0 21%; /* modifica este valor según tus necesidades */
+  margin: 5px;
+  list-style-type: none;
+}
+
+#factura {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  border: 1px solid #000; 
+  padding: 10px;
+}
+
+@media (max-width: 767px) {
+  #factura {
+    flex-direction: column; /* Cambia a una disposición de columna en pantallas pequeñas */
+  }
+}
+
+
+.action-icons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.action-icon {
+  margin-right: 10px; /* Espacio entre iconos, ajusta según sea necesario */
+}
+
+
+.loader-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.7);
+  z-index: 1000;
+}
+
+.loader {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 16px solid #898989;
+  border-top: 16px solid #af0000;
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+
+.file-drop-area {
+  position: relative;
+  width: 100%;
+  height: 200px; /* Ajusta la altura según tu preferencia */
+  border: 2px dashed #ccc;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.file-msg {
+  text-align: center;
+}
+
+.file-drop-area input[type="file"] {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+
