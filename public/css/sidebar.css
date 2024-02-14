@@ -10,7 +10,7 @@
 }
 
 :root {
-  --blue: #2a2185;
+  --blue: rgb(32, 32, 50);
   --white: #fff;
   --gray: #f5f5f5;
   --black1: #222;
@@ -66,6 +66,15 @@ body {
   pointer-events: none;
 }
 
+#user {
+  margin-top: 25px;
+  position: relative;
+  display: block;
+  width: 100%;
+  display: flex;
+  text-decoration: none;
+  color: var(--white);
+}
 .navigation ul li a {
   position: relative;
   display: block;
@@ -87,6 +96,16 @@ body {
   line-height: 75px;
   text-align: center;
 }
+
+#icon1 {
+	margin-top: 15px;
+  position: relative;
+  display: block;
+  min-width: 60px;
+  height: 60px;
+  line-height: 75px;
+  text-align: center;
+}
 .navigation ul li a .icon ion-icon {
   font-size: 1.75rem;
 }
@@ -101,6 +120,17 @@ body {
   white-space: nowrap;
 }
 
+.navigation ul li h3  {
+  position: relative;
+	margin-top: -20px;
+  display: block;
+  padding: 0 70px;
+  height: 60px;
+  line-height: 60px;
+  text-align: start;
+  white-space: nowrap;
+	color: #f5f5f5;
+}
 /* --------- curve outside ---------- */
 .navigation ul li:hover a::before,
 .navigation ul li.hovered a::before {
@@ -214,38 +244,40 @@ body {
 .cardBox {
   position: relative;
   width: 100%;
-  padding: 20px;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-gap: 30px;
+  padding: 10px; /* Reducir el padding */
+  display: flex; /* Cambiar a flex */
+  flex-wrap: wrap; /* Permitir que los elementos se envuelvan */
+  justify-content: space-between; /* Espacio entre las tarjetas */
 }
 
 .cardBox .card {
+  display: flex; /* Hacer que la tarjeta sea un contenedor flex */
+  justify-content: space-between; /* Añadir espacio entre los elementos */
+  align-items: center; /* Centrar los elementos verticalmente */
   position: relative;
   background: var(--white);
-  padding: 30px;
+  padding: 15px; /* Reducir el padding */
   border-radius: 20px;
-  display: flex;
-  justify-content: space-between;
-  cursor: pointer;
+  flex: 1 0 calc(20% - 10px); /* Crecer, encoger y base */
+  margin: 5px; /* Espacio alrededor de cada tarjeta */
   box-shadow: 0 7px 25px rgba(0, 0, 0, 0.08);
+  max-width: calc(20% - 10px); /* Asegurar que todas las tarjetas tengan el mismo ancho */
 }
 
 .cardBox .card .numbers {
   position: relative;
   font-weight: 500;
-  font-size: 2.5rem;
+  font-size: 1.5rem; /* Reducir el tamaño de fuente */
   color: var(--blue);
 }
 
 .cardBox .card .cardName {
   color: var(--black2);
-  font-size: 1.1rem;
-  margin-top: 5px;
+  font-size: 0.9rem; /* Reducir el tamaño de fuente */
 }
 
 .cardBox .card .iconBx {
-  font-size: 3.5rem;
+  font-size: 2.5rem; /* Reducir el tamaño de fuente */
   color: var(--black2);
 }
 
@@ -258,24 +290,38 @@ body {
   color: var(--white);
 }
 
+/* Media query para pantallas pequeñas */
+@media (max-width: 600px) {
+  .cardBox .card {
+    flex: 1 0 100%; /* Las tarjetas ocuparán el 100% del ancho en pantallas pequeñas */
+    max-width: 100%; /* Asegurar que todas las tarjetas tengan el mismo ancho en pantallas pequeñas */
+  }
+}
+
+
 /* ================== Order Details List ============== */
-.details {
+/*.details {
+  margin-top: 60px;
   position: relative;
   width: 100%;
   padding: 20px;
   display: grid;
   grid-template-columns: 2fr 1fr;
   grid-gap: 30px;
-  /* margin-top: 10px; */
-}
+  margin-left: 30px;
+   margin-top: 10px; 
+}*/
 
-.details .recentOrders {
+.details .tablas {
   position: relative;
   display: grid;
-  min-height: 500px;
+  width: 90%;
+  align-content: center;
+  min-height: 350px;
   background: var(--white);
   padding: 20px;
-  box-shadow: 0 7px 25px rgba(0, 0, 0, 0.08);
+  margin-left: 80px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08);
   border-radius: 20px;
 }
 
@@ -305,27 +351,27 @@ body {
 .details table thead td {
   font-weight: 600;
 }
-.details .recentOrders table tr {
+.details .tablas table tr {
   color: var(--black1);
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
-.details .recentOrders table tr:last-child {
+.details .tablas table tr:last-child {
   border-bottom: none;
 }
-.details .recentOrders table tbody tr:hover {
+.details .tablas table tbody tr:hover {
   background: var(--blue);
   color: var(--white);
 }
-.details .recentOrders table tr td {
+.details .tablas table tr td {
   padding: 10px;
 }
-.details .recentOrders table tr td:last-child {
+.details .tablas table tr td:last-child {
   text-align: end;
 }
-.details .recentOrders table tr td:nth-child(2) {
+.details .tablas table tr td:nth-child(2) {
   text-align: end;
 }
-.details .recentOrders table tr td:nth-child(3) {
+.details .tablas table tr td:nth-child(3) {
   text-align: center;
 }
 .status.delivered {
@@ -430,7 +476,7 @@ body {
   .details {
     grid-template-columns: 1fr;
   }
-  .recentOrders {
+  .tablas {
     overflow-x: auto;
   }
   .status.inProgress {
@@ -466,4 +512,35 @@ body {
     right: 0;
     left: initial;
   }
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  list-style-type: none;
+}
+
+.pagination li {
+  margin: 0 5px;
+}
+
+.pagination a {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #f8f9fa;
+  color: #343a40;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.pagination a:hover {
+  background-color: #343a40;
+  color: #f8f9fa;
+}
+
+.pagination .disabled a {
+  pointer-events: none;
+  background-color: #e9ecef;
+  color: #6c757d;
 }
