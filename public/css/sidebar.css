@@ -10,7 +10,7 @@
 }
 
 :root {
-  --blue: rgb(32, 32, 50);
+  --blue: rgb(33, 33, 42); 
   --white: #fff;
   --gray: #f5f5f5;
   --black1: #222;
@@ -262,13 +262,16 @@ body {
   margin: 5px; /* Espacio alrededor de cada tarjeta */
   box-shadow: 0 7px 25px rgba(0, 0, 0, 0.08);
   max-width: calc(20% - 10px); /* Asegurar que todas las tarjetas tengan el mismo ancho */
+  text-decoration:none;
 }
 
-.cardBox .card .numbers {
+.cardBox .card .areas {
   position: relative;
   font-weight: 500;
   font-size: 1.5rem; /* Reducir el tamaño de fuente */
   color: var(--blue);
+  text-decoration:none;
+
 }
 
 .cardBox .card .cardName {
@@ -284,7 +287,7 @@ body {
 .cardBox .card:hover {
   background: var(--blue);
 }
-.cardBox .card:hover .numbers,
+.cardBox .card:hover .areas,
 .cardBox .card:hover .cardName,
 .cardBox .card:hover .iconBx {
   color: var(--white);
@@ -311,6 +314,31 @@ body {
   margin-left: 30px;
    margin-top: 10px; 
 }*/
+
+/*.details .importar {
+  position: relative;
+  display: grid;
+  width: 40%;
+  align-content: center;
+  min-height: 350px;
+  background: var(--white);
+  padding: 20px;
+  margin-left: 80px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08);
+  border-radius: 20px;
+}
+
+.importar .btn {
+  margin-top: 15px;
+  position: relative;
+  padding: 5px 10px;
+  background: var(--blue);
+  text-decoration: none;
+  color: var(--white);
+  border-radius: 6px;
+}*/
+
+
 
 .details .tablas {
   position: relative;

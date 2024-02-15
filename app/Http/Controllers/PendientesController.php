@@ -26,6 +26,7 @@ public function index(Request $request)
 
     $perPage = 10; // Número de elementos por página
     $page = $request->input('page', 1); // Página actual, por defecto es 1
+    $query->orderBy('id', 'desc');
 
     $total = $query->count();
     $results = $query->skip(($page - 1) * $perPage)->take($perPage)->get();

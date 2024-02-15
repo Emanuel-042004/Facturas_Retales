@@ -8,7 +8,8 @@
     <title>Responsive Admin Dashboard | Korsat X Parmaga</title>
     <!-- ======= Styles ====== -->
     <link rel="stylesheet" href="{{ asset('css/sidebar.css') }}">
-    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 </head>
 
 <body>
@@ -28,7 +29,7 @@
                 </li>
 
                 <li>
-                    <a href="#">
+                    <a href="{{route ('home')}}">
                         <span class="icon">
                             <ion-icon name="home-outline"></ion-icon>
                         </span>
@@ -37,7 +38,7 @@
                 </li>
 
                 <li>
-                    <a href="#">
+                    <a href="{{route ('home')}}">
                         <span class="icon">
                             <ion-icon name="cloud-upload-outline"></ion-icon>
                         </span>
@@ -46,7 +47,7 @@
                 </li>
 
                 <li>
-                    <a href="#">
+                    <a href=" {{route('pendientes.index') }}">
                         <span class="icon">
                             <ion-icon name="document-text-outline"></ion-icon>
                         </span>
@@ -102,80 +103,74 @@
 
                 <div class="search">
                     <label>
-                        <input type="text" placeholder="Search here">
+                        <input type="text" placeholder="Buscar">
                         <ion-icon name="search-outline"></ion-icon>
                     </label>
                 </div>
 
                 <div class="user">
-                    <img src="assets/imgs/customer01.jpg" alt="">
+                    <img src="{{asset('imagenes/logo2.jpeg')}}" alt="">
                 </div>
             </div>
 
             <div class="cardBox">
-                <div class="card">
+                <a href="{{ url()->current() . '?area=Compras' }}" class="card">
                     <div>
-                        <div class="numbers">Todas</div>
-
+                        <div class="areas">Compras</div>
                     </div>
-
-                    <div class="iconBx">
-                        <ion-icon name="document-text-outline"></ion-icon>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div>
-                        <div class="numbers">Compras</div>
-
-                    </div>
-
                     <div class="iconBx">
                         <ion-icon name="bag-handle-outline"></ion-icon>
                     </div>
-                </div>
+                </a>
 
-                <div class="card">
+                <a href="{{ url()->current() . '?area=Tecnologia' }}" class="card">
                     <div>
-                        <div class="numbers">Financiera</div>
-
+                        <div class="areas">Tecnologia</div>
                     </div>
+                    <div class="iconBx">
+                        <ion-icon name="bag-handle-outline"></ion-icon>
+                    </div>
+                </a>
 
+                <a href="{{ url()->current() . '?area=Financiera' }}" class="card">
+                    <div>
+                        <div class="areas">Financiera</div>
+                    </div>
                     <div class="iconBx">
                         <ion-icon name="cash-outline"></ion-icon>
                     </div>
-                </div>
+                </a>
 
-                <div class="card">
+                <a href="{{ url()->current() . '?area=Logistica' }}" class="card">
                     <div>
-                        <div class="numbers">Logistica</div>
-
+                        <span class="areas">Logística</span>
                     </div>
-
                     <div class="iconBx">
                         <ion-icon name="git-branch-outline"></ion-icon>
                     </div>
-                </div>
-                <div class="card">
+                </a>
+
+                <a href="{{ url()->current() . '?area=Mantenimiento' }}" class="card">
                     <div>
-                        <div class="numbers">Mantenimiento</div>
-
+                        <div class="areas">Mantenimiento</div>
                     </div>
-
                     <div class="iconBx">
                         <ion-icon name="construct-outline"></ion-icon>
                     </div>
-                </div>
+                </a>
             </div>
+
             <!-- ================ Order Details List ================= -->
 
             <div class="details">
-                
-                    @yield('content')
-                
+
+                @yield('content')
+
             </div>
         </div>
     </div>
+
+    
 
     <!-- =========== Scripts =========  -->
     <script>
@@ -197,9 +192,8 @@
 
         toggle.onclick = function () {
             navigation.classList.toggle("active");
-            main.classList.toggle("active");
-        };
-    </script>
+            main.classList.toggle("active");}
+           </script>
 
 
     <!-- ====== ionicons ======= -->
