@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('invoices', function (Blueprint $table) {
             $table->id();
             $table->string('name')->nullable();
-            $table->enum('type', ['Factura electrónica', 'Application response','Nota de crédito electrónica'])->nullable();
+            $table->enum('type', ['Factura electrónica', 'Nota de crédito electrónica', 'Reembolso', 'Legalizacion'])->nullable();
             $table->string('folio', 255)->nullable();
             $table->string('prefix')->nullable();
             $table->string('issuer_nit', 20)->nullable();
@@ -24,12 +24,13 @@ return new class extends Migration
             $table->enum('location',['Centro','Octava','Lopez','Alameda','Acopi','Jamundi','Pondaje'])->nullable();
             $table->enum('area',['Compras','Financiera','Logistica','Mantenimiento','Tecnologia'])->nullable();
             $table->text('note',)->nullable();
-            $table->enum('status',['pending', 'delivered', 'received', 'refused']);
+            $table->enum('status',['Pendiente', 'Entregada', 'Recibida', 'Rechazada','Pendiente a Causar', 'Finalizada']);
             $table->date('delivery_date')->nullable();
             $table->date('received_date')->nullable();
             $table->string('delivered_by')->nullable();
             $table->string('received_by')->nullable();
-            $table->string('pdf_file')->nullable();
+            $table->string('anexo1')->nullable();
+            $table->string('anexo2')->nullable();
             $table->timestamps();
         });
     }

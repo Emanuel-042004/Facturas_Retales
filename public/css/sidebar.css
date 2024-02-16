@@ -120,6 +120,18 @@ body {
   white-space: nowrap;
 }
 
+.salir {
+  margin-top: 250px;
+  position: relative;
+  display: block;
+  padding: 0 10px;
+  height: 60px;
+  line-height: 60px;
+  text-align: start;
+  white-space: nowrap;
+  
+}
+
 .navigation ul li h3  {
   position: relative;
 	margin-top: -20px;
@@ -745,6 +757,8 @@ body {
   
   .popup-content {
     padding: 20px;
+    max-height: calc(100vh - 200px); /* Ajusta la altura máxima según tus necesidades */
+    overflow-y: auto;
   }
   
   .header {
@@ -775,6 +789,15 @@ body {
     border: 1px solid #ccc;
     border-radius: 4px;
   }
+
+  textarea{
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: vertical;
+  }
+  
   
   .file-drop-area {
     position: relative;

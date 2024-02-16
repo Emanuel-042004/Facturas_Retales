@@ -17,7 +17,7 @@ class EntregadosController extends Controller
     public function index(Request $request)
     {
         // Obtener todas las facturas con estado 'pending'
-        $query = Factura::where('status', 'delivered');
+        $query = Factura::where('status', 'Entregada');
     
         // Obtener el área de la solicitud, si está presente
         $area = $request->input('area');

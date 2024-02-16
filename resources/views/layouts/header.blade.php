@@ -5,10 +5,11 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Responsive Admin Dashboard | Korsat X Parmaga</title>
+    <title>LR | Facturacion</title>
     <!-- ======= Styles ====== -->
     <link rel="stylesheet" href="{{ asset('css/sidebar.css') }}">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
 </head>
 
@@ -23,12 +24,13 @@
                             <ion-icon id="icon1" name="person-circle-outline"></ion-icon>
                         </span>
                         <h1 class="title">{{Auth::user()->name}}</h1><br>
-
                     </a>
                     <h3 class="title">{{Auth::user()->area}}</h3>
                 </li>
 
+
                 <li>
+
                     <a href="{{route ('home')}}">
                         <span class="icon">
                             <ion-icon name="home-outline"></ion-icon>
@@ -56,7 +58,7 @@
                 </li>
 
                 <li>
-                    <a href="#">
+                    <a href="{{route('entregados.index') }}">
                         <span class="icon">
                             <ion-icon name="mail-outline"></ion-icon>
 
@@ -70,7 +72,7 @@
                         <span class="icon">
                             <ion-icon name="time-outline"></ion-icon>
                         </span>
-                        <span class="title">Pendientes a Causar</span>
+                        <span class="title">Causaciones</span>
                     </a>
                 </li>
 
@@ -79,7 +81,7 @@
                         <span class="icon">
                             <ion-icon name="mail-open-outline"></ion-icon>
                         </span>
-                        <span class="title">Recibidas</span>
+                        <span class="title">Pagos</span>
                     </a>
                 </li>
 
@@ -91,6 +93,20 @@
                         <span class="title">Finalizadas</span>
                     </a>
                 </li>
+
+                <li>
+                    <a class="salir" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                        <span class="icon">
+                            <ion-icon name="log-out-outline"></ion-icon>
+                        </span>
+                        <span class="">{{ __('Salir') }}</span>
+                    </a>
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                        @csrf
+                    </form>
+                    @csrf
+                </li>
+
             </ul>
         </div>
 
@@ -128,7 +144,7 @@
                         <div class="areas">Tecnologia</div>
                     </div>
                     <div class="iconBx">
-                        <ion-icon name="bag-handle-outline"></ion-icon>
+                        <ion-icon name="desktop-outline"></ion-icon>
                     </div>
                 </a>
 
@@ -170,7 +186,7 @@
         </div>
     </div>
 
-    
+
 
     <!-- =========== Scripts =========  -->
     <script>
@@ -192,8 +208,10 @@
 
         toggle.onclick = function () {
             navigation.classList.toggle("active");
-            main.classList.toggle("active");}
-           </script>
+            main.classList.toggle("active")
+        ;
+      }
+    </script>
 
 
     <!-- ====== ionicons ======= -->

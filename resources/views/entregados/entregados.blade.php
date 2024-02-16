@@ -1,236 +1,257 @@
 @extends('layouts.header')
+
 @section('content')
 
-<div class="container">
-<div class="col-8 mt-4">
-  <button type="button" class="btn btn-dark" onclick="window.location.href='{{ url('/index') }}'">Volver</button>
-  <h1 class="mt-4">Entregados <img width="48" height="48"
-      src="https://img.icons8.com/color/48/000000/in-progress--v1.png" alt="in-progress--v1" /></h1>
-  @include('layouts.areas')
-  
-  <div class="col-md-6 mt-4">
-    <input type="text" id="searchInputEntregados" class="form-control" placeholder="Buscar por nombre, folio, etc." />
+
+<div class="tablas">
+  <div class="cardHeader">
+    <h2>Facturas Entregadas</h2>
+    <!-- Botones ocultos al principio -->
+    <div id="botonesContainer" style="display: none;">
+            <button id="Reembolso" class="btn">Reembolso</button>
+            <button id="Legalizacion" class="btn">Legalizacion</button>
+        </div>
+    <a href="#" class="btn" onclick="openPopup('facturaPopup')">Factura Manual</a>
+  </div>
+  <table>
+    <thead>
+      <td></td>
+      <td>Estado</td>
+      <td>Area</td>
+      <td>Nombre</td>
+      <td>Folio</td>
+      <td>Nombre de Emisor</td>
+      <td>NIT de Emisor</td>
+      <td>Acciones</td>
+      </tr>
+    </thead>
+    <tbody>
+      @foreach ($entregados as $factura)
+      @if (!$area || $factura->area === $area)
+      <td>
+        <input type="checkbox" class="form-check-input" name="selectedFacturas[]" value="{{ $factura->id }}" onchange ="agregarBotones()">
+      </td>
+      <td><span class="status delivered">{{ $factura->status}}</span></td>
+      <td>{{ $factura->area }}</td>
+      <td>{{ $factura->name }}</td>
+      <td>{{ $factura->folio}}</td>
+      <td>{{ $factura->issuer_name}}</td>
+      <td>{{ $factura->issuer_nit }}</td>
+      <td>
+      
+        <ion-icon name="ellipsis-vertical-outline" onclick="openPopup('facturaPopup{{$factura->id}}')" ></ion-icon>
+      </td>
+      
+      </tr>
+      @endif
+      @endforeach
+    </tbody>
+  </table>
+  <!-- Estilos Bootstrap para la paginación -->
+  <div>
+    <ul class="pagination">
+      <li class="{{ $entregados->onFirstPage() ? 'disabled' : '' }}">
+        <a href="{{ $entregados->previousPageUrl() }}" aria-label="Anterior">
+          <span aria-hidden="true">« Anterior</span>
+        </a>
+      </li>
+
+      <li class="{{ $entregados->hasMorePages() ? '' : 'disabled' }}">
+        <a href="{{ $entregados->nextPageUrl() }}" class="page-link" aria-label="Siguiente">
+          <span aria-hidden="true">Siguiente »</span>
+        </a>
+      </li>
+    </ul>
   </div>
 </div>
-
-    <table class="table table-responsive mt-4">
-      <thead class="table-dark">
-        <tr>
-        <th></th>
-        <th>Estado</th>
-          <th>Area</th>
-          <th>Nombre</th>
-          <th>Folio</th>
-          <th>Nombre de Emisor</th>
-          <th>NIT de Emisor</th>
-          <th>Entregado</th>
-          <th>Entregado por</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        @foreach ($entregados as $factura)
-        @if (!$area || $factura->area === $area)
-        <tr class="tr-warning tr-entre">
-        <td>
-          <input type="checkbox" class="form-check-input" name="selectedFacturas[]" value="{{ $factura->id }}">
-        </td>
-        <td>{{ $factura->status}}</td>
-          <td>{{ $factura->area }}</td>
-          <td>{{ $factura->name }}</td>
-          <td>{{ $factura->folio}}</td>
-          <td>{{ $factura->issuer_name}}</td>
-          <td>{{ $factura->issuer_nit }}</td>
-          <td>{{ $factura->delivery_date}}</td>
-          <td>{{ $factura->delivered_by }}</td>
-          
-          <td class="icon-cell">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3-fill"
-              viewBox="0 0 16 16" style="margin-right: 25px; cursor: pointer;"
-              onclick="confirmarEliminacion({{ $factura->id }})">
-              <path
-                d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5" />
-            </svg>
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye-fill"
-              viewBox="0 0 16 16" data-bs-toggle="modal" data-bs-target="#facturaModal{{$factura->id}}"
-              style="margin-right: 10px;">
-              <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0" />
-              <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8m8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7" />
-            </svg>
-          </td>
-        </tr>
-        @endif
-        @endforeach
-      </tbody>
-      <script>
-        // SweetAlert para confirmar la eliminación
-        function confirmarEliminacion(id) {
-          Swal.fire({
-            title: '¿Estás seguro?',
-            text: 'Esta acción no se puede deshacer',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Sí, eliminar',
-            cancelButtonText: 'Cancelar'
-          }).then((result) => {
-            if (result.isConfirmed) {
-              // Redirigir o ejecutar la acción de eliminación aquí
-              window.location.href = '/eliminar-factura/' + id;
-            }
-          });
-        }
-      </script>
-<!--BUSCADOR-->
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
-    var searchInputEntregados = document.getElementById('searchInputEntregados');
+      function agregarBotones() {
+        var checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+        var botonesContainer = document.getElementById('botonesContainer');
 
-    // Agrega un evento para manejar cambios en el campo de búsqueda para la segunda tabla
-    searchInputEntregados.addEventListener('input', function () {
-      var searchTerm = searchInputEntregados.value.toLowerCase();
-
-      // Filtra las filas de la segunda tabla según el término de búsqueda
-      var rows = document.querySelectorAll('.tr-entre');
-
-      rows.forEach(function (row) {
-        var area = row.querySelector('td:nth-child(1)').textContent.toLowerCase();
-        var name = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
-        var folio = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
-        var issuerName = row.querySelector('td:nth-child(4)').textContent.toLowerCase();
-        var issuerNit = row.querySelector('td:nth-child(5)').textContent.toLowerCase();
-        var deliveryDate = row.querySelector('td:nth-child(6)').textContent.toLowerCase();
-        var deliveredBy = row.querySelector('td:nth-child(7)').textContent.toLowerCase();
-
-        if (
-          area.includes(searchTerm) ||
-          name.includes(searchTerm) ||
-          folio.includes(searchTerm) ||
-          issuerName.includes(searchTerm) ||
-          issuerNit.includes(searchTerm) ||
-          deliveryDate.includes(searchTerm) ||
-          deliveredBy.includes(searchTerm)
-        ) {
-          row.style.display = ''; // Muestra la fila si coincide con el término de búsqueda
+        // Mostrar o ocultar los botones dependiendo de si hay checkboxes seleccionados
+        if (checkboxes.length > 0) {
+            botonesContainer.style.display = 'block';
         } else {
-          row.style.display = 'none'; // Oculta la fila si no coincide
+            botonesContainer.style.display = 'none';
         }
-      });
-    });
-  });
+    }
 </script>
 
-    </table>
-    <!-- Estilos Bootstrap para la paginación -->
-<div class="d-flex justify-content-center mt-4 ">
-    <ul class="pagination">
-        @if ($entregados->onFirstPage())
-            <li class="page-item disabled">
-                <span class="page-link">Anterior</span>
-            </li>
-        @else
-            <li class="page-item">
-                <a href="{{ $entregados->previousPageUrl() }}" class="page-link" aria-label="Anterior">
-                    <span aria-hidden="true">&laquo; Anterior</span>
-                </a>
-            </li>
-        @endif
+<!-- ================ FACTURA MANUAL ================= -->
+<div class="popup-background" id="popupBackground"></div>
 
-        @if ($entregados->hasMorePages())
-            <li class="page-item">
-                <a href="{{ $entregados->nextPageUrl() }}" class="page-link" aria-label="Siguiente">
-                    <span aria-hidden="true">Siguiente &raquo;</span>
-                </a>
-            </li>
-        @else
-            <li class="page-item disabled">
-                <span class="page-link">Siguiente</span>
-            </li>
-        @endif
-    </ul>
-</div>
-  </div>
-  </div>
- 
-  @foreach ($entregados as $factura)
-  <!-- Modal -->
-  <div class="modal fade" id="facturaModal{{$factura->id}}" tabindex="-1" role="dialog"
-    aria-labelledby="facturaModalLabel{{$factura->id}}" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <div class="d-flex flex-column align-items-start">
-            <h3 class="modal-title mb-0" id="facturaLabel">Datos de Factura</h3>
-            <h6 class="mt-2">{{ $factura->name }} </h6>
-          </div>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-          </button>
+<div class="popup" id="facturaPopup">
+  <div class="popup-content">
+    <div class="header">
+      <h2 class="modal-title">Datos de Factura</h2>
+      <span class="close-icon" onclick="closePopup('facturaPopup')">&times;</span>
+      
+    </div>
+    <form id="crearfactura" action="{{ route('facturas.store') }}"
+      method="POST" enctype="multipart/form-data">
+      @csrf
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="nombre">Nombre</label>
+          <input type="text" class="form-control" id="name" name="name"  placeholder="Nombre"
+          >
         </div>
-        
-        <div class="modal-body">
-          <ul class="list-unstyled ">
-            <li><strong>Nombre:</strong> {{ $factura->name }}</li>
-            <li><strong>Folio:</strong> {{ $factura->folio}}</li>
-            <li><strong>NIT de Emisor:</strong> {{ $factura->issuer_nit }}</li>
-            <li><strong>Nombre de Emisor:</strong> {{ $factura->issuer_name}}</li>
-            <li><strong>Prefijo:</strong> {{ $factura->issuer_name}}</li>
-            <li><strong>Entregado:</strong> {{ $factura->delivery_date}}</li>
-            <li><strong>Entregado Por:</strong> {{ $factura->delivered_by }}</li>
-            <li><strong>Area</strong> {{ $factura->area }}</li>
-          </ul>
-          
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-            <button type="button" class="btn btn-success" onclick="confirmarRecibido({{ $factura->id }})">Recibir</button>
-
-          </div>
+        <div class="form-group col-md-6">
+          <label for="folio">Folio</label>
+          <input type="text" class="form-control" id="folio" name="folio" 
+            placeholder="Contrato">
         </div>
       </div>
-    </div>
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="issuer_name">Nombre Emisor</label>
+          <input type="text" class="form-control" id="issuer_name" name="issuer_name" 
+          >
+        </div>
+        <div class="form-group col-md-6">
+          <label for="issuer_nit">Nit Emisor</label>
+          <input type="text" class="form-control" id="issuer_nit" name="issuer_nit" 
+          >
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="prefix">Prefijo</label>
+          <input type="text" class="form-control" id="prefix" name="prefix" >
+        </div>
+        <div class="form-group col-md-6">
+          <label for="area">Área</label>
+          <select class="form-control" id="area" name="area" >
+            <option value="">Selecciona</option>
+            <option value="Compras" >Compras</option>
+            <option value="Financiera" >Financiera</option>
+            <option value="Logistica" >Logística</option>
+            <option value="Mantenimiento">Mantenimiento</option>
+            <option value="Tecnologia">Tecnología</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="pdf1">ANEXO 1</label>
+          <div class="file-drop-area">
+            <input type="file" class="form-control-file" id="pdf1" name="pdf1" >
+            <span class="file-msg">Arrastra y suelta aquí o haz clic para seleccionar un archivo</span>
+          </div>
+        </div>
+        <div class="form-group col-md-6">
+          <label for="pdf2">ANEXO 2</label>
+          <div class="file-drop-area">
+            <input type="file" class="form-control-file" id="pdf2" name="pdf2">
+            <span class="file-msg">Arrastra y suelta aquí o haz clic para seleccionar un archivo</span>
+          </div>
+        </div>
+
+        <div class="form-group col-md-6">
+          <label for="note">Nota</label>
+          <textarea class="form-control" id="note" name="note" ></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        
+        <button type="submit" class="btn btn-primary">Crear</button>
+      </div>
+    </form>
   </div>
-  @endforeach
-  <script>
-  function confirmarRecibido(id) {
-    Swal.fire({
-      title: '¿Estás seguro?',
-      text: 'Esta acción no se puede deshacer',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Sí, recibir',
-      cancelButtonText: 'Cancelar'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        // Crear un formulario dinámico
-        var form = document.createElement('form');
-        form.method = 'POST';
-        form.action = '/recibir-factura/' + id;
+</div>
 
-        // CSRF Token
-        var csrfInput = document.createElement('input');
-        csrfInput.type = 'hidden';
-        csrfInput.name = '_token';
-        csrfInput.value = '{{ csrf_token() }}';
 
-        // Campo para indicar el método PUT
-        var methodInput = document.createElement('input');
-        methodInput.type = 'hidden';
-        methodInput.name = '_method';
-        methodInput.value = 'POST';
 
-        // Agregar elementos al formulario
-        form.appendChild(csrfInput);
-        form.appendChild(methodInput);
 
-        // Adjuntar el formulario al cuerpo del documento
-        document.body.appendChild(form);
+<!-- ================ ACCIONES ================= -->
+<div class="popup-background" id="popupBackground"></div>
+@foreach ($entregados as $factura)
+<div class="popup" id="facturaPopup{{$factura->id}}">
+  <div class="popup-content">
+    <div class="header">
+      <h2 class="modal-title">Datos de Factura</h2>
+      <span class="close-icon" onclick="closePopup('facturaPopup{{$factura->id}}')">&times;</span>
+    </div>
+    <form id="entregarFacturaForm{{$factura->id}}" action="{{ route('entregar_factura', ['id' => $factura->id]) }}"
+      method="POST" enctype="multipart/form-data">
+      @csrf
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="nombre">Nombre</label>
+          <input type="text" class="form-control" id="name" name="name" value="{{$factura->name}}" placeholder="Nombre"
+          >
+        </div>
+        <div class="form-group col-md-6">
+          <label for="folio">Folio</label>
+          <input type="text" class="form-control" id="folio" name="folio" value="{{$factura->folio}}"
+            placeholder="Contrato">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="issuer_name">Nombre Emisor</label>
+          <input type="text" class="form-control" id="issuer_name" name="issuer_name" value="{{$factura->issuer_name}}"
+          >
+        </div>
+        <div class="form-group col-md-6">
+          <label for="issuer_nit">Nit Emisor</label>
+          <input type="text" class="form-control" id="issuer_nit" name="issuer_nit" value="{{$factura->issuer_nit}}"
+          >
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="prefix">Prefijo</label>
+          <input type="text" class="form-control" id="prefix" name="prefix" value="{{$factura->prefix}}">
+        </div>
+        <div class="form-group col-md-6">
+          <label for="area">Área</label>
+          <select class="form-control" id="area" name="area">
+            <option value="">Selecciona</option>
+            <option value="Compras" @selected( "Compras"==$factura -> area)>Compras</option>
+            <option value="Financiera" @selected( "Financiera"==$factura -> area)>Financiera</option>
+            <option value="Logistica" @selected( "Logistica"==$factura -> area)>Logística</option>
+            <option value="Mantenimiento" @selected( "Mantenimiento"==$factura -> area) >Mantenimiento</option>
+            <option value="Tecnologia" @selected( "Tecnologia"==$factura -> area)>Tecnología</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="pdf1">ANEXO 1</label>
+          <div class="file-drop-area">
+            <input type="file" class="form-control-file" id="pdf1" name="pdf1" >
+            <span class="file-msg">Arrastra y suelta aquí o haz clic para seleccionar un archivo</span>
+          </div>
+        </div>
+       <!-- <div class="form-group col-md-6">
+          <label for="pdf2">ANEXO 2</label>
+          <div class="file-drop-area">
+            <input type="file" class="form-control-file" id="pdf2" name="pdf2">
+            <span class="file-msg">Arrastra y suelta aquí o haz clic para seleccionar un archivo</span>
+          </div>
+        </div>-->
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">Entregar</button>
+      </div>
+    </form>
+  </div>
+</div>
+@endforeach
 
-        // Enviar el formulario
-        form.submit();
-      }
-    });
+<!-- ================ Abrir PopUp ================= -->
+<script>
+  function openPopup(popupId) {
+    document.getElementById(popupId).style.display = "block";
+    document.getElementById('popupBackground').style.display = "block"; // Mostrar el fondo gris
+  }
+
+  function closePopup(popupId) {
+    document.getElementById(popupId).style.display = "none";
+    document.getElementById('popupBackground').style.display = "none"; // Ocultar el fondo gris
   }
 </script>
-  @endsection
+
+@endsection

@@ -9,14 +9,14 @@ use App\Mail\InvoiceDelivered;
 use App\Models\User;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\RedirectResponse;
 
 class PendientesController extends Controller
 {
-    
 
 public function index(Request $request)
 {
-    $query = Factura::where('status', 'pending');
+    $query = Factura::where('status', 'Pendiente');
 
     $area = $request->input('area');
 
@@ -38,30 +38,29 @@ public function index(Request $request)
     return view('pendientes.pendientes', compact('pendientes', 'area'));
 }
 
-
-   public function entregarFactura( $id)
+   public function entregarFactura(Request $request, $id)
 {
     // Valida y guarda el archivo PDF
   
-
-    $factura = Factura::find($id);
+    $factura = Factura::findOrFail($id);
 
     // Actualiza la base de datos con los datos de entrega
     
-    $factura->name;
-    $factura->type;
-    $factura->folio;
-    $factura->issuer_nit;
-    $factura->issuer_name;
-    $factura->cude;
-    $factura->area;
+   
+    $factura->type = $request->input('type');
+    $factura->name = $request->input('name');
+    $factura->folio = $request->input('folio');
+    $factura->issuer_name = $request->input('issuer_name');
+    $factura->issuer_nit = $request->input('issuer_nit');
+    $factura->area = $request->input('area');
+
     $factura->delivery_date = now();
     $user = Auth::user();
     $factura->delivered_by = $user->name;
    
 
     // Cambia el estado de la factura a 'delivered'
-    $factura->status = 'delivered';
+    $factura->status = 'Entregada';
 
     $factura->save();
 
@@ -81,6 +80,20 @@ public function index(Request $request)
 
     return redirect()->back()->with('success', 'Factura entregada con éxito.');
 }
+
+
+public function cambiarTipoFacturas(Request $request)
+{
+    $tipo = $request->input('tipo');
+    $ids = $request->input('ids');
+
+    // Actualiza el tipo de las facturas seleccionadas
+    Factura::whereIn('id', $ids)->update(['type' => $tipo]);
+
+    return response()->json(['success' => true]);
+}
+
+
 
     public function eliminarFactura($id)
 {
@@ -111,7 +124,10 @@ public function asignarArea($id)
     // Guarda la factura en la base de datos
     $factura->save();
 
-    return redirect()->back()->with('asignar', 'Factura asignada a tu área con éxito.');}
+    return redirect()->back()->with('asignar', 'Factura asignada a tu área con éxito.');
+}
+
+
 
 
     public function eliminarSeleccion(Request $request)

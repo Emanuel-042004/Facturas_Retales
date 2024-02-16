@@ -54,8 +54,9 @@ class FacturasController extends Controller
             'arrival_date' => $request->input('arrival_date'),
             'prefix' => $request->input('prefix'),
             'area' => $request->input('area'),
+            'note' => $request->input('note'),
             
-            'status' => 'pending',
+            'status' => 'Pendiente',
 
         ]);
 

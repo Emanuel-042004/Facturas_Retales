@@ -32,6 +32,9 @@ Route::post('/facturas', [FacturasController::class, 'store'])->name('facturas.s
 
 Route::get('/pendientes', [PendientesController::class, 'index'])->name('pendientes.index');
 
+Route::get('/pendientes', [PendientesController::class, 'update'])->name('pendientes.update');
+Route::post('cambiar-tipo-facturas', [PendientesController::class, 'cambiarTipoFacturas'])->name('cambiar_tipo_facturas');
+
 Route::post('/entregar-factura/{id}', [PendientesController::class, 'entregarFactura'])->name('entregar_factura');
 Route::get('/eliminar-factura/{id}', [PendientesController::class, 'eliminarFactura'])->name('eliminar_factura');
 Route::get('/asignar_area/{id}', [PendientesController::class, 'asignarArea'])->name('asignar_area');
