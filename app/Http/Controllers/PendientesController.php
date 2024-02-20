@@ -5,11 +5,13 @@ use App\Models\Factura;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use App\Mail\InvoiceDelivered;
 use App\Models\User;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\RedirectResponse;
+
 
 class PendientesController extends Controller
 {
@@ -41,6 +43,10 @@ public function index(Request $request)
    public function entregarFactura(Request $request, $id)
 {
     // Valida y guarda el archivo PDF
+    $request->validate([
+        'anexo1' => 'required|mimes:pdf,doc,docx|max:2048', // Ajusta los tipos de archivo según tus necesidades
+    ]);
+
   
     $factura = Factura::findOrFail($id);
 
@@ -61,6 +67,15 @@ public function index(Request $request)
 
     // Cambia el estado de la factura a 'delivered'
     $factura->status = 'Entregada';
+
+    if ($request->hasFile('anexo1')) {
+        $anexo1 = $request->file('anexo1');
+        $anexo1Nombre = time() . '_' . $anexo1->getClientOriginalName();
+        $anexo1->move(public_path('anexos'), $anexo1Nombre); // Mueve el archivo a la carpeta deseada
+
+        // Asigna el nombre del archivo a la factura
+        $factura->anexo1 = $anexo1Nombre;
+    }
 
     $factura->save();
 
@@ -93,6 +108,23 @@ public function cambiarTipoFacturas(Request $request)
     return response()->json(['success' => true]);
 }
 
+
+public function anexo1 (Request $request){
+
+    $request->validate([
+        'anexo1'=> 'required|mimes:csv,txt,xls,ppt,pdf|max:2048',
+    ]);
+
+    $uploadedFile = $request->anexo1('anexo1');
+    $anexo1= time() . $uploadedFile->getClientOriginalname();
+    Storage::putFileAs('file/' . $anexo1, $uploadedFile, $anexo1);
+
+    $upload = new Factura();
+    $upload->anexo1 =$anexo1;
+    $upload->save();
+
+    
+}
 
 
     public function eliminarFactura($id)

@@ -205,6 +205,18 @@
     <form id="entregarFacturaForm{{$factura->id}}" action="{{ route('entregar_factura', ['id' => $factura->id]) }}"
       method="POST" enctype="multipart/form-data">
       @csrf
+
+      <div class="form-group col-md-6">
+          <label for="type">Tipo</label>
+          <select class="form-control" id="type" name="type">
+            <option value="">Selecciona</option>
+            <option value="Factura electrónica" @selected( "Factura electrónica"==$factura -> type)>Factura electrónica</option>
+            <option value="Nota de crédito electrónica" @selected( "Nota de crédito electrónica"==$factura -> type)>Financiera</option>
+            <option value="Reembolso" @selected( "Reembolso"==$factura -> type)>Reembolso</option>
+            <option value="Legalizacion" @selected( "Legalizacion"==$factura -> type) >Legalizacion</option>
+            
+          </select>
+        </div>
       <div class="form-row">
         <div class="form-group col-md-6">
           <label for="nombre">Nombre</label>
@@ -247,13 +259,13 @@
         </div>
       </div>
       <div class="form-row">
-        <div class="form-group col-md-6">
-          <label for="pdf1">ANEXO 1</label>
-          <div class="file-drop-area">
-            <input type="file" class="form-control-file" id="pdf1" name="pdf1" >
-            <span class="file-msg">Arrastra y suelta aquí o haz clic para seleccionar un archivo</span>
-          </div>
-        </div>
+      <div class="form-group col-md-6">
+  <label for="anexo1">ANEXO 1</label>
+  <div class="file-drop-area">
+    <input type="file" class="form-control-file" id="anexo1" name="anexo1" onchange="showFileName(this)">
+    <span class="file-msg">Arrastra y suelta aquí o haz clic para seleccionar un archivo</span>
+  </div>
+</div>
        <!-- <div class="form-group col-md-6">
           <label for="pdf2">ANEXO 2</label>
           <div class="file-drop-area">
@@ -262,6 +274,10 @@
           </div>
         </div>-->
       </div>
+       <div class="form-group col-md-6">
+          <label for="note">Nota</label>
+          <textarea class="form-control" id="note" name="note" ></textarea>
+        </div>
       <div class="modal-footer">
         <button type="submit" class="btn btn-primary">Entregar</button>
       </div>
@@ -269,6 +285,18 @@
   </div>
 </div>
 @endforeach
+<script>
+  function showFileName(input) {
+    var fileName = input.files[0].name;
+    var fileMsgSpan = input.parentNode.querySelector('.file-msg');
+    fileMsgSpan.textContent = fileName;
+  }
+
+  function closePopup(popupId) {
+    document.getElementById(popupId).style.display = "none";
+    document.getElementById('popupBackground').style.display = "none"; // Ocultar el fondo gris
+  }
+</script>
 
 <!-- ================ Abrir PopUp ================= -->
 <script>

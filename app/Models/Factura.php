@@ -27,6 +27,7 @@ class Factura extends Model
       'received_date',
       'delivered_by',
       'received_by',
-      'pdf_file',
+      'anexo1',
+      'anexo2',
     ];
 }
