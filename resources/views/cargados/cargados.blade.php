@@ -145,16 +145,54 @@
       </div>
       <div class="form-row">
       <div class="form-group col-md-6">
-        <label for="anexo1">ANEXO 1</label><br><br>
-        <button class="btn btn-primary" onclick="openDocument('{{ asset('anexos/' . $factura->anexo1) }}')">Ver Documento</button>
-    </div>
-       <div class="form-group col-md-6">
-          <label for="pdf2">ANEXO 2</label>
-          <div class="file-drop-area">
-            <input type="file" class="form-control-file" id="pdf2" name="pdf2">
-            <span class="file-msg">Arrastra y suelta aquí o haz clic para seleccionar un archivo</span>
-          </div>
+        <label for="anexos">Archivos Adjuntos</label>
+        <div class="attachment-box">
+            <ul class="no-bullet" >
+                @if($factura->anexo1)
+                    <li>
+                        <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo1) }}')">
+                        <i class="fas fa-file"></i> Anexo 1 - {{ $factura->anexo1 }}</button>
+                    </li>
+                @endif
+                @if($factura->anexo2)
+                    <li>
+                        <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo2) }}')">
+                        <i class="fas fa-file"></i>
+                        Anexo 2 - {{ $factura->anexo2 }}</button>
+                    </li>
+                @endif
+                @if($factura->anexo3)
+                    <li>
+                        <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo3) }}')">
+                        <i class="fas fa-file"></i>
+                        Anexo 3 - {{ $factura->anexo3 }}</button>
+                    </li>
+                @endif
+                @if($factura->anexo4)
+                    <li>
+                        <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo4) }}')">
+                        <i class="fas fa-file"></i>
+                        Anexo 4 - {{ $factura->anexo4 }}</button>
+                    </li>
+                @endif
+                @if($factura->anexo5)
+                    <li>
+                        <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo5) }}')">
+                        <i class="fas fa-file"></i>
+                        Anexo 5 - {{ $factura->anexo5 }}</button>
+                    </li>
+                @endif
+                @if($factura->anexo6)
+                    <li>
+                        <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo6) }}')">
+                        <i class="fas fa-file"></i>
+                        Anexo 6 - {{ $factura->anexo6 }}</button>
+                    </li>
+                @endif
+                
+            </ul>
         </div>
+    </div>
       </div>
       <div class="form-group col-md-6">
           <label for="note">Nota</label>

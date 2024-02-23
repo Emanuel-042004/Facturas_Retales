@@ -90,7 +90,7 @@
       }
     });
   }
-function agregarBotones() {
+  function agregarBotones() {
     var checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
     var botonesContainer = document.getElementById('botonesContainer');
 
@@ -276,25 +276,13 @@ function agregarBotones() {
         </div>
       </div>
       <div class="form-row">
-  <div class="form-group col-md-6">
-    <label for="anexo1">ANEXO 1</label>
-    <div class="file-drop-area">
-      <input type="file" class="form-control-file" id="anexo1" name="anexo1" onchange="showFileName(this)">
-      <span class="file-msg">Arrastra y suelta aquí o haz clic para seleccionar un archivo</span>
-    </div>
-    <button type="button" class="btn btn-secondary" onclick="toggleAnexo('anexo2', true)">+</button>
-    <button type="button" class="btn btn-secondary" onclick="toggleAnexo('anexo2', false)">-</button>
-  </div>
-  <div class="form-group col-md-6" id="anexo2" style="display: none;">
-    <label for="anexo2">ANEXO 2</label>
-    <div class="file-drop-area">
-      <input type="file" class="form-control-file" id="anexo2" name="anexo2" onchange="showFileName(this)">
-      <span class="file-msg">Arrastra y suelta aquí o haz clic para seleccionar un archivo</span>
-    </div>
-    <button type="button" class="btn btn-secondary" onclick="toggleAnexo('anexo3', true)">+</button>
-    <button type="button" class="btn btn-secondary" onclick="toggleAnexo('anexo3', false)">-</button>
-  </div>
-</div>
+        <div class="form-group col-md-6">
+          <label for="anexos">ANEXOS</label>
+          <div class="file-drop-area">
+            <input type="file" class="form-control-file" id="anexos" name="anexos[]" multiple>
+          </div>
+        </div>
+      </div>
       <div class="form-group col-md-6">
         <label for="note">Nota</label>
         <textarea class="form-control" id="note" name="note"></textarea>
@@ -366,18 +354,7 @@ function agregarBotones() {
   }
 </script>
 
-<script>
-  function showFileName(input) {
-    var fileName = input.files[0].name;
-    var fileMsgSpan = input.parentNode.querySelector('.file-msg');
-    fileMsgSpan.textContent = fileName;
-  }
 
-  function closePopup(popupId) {
-    document.getElementById(popupId).style.display = "none";
-    document.getElementById('popupBackground').style.display = "none"; // Ocultarris
-  }
-</script>
 
 <!-- ================ Abrir PopUp ================= -->
 <script>

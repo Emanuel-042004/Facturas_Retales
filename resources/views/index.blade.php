@@ -113,4 +113,11 @@
 
 </style>
 
+<script>
+    document.getElementById('file').addEventListener('change', function() {
+        var fileName = this.files[0].name;
+        document.querySelector('.custom-file-upload').textContent = fileName;
+    });
+</script>
+
 @endsection
