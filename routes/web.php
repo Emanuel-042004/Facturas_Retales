@@ -5,6 +5,7 @@ use App\Http\Controllers\FacturasController;
 use App\Http\Controllers\PendientesController;
 use App\Http\Controllers\EntregadosController;
 use App\Http\Controllers\RecibidosController;
+use App\Http\Controllers\CargadosController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -35,11 +36,12 @@ Route::get('/pendientes', [PendientesController::class, 'index'])->name('pendien
 Route::get('/pendientes', [PendientesController::class, 'update'])->name('pendientes.update');
 Route::post('cambiar-tipo-facturas', [PendientesController::class, 'cambiarTipoFacturas'])->name('cambiar_tipo_facturas');
 
-Route::post('/entregar-factura/{id}', [PendientesController::class, 'entregarFactura'])->name('entregar_factura');
+Route::post('/cargar-factura/{id}', [PendientesController::class, 'cargarFactura'])->name('cargar_factura');
 Route::get('/eliminar-factura/{id}', [PendientesController::class, 'eliminarFactura'])->name('eliminar_factura');
 Route::get('/asignar_area/{id}', [PendientesController::class, 'asignarArea'])->name('asignar_area');
 Route::post('/realizar-acciones', [PendientesController::class, 'eliminarSeleccion'])->name('eliminar_seleccion');
 
+Route::get('/cargados', [CargadosController::class, 'index'])->name('cargados.index');
 
 Route::get('/entregados', [EntregadosController::class, 'index'])->name('entregados.index');
 Route::post('/recibir-factura/{id}', [EntregadosController::class, 'recibirFactura']);

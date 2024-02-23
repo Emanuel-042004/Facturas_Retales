@@ -58,6 +58,16 @@
                 </li>
 
                 <li>
+                    <a href="{{route('cargados.index') }}">
+                        <span class="icon">
+                        <ion-icon name="save-outline"></ion-icon>
+
+                        </span>
+                        <span class="title">Cargadas</span>
+                    </a>
+                </li>
+
+                <li>
                     <a href="{{route('entregados.index') }}">
                         <span class="icon">
                             <ion-icon name="mail-outline"></ion-icon>
@@ -67,6 +77,7 @@
                     </a>
                 </li>
 
+            
                 <li>
                     <a href="#">
                         <span class="icon">
@@ -117,12 +128,12 @@
                     <ion-icon name="menu-outline"></ion-icon>
                 </div>
 
-                <div class="search">
+                <!--<div class="search">
                     <label>
                         <input type="text" placeholder="Buscar">
                         <ion-icon name="search-outline"></ion-icon>
                     </label>
-                </div>
+                </div>-->
 
                 <div class="user">
                     <img src="{{asset('imagenes/logo2.jpeg')}}" alt="">

@@ -121,7 +121,7 @@ body {
 }
 
 .salir {
-  margin-top: 250px;
+  margin-top: 210px;
   position: relative;
   display: block;
   padding: 0 10px;
@@ -414,21 +414,33 @@ body {
 .details .tablas table tr td:nth-child(3) {
   text-align: center;
 }
-.status.delivered {
+
+.status.pending {
   padding: 2px 4px;
-  background: #8de02c;
+  background: #af0000;
   color: var(--white);
   border-radius: 4px;
   font-size: 14px;
   font-weight: 500;
 }
-.status.pending {
+
+.status.loaded {
   padding: 2px 4px;
-  background: #e9b10a;
-  color: var(--white);
+  background: #fc8200;
+  color: var(--black1);
   border-radius: 4px;
   font-size: 14px;
   font-weight: 500;
+}
+
+.status.delivered {
+  padding: 2px 4px;
+  background: #e2c105;
+  color: var(--black1);
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  
 }
 .status.return {
   padding: 2px 4px;
@@ -446,6 +458,8 @@ body {
   font-size: 14px;
   font-weight: 500;
 }
+
+
 
 .recentCustomers {
   position: relative;
@@ -759,6 +773,7 @@ body {
     padding: 20px;
     max-height: calc(100vh - 200px); /* Ajusta la altura máxima según tus necesidades */
     overflow-y: auto;
+    margin: 10px;
   }
   
   .header {
@@ -844,3 +859,5 @@ body {
     background-color: #007bff;
     color: #fff;
   }
+
+  

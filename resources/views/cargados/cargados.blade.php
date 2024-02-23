@@ -5,7 +5,7 @@
 
 <div class="tablas">
   <div class="cardHeader">
-    <h2>Facturas Entregadas</h2>
+    <h2>Facturas Cargadas</h2>
     <!-- Botones ocultos al principio -->
     <div id="botonesContainer" style="display: none;">
             <button id="Reembolso" class="btn">Reembolso</button>
@@ -26,12 +26,12 @@
       </tr>
     </thead>
     <tbody>
-      @foreach ($entregados as $factura)
+      @foreach ($cargados as $factura)
       @if (!$area || $factura->area === $area)
       <td>
         <input type="checkbox" class="form-check-input" name="selectedFacturas[]" value="{{ $factura->id }}" onchange ="agregarBotones()">
       </td>
-      <td><span class="status delivered">{{ $factura->status}}</span></td>
+      <td><span class="status loaded">{{ $factura->status}}</span></td>
       <td>{{ $factura->area }}</td>
       <td>{{ $factura->name }}</td>
       <td>{{ $factura->folio}}</td>
@@ -50,14 +50,14 @@
   <!-- Estilos Bootstrap para la paginación -->
   <div>
     <ul class="pagination">
-      <li class="{{ $entregados->onFirstPage() ? 'disabled' : '' }}">
-        <a href="{{ $entregados->previousPageUrl() }}" aria-label="Anterior">
+      <li class="{{ $cargados->onFirstPage() ? 'disabled' : '' }}">
+        <a href="{{ $cargados->previousPageUrl() }}" aria-label="Anterior">
           <span aria-hidden="true">« Anterior</span>
         </a>
       </li>
 
-      <li class="{{ $entregados->hasMorePages() ? '' : 'disabled' }}">
-        <a href="{{ $entregados->nextPageUrl() }}" class="page-link" aria-label="Siguiente">
+      <li class="{{ $cargados->hasMorePages() ? '' : 'disabled' }}">
+        <a href="{{ $cargados->nextPageUrl() }}" class="page-link" aria-label="Siguiente">
           <span aria-hidden="true">Siguiente »</span>
         </a>
       </li>
@@ -80,7 +80,7 @@
 
 <!-- ================ ACCIONES ================= -->
 <div class="popup-background" id="popupBackground"></div>
-@foreach ($entregados as $factura)
+@foreach ($cargados as $factura)
 <div class="popup" id="facturaPopup{{$factura->id}}">
   <div class="popup-content">
     <div class="header">

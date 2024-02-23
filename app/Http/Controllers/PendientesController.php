@@ -40,7 +40,7 @@ public function index(Request $request)
     return view('pendientes.pendientes', compact('pendientes', 'area'));
 }
 
-   public function entregarFactura(Request $request, $id)
+   public function cargarFactura(Request $request, $id)
 {
     // Valida y guarda el archivo PDF
     $request->validate([
@@ -66,13 +66,13 @@ public function index(Request $request)
    
 
     // Cambia el estado de la factura a 'delivered'
-    $factura->status = 'Entregada';
+    $factura->status ='Cargada';
 
     if ($request->hasFile('anexo1')) {
         $anexo1 = $request->file('anexo1');
         $anexo1Nombre = time() . '_' . $anexo1->getClientOriginalName();
         $anexo1->move(public_path('anexos'), $anexo1Nombre); // Mueve el archivo a la carpeta deseada
-
+ 
         // Asigna el nombre del archivo a la factura
         $factura->anexo1 = $anexo1Nombre;
     }

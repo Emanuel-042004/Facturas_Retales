@@ -24,13 +24,17 @@ return new class extends Migration
             $table->enum('location',['Centro','Octava','Lopez','Alameda','Acopi','Jamundi','Pondaje'])->nullable();
             $table->enum('area',['Compras','Financiera','Logistica','Mantenimiento','Tecnologia'])->nullable();
             $table->text('note',)->nullable();
-            $table->enum('status',['Pendiente', 'Entregada', 'Recibida', 'Rechazada','Pendiente a Causar', 'Finalizada']);
+            $table->enum('status',['Pendiente', 'Cargada', 'Entregada', 'Recibida', 'Rechazada','Pendiente a Causar', 'Finalizada']);
             $table->date('delivery_date')->nullable();
             $table->date('received_date')->nullable();
             $table->string('delivered_by')->nullable();
             $table->string('received_by')->nullable();
             $table->string('anexo1')->nullable();
             $table->string('anexo2')->nullable();
+            $table->string('anexo3')->nullable();
+            $table->string('anexo4')->nullable();
+            $table->string('anexo5')->nullable();
+            $table->string('anexo6')->nullable();
             $table->timestamps();
         });
     }
