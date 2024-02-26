@@ -158,7 +158,7 @@
       </div>
       <div class="form-group col-md-6">
           <label for="note">Nota</label>
-          <textarea class="form-control" id="note" name="note" value="{{$factura->note}}" ></textarea>
+          <textarea class="form-control" id="note" name="note" value="{{$factura->note}}" >{{$factura->note}}</textarea>
         </div>
       <div class="modal-footer">
         <button type="submit" class="btn btn-primary">Entregar</button>

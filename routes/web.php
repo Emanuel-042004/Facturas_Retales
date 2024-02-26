@@ -42,6 +42,8 @@ Route::get('/asignar_area/{id}', [PendientesController::class, 'asignarArea'])->
 Route::post('/realizar-acciones', [PendientesController::class, 'eliminarSeleccion'])->name('eliminar_seleccion');
 
 Route::get('/cargados', [CargadosController::class, 'index'])->name('cargados.index');
+Route::get('/cargados/{id}/rechazar', [CargadosController::class, 'rechazar'])->name('cargados.rechazar');
+Route::post('/cargados/{id}/entregar', [CargadosController::class, 'entregar'])->name('cargados.entregar');
 
 Route::get('/entregados', [EntregadosController::class, 'index'])->name('entregados.index');
 Route::post('/recibir-factura/{id}', [EntregadosController::class, 'recibirFactura']);

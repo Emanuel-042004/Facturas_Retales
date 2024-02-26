@@ -98,6 +98,10 @@ public function index(Request $request)
 
 public function cargarFactura(Request $request, $id)
 {
+    if (!$request->hasFile('anexos')) {
+        return redirect()->back()->with('error', 'Debes adjuntar al menos un anexo.');
+    }
+
     // Valida y guarda los archivos PDF
     $request->validate([
         'anexos.*' => 'required|mimes:pdf,doc,docx|max:2048', // Ajusta los tipos de archivo según tus necesidades
@@ -114,6 +118,7 @@ public function cargarFactura(Request $request, $id)
         'issuer_name' => $request->input('issuer_name'),
         'issuer_nit' => $request->input('issuer_nit'),
         'area' => $request->input('area'),
+        'note' => $request->input('note'),
         'delivery_date' => now(),
         'delivered_by' => Auth::user()->name,
         'status' => 'Cargada', // Cambia el estado de la factura a 'Cargada'
@@ -155,7 +160,7 @@ public function cambiarTipoFacturas(Request $request)
     $tipo = $request->input('tipo');
     $ids = $request->input('ids');
 
-    // Actualiza el tipo de las facturas seleccionadas
+    
     Factura::whereIn('id', $ids)->update(['type' => $tipo]);
 
     return response()->json(['success' => true]);

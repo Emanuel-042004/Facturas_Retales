@@ -87,7 +87,7 @@
       <h2 class="modal-title">Datos de Factura</h2>
       <span class="close-icon" onclick="closePopup('facturaPopup{{$factura->id}}')">&times;</span>
     </div>
-    <form id="entregarFacturaForm{{$factura->id}}" action="{{ route('entregar_factura', ['id' => $factura->id]) }}"
+    <form id="entregarFacturaForm{{$factura->id}}" action="{{ route('cargados.entregar', ['id' => $factura->id]) }}"
       method="POST" enctype="multipart/form-data">
       @csrf
 
@@ -196,9 +196,10 @@
       </div>
       <div class="form-group col-md-6">
           <label for="note">Nota</label>
-          <textarea class="form-control" id="note" name="note" value="{{$factura->note}}" ></textarea>
+          <textarea class="form-control" id="note" name="note">{{$factura->note}}</textarea>
         </div>
       <div class="modal-footer">
+        <a href="{{route('cargados.rechazar', ['id' => $factura->id])}}" class="btn btn-danger">Rechazar</a>
         <button type="submit" class="btn btn-primary">Entregar</button>
       </div>
     </form>
@@ -232,7 +233,7 @@
 
     const title = document.createElement('h2');
     title.classList.add('modal-title');
-    title.textContent = 'Documento';
+    title.textContent = 'Anexos';
     title.style.margin = '0'; // Eliminar el margen superior del título
 
     const closeButton = document.createElement('span');

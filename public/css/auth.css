@@ -18,8 +18,10 @@ html,body{
   color: #fff;
 }
 .wrapper{
+  width: 480px;
+  height: 390px;
   overflow: hidden;
-  max-width: 390px;
+  max-width: 520px;
   background: #fff;
   padding: 30px;
   border-radius: 15px;

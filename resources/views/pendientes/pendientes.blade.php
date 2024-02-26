@@ -90,6 +90,7 @@
       }
     });
   }
+
   function agregarBotones() {
     var checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
     var botonesContainer = document.getElementById('botonesContainer');
@@ -179,27 +180,7 @@
           </select>
         </div>
       </div>
-      <div class="form-row">
-        <div class="form-group col-md-6">
-          <label for="pdf1">ANEXO 1</label>
-          <div class="file-drop-area">
-            <input type="file" class="form-control-file" id="pdf1" name="pdf1">
-            <span class="file-msg">Arrastra y suelta aquí o haz clic para seleccionar un archivo</span>
-          </div>
-        </div>
-        <div class="form-group col-md-6">
-          <label for="pdf2">ANEXO 2</label>
-          <div class="file-drop-area">
-            <input type="file" class="form-control-file" id="pdf2" name="pdf2">
-            <span class="file-msg">Arrastra y suelta aquí o haz clic para seleccionar un archivo</span>
-          </div>
-        </div>
-
-        <div class="form-group col-md-6">
-          <label for="note">Nota</label>
-          <textarea class="form-control" id="note" name="note"></textarea>
-        </div>
-      </div>
+      
       <div class="modal-footer">
 
         <button type="submit" class="btn btn-primary">Crear</button>
@@ -279,18 +260,18 @@
         <div class="form-group col-md-6">
           <label for="anexos">ANEXOS</label>
           <div class="file-drop-area">
-            <input type="file" class="form-control-file" id="anexos" name="anexos[]" multiple>
+            <input type="file" class="form-control-file" id="anexos" name="anexos[]" multiple >
           </div>
         </div>
       </div>
       <div class="form-group col-md-6">
         <label for="note">Nota</label>
-        <textarea class="form-control" id="note" name="note"></textarea>
+        <textarea class="form-control" id="note" name="note" value="{{$factura->note}}"></textarea>
       </div>
       <div class="modal-footer">
         <!-- Botón de "cargar" -->
         <button type="button" id="cargarBtn{{$factura->id}}" class="btn btn-primary"
-          onclick="confirmarEntrega('cargarFacturaForm{{$factura->id}}', '{{$factura->id}}')">cargar</button>
+          onclick="confirmarEntrega('cargarFacturaForm{{$factura->id}}', '{{$factura->id}}')">Cargar</button>
         <!-- Elemento para la animación de carga -->
         <div id="loading{{$factura->id}}" style="display: none;">
           <div class="loading-icon"></div>
@@ -318,40 +299,26 @@
   }
 </script>
 
-<!-- ================ Estilos para la animación de carga ================= -->
-<style>
-  .loading-icon {
-    /* Estilos para la animación de carga */
-    border: 6px solid #f3f3f3;
-    border-top: 6px solid #3498db;
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    animation: spin 1s linear infinite;
-  }
-
-  @keyframes spin {
-    0% {
-      transform: rotate(0deg);
-    }
-
-    100% {
-      transform: rotate(360deg);
-    }
-  }
-</style>
 
 <script>
   function confirmarEntrega(formId, facturaId) {
+    // Verificar si al menos un archivo ha sido seleccionado
+    var files = document.getElementById('anexos').files;
+    if (files.length === 0) {
+        alert('Debes adjuntar al menos un anexo.');
+        return false; // Evita enviar el formulario si no se han adjuntado archivos
+    }
+
     // Mostrar una alerta de confirmación del navegador
     var confirmacion = confirm("¿Estás seguro de que deseas cargar la factura?");
-    // Si el usuario hace clic en "Aceptar", ocultar el botón de "cargar" y mostrar la animación de carga
+    // Si el usuario hace clic en "Aceptar", enviar el formulario y mostrar la animación de carga
     if (confirmacion) {
       document.getElementById(formId).submit();
       document.getElementById('cargarBtn' + facturaId).style.display = "none"; // Ocultar el botón de "cargar"
-      document.getElementById('loading' + facturaId).style.display = "block"; // Mostrar laón de carga
+      document.getElementById('loading' + facturaId).style.display = "block"; // Mostrar la animación de carga
     }
-  }
+}
+
 </script>
 
 
