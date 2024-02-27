@@ -71,7 +71,7 @@ class CargadosController extends Controller
         'area' => $request->input('area'),
         'delivery_date' => now(),
         'delivered_by' => Auth::user()->name,
-        'status' => 'Entregada', // Cambia el estado de la factura a 'Cargada'
+        'status' => 'Entregada', // Cambia el estado de la factura a 'Entregada'
     ]);
 
  

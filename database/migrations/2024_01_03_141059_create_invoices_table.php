@@ -20,7 +20,10 @@ return new class extends Migration
             $table->string('issuer_nit', 20)->nullable();
             $table->string('issuer_name')->nullable();
             $table->string('cude')->nullable();
+            $table->date('issue_date')->nullable();
+            $table->enum('subtype', ['Rechazada','Adjuntada','Aprobada'])->nullable();
             $table->date('arrival_date')->nullable();
+            $table->integer('valor')->nullable();
             $table->enum('location',['Centro','Octava','Lopez','Alameda','Acopi','Jamundi','Pondaje'])->nullable();
             $table->enum('area',['Compras','Financiera','Logistica','Mantenimiento','Tecnologia'])->nullable();
             $table->text('note',)->nullable();
@@ -35,6 +38,10 @@ return new class extends Migration
             $table->string('anexo4')->nullable();
             $table->string('anexo5')->nullable();
             $table->string('anexo6')->nullable();
+            $table->string('costo1')->nullable();
+            $table->string('costo2')->nullable();
+            $table->string('costo3')->nullable();
+            $table->string('costo4')->nullable();
             $table->timestamps();
         });
     }

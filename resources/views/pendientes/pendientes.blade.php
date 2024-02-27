@@ -180,7 +180,7 @@
           </select>
         </div>
       </div>
-      
+
       <div class="modal-footer">
 
         <button type="submit" class="btn btn-primary">Crear</button>
@@ -188,9 +188,6 @@
     </form>
   </div>
 </div>
-
-
-
 
 <!-- ================ ACCIONES ================= -->
 <div class="popup-background" id="popupBackground"></div>
@@ -260,8 +257,10 @@
         <div class="form-group col-md-6">
           <label for="anexos">ANEXOS</label>
           <div class="file-drop-area">
-            <input type="file" class="form-control-file" id="anexos" name="anexos[]" multiple >
+            <input type="file" class="form-control-file" id="anexos" name="anexos[]" multiple placeholder="cargue aquí">
+            <!-- Lista de archivos seleccionados -->
           </div>
+          <div id="file-list" class="file-list"></div>
         </div>
       </div>
       <div class="form-group col-md-6">
@@ -282,31 +281,27 @@
 </div>
 @endforeach
 <script>
-  function toggleAnexo(anexoId, show) {
-    var anexo = document.getElementById(anexoId);
-    var btnPlus = anexo.previousElementSibling.querySelector('button:first-child');
-    var btnMinus = anexo.previousElementSibling.querySelector('button:last-child');
-
-    if (show) {
-      anexo.style.display = "block";
-      btnPlus.disabled = true;
-      btnMinus.disabled = false;
-    } else {
-      anexo.style.display = "none";
-      btnPlus.disabled = false;
-      btnMinus.disabled = true;
-    }
+ document.getElementById('anexos').addEventListener('change', function (event) {
+  var fileList = event.target.files;
+  var fileListElement = document.getElementById('file-list');
+  fileListElement.innerHTML = ''; // Limpiar la lista antes de agregar nuevos archivos
+  for (var i = 0; i < fileList.length; i++) {
+    var fileName = fileList[i].name;
+    var fileSize = (fileList[i].size / 1024).toFixed(2) + ' KB'; // Calcula el tamaño del archivo en KB
+    var fileItem = document.createElement('div');
+    fileItem.classList.add('file-item');
+    fileItem.innerHTML = '<i class="fas fa-file"></i> <span class="file-name">' + fileName + '</span><span class="file-size"></span>';
+    fileListElement.appendChild(fileItem);
   }
+});
 </script>
-
-
 <script>
   function confirmarEntrega(formId, facturaId) {
     // Verificar si al menos un archivo ha sido seleccionado
     var files = document.getElementById('anexos').files;
     if (files.length === 0) {
-        alert('Debes adjuntar al menos un anexo.');
-        return false; // Evita enviar el formulario si no se han adjuntado archivos
+      alert('Debes adjuntar al menos un anexo.');
+      return false; // Evita enviar el formulario si no se han adjuntado archivos
     }
 
     // Mostrar una alerta de confirmación del navegador
@@ -317,11 +312,8 @@
       document.getElementById('cargarBtn' + facturaId).style.display = "none"; // Ocultar el botón de "cargar"
       document.getElementById('loading' + facturaId).style.display = "block"; // Mostrar la animación de carga
     }
-}
-
+  }
 </script>
-
-
 
 <!-- ================ Abrir PopUp ================= -->
 <script>
