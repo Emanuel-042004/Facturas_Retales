@@ -17,6 +17,7 @@
     <thead>
       <td></td>
       <td>Estado</td>
+      <td>Proceso</td>
       <td>Area</td>
       <td>Nombre</td>
       <td>Folio</td>
@@ -32,6 +33,7 @@
         <input type="checkbox" class="form-check-input" name="selectedFacturas[]" value="{{ $factura->id }}" onchange ="agregarBotones()">
       </td>
       <td><span class="status loaded">{{ $factura->status}}</span></td>
+      <td><span class="status approved">{{ $factura->subtype }}</span></td>
       <td>{{ $factura->area }}</td>
       <td>{{ $factura->name }}</td>
       <td>{{ $factura->folio}}</td>

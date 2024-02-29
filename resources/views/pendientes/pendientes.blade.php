@@ -23,12 +23,13 @@
     <thead>
       <td></td>
       <td>Estado</td>
+      <td>Proceso</td>
       <td>Tipo</td>
       <td>Area</td>
-      <td>Nombre</td>
       <td>Folio</td>
       <td>Nombre de Emisor</td>
       <td>NIT de Emisor</td>
+      <td>Fecha de Emision</td>
       <td>Acciones</td>
       </tr>
     </thead>
@@ -40,15 +41,29 @@
           onchange="agregarBotones()">
       </td>
       <td><span class="status pending">{{ $factura->status}}</span></td>
+      <td>
+        @if (!empty($factura->subtype))
+        @if ($factura->subtype == 'Adjuntada')
+        <span class="status loaded1">{{ $factura->subtype }}</span>
+        @else
+        <span class="status refused">{{ $factura->subtype }}</span>
+        @endif
+        @endif
+      </td>
       <td>{{ $factura->type }}</td>
       <td>{{ $factura->area }}</td>
-      <td>{{ $factura->name }}</td>
       <td>{{ $factura->folio}}</td>
       <td>{{ $factura->issuer_name}}</td>
       <td>{{ $factura->issuer_nit }}</td>
+      <td>{{ $factura->issue_date }}</td>
       <td>
-
+        @if ($factura->subtype == 'Adjuntada')
+        <ion-icon name="ellipsis-vertical-outline"
+          onclick="openPopup('facturaAdjuntadaPopup{{$factura->id}}')"></ion-icon>
+        @else
         <ion-icon name="ellipsis-vertical-outline" onclick="openPopup('facturaPopup{{$factura->id}}')"></ion-icon>
+        @endif
+
       </td>
 
       </tr>
@@ -73,6 +88,8 @@
     </ul>
   </div>
 </div>
+
+
 <script>
   document.getElementById('searchInput').addEventListener('keyup', function () {
     let value = this.value;
@@ -189,16 +206,16 @@
   </div>
 </div>
 
-<!-- ================ ACCIONES ================= -->
+<!-- ================ ADJUNTADAS ================= -->
 <div class="popup-background" id="popupBackground"></div>
 @foreach ($pendientes as $factura)
-<div class="popup" id="facturaPopup{{$factura->id}}">
+<div class="popup" id="facturaAdjuntadaPopup{{$factura->id}}">
   <div class="popup-content">
     <div class="header">
       <h2 class="modal-title">Datos de Factura</h2>
-      <span class="close-icon" onclick="closePopup('facturaPopup{{$factura->id}}')">&times;</span>
+      <span class="close-icon" onclick="closePopup('facturaAdjuntadaPopup{{$factura->id}}')">&times;</span>
     </div>
-    <form id="cargarFacturaForm{{$factura->id}}" action="{{ route('cargar_factura', ['id' => $factura->id]) }}"
+    <form id="aprobarFacturaForm{{$factura->id}}" action="{{ route('pendientes.aprobar', ['id' => $factura->id]) }}"
       method="POST" enctype="multipart/form-data">
       @csrf
 
@@ -255,14 +272,213 @@
       </div>
       <div class="form-row">
         <div class="form-group col-md-6">
-          <label for="anexos">ANEXOS</label>
-          <div class="file-drop-area">
-            <input type="file" class="form-control-file" id="anexos" name="anexos[]" multiple placeholder="cargue aquí">
-            <!-- Lista de archivos seleccionados -->
+          <label for="anexos">Archivos Adjuntos</label>
+          <div class="attachment-box">
+            <ul class="no-bullet">
+              @if($factura->anexo1)
+              <li>
+                <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo1) }}')">
+                  <i class="fas fa-file"></i> Anexo 1 - {{ $factura->anexo1 }}</button>
+              </li>
+              @endif
+              @if($factura->anexo2)
+              <li>
+                <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo2) }}')">
+                  <i class="fas fa-file"></i>
+                  Anexo 2 - {{ $factura->anexo2 }}</button>
+              </li>
+              @endif
+              @if($factura->anexo3)
+              <li>
+                <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo3) }}')">
+                  <i class="fas fa-file"></i>
+                  Anexo 3 - {{ $factura->anexo3 }}</button>
+              </li>
+              @endif
+              @if($factura->anexo4)
+              <li>
+                <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo4) }}')">
+                  <i class="fas fa-file"></i>
+                  Anexo 4 - {{ $factura->anexo4 }}</button>
+              </li>
+              @endif
+              @if($factura->anexo5)
+              <li>
+                <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo5) }}')">
+                  <i class="fas fa-file"></i>
+                  Anexo 5 - {{ $factura->anexo5 }}</button>
+              </li>
+              @endif
+              @if($factura->anexo6)
+              <li>
+                <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo6) }}')">
+                  <i class="fas fa-file"></i>
+                  Anexo 6 - {{ $factura->anexo6 }}</button>
+              </li>
+              @endif
+
+            </ul>
           </div>
-          <div id="file-list" class="file-list"></div>
         </div>
       </div>
+      <div class="form-group col-md-6">
+        <label for="note">Nota</label>
+        <textarea class="form-control" id="note" name="note">{{$factura->note}}</textarea>
+      </div>
+      <div class="modal-footer">
+        <a href="{{route('pendientes.rechazar', ['id' => $factura->id])}}" class="btn btn-danger">Rechazar</a>
+        <button type="submit" class="btn btn-primary">Entregar</button>
+      </div>
+    </form>
+  </div>
+</div>
+@endforeach
+
+<script>
+  function openDocument(url) {
+    event.preventDefault(); // Evitar que el formulario se envíe
+
+    const popup = document.createElement('div');
+    popup.id = 'documentoPopup'; // Asignar un ID al popup del documento
+    popup.classList.add('popup');
+    popup.style.display = 'block';
+
+    const popupContent = document.createElement('div');
+    popupContent.classList.add('popup-content');
+
+    const header = document.createElement('div');
+    header.classList.add('header');
+    header.style.position = 'fixed'; // Fijar el encabezado
+    header.style.top = '0'; // Fijar en la parte superior
+    header.style.left = '50%'; // Centrar horizontalmente
+    header.style.transform = 'translateX(-50%)'; // Centrar horizontalmente
+    header.style.width = '100%'; // Ancho del 90%
+    header.style.backgroundColor = '#ffffff'; // Fondo blanco
+    header.style.padding = '10px'; // Agregar relleno
+    header.style.boxShadow = '0 2px 5px rgba(0, 0, 0, 0.2)'; // Sombra
+    header.style.zIndex = '9999'; // Asegurar que esté por encima de otros elementos
+
+    const title = document.createElement('h2');
+    title.classList.add('modal-title');
+    title.textContent = 'Anexos';
+    title.style.margin = '0'; // Eliminar el margen superior del título
+
+    const closeButton = document.createElement('span');
+    closeButton.classList.add('close-icon');
+    closeButton.textContent = '×'; // Usar el carácter de multiplicación como icono de cierre
+    closeButton.style.cursor = 'pointer'; // Cambiar el cursor al pasar sobre el botón
+    closeButton.style.position = 'absolute'; // Posición absoluta
+    closeButton.style.top = '5px'; // Ajustar distancia desde la parte superior
+    closeButton.style.right = '5px'; // Ajustar distancia desde la derecha
+    closeButton.onclick = closeDocumentPopup; // Asignar la función de cierre al hacer clic
+
+    header.appendChild(title);
+    header.appendChild(closeButton);
+
+    const iframe = document.createElement('iframe');
+    iframe.src = url;
+    iframe.width = '800px'; // Ancho completo
+    iframe.height = '900px'; // Altura menos la altura del encabezado y un poco de margen
+    iframe.frameBorder = '0';
+
+    popupContent.appendChild(header);
+    popupContent.appendChild(iframe);
+    popup.appendChild(popupContent);
+
+    document.body.appendChild(popup);
+
+    document.getElementById('popupBackground').style.display = 'block'; // Mostrar el fondo gris
+  }
+  function closeDocumentPopup() {
+    const popup = document.querySelector('#documentoPopup');
+    if (popup) {
+      popup.remove(); // Eliminar el popup del DOM
+    }
+    // No ocultar el fondo gris aquí, ya que el popupBackground debe mantenerse visible
+  }
+</script>
+
+<!-- ================ ACCIONES ================= -->
+<div class="popup-background" id="popupBackground"></div>
+@foreach ($pendientes as $factura)
+<div class="popup" id="facturaPopup{{$factura->id}}">
+  <div class="popup-content">
+    <div class="header">
+      <h2 class="modal-title">Datos de Factura</h2>
+      <span class="close-icon" onclick="closePopup('facturaPopup{{$factura->id}}')">&times;</span>
+    </div>
+    <form id="cargarFacturaForm{{$factura->id}}" action="{{ route('cargar_factura', ['id' => $factura->id]) }}"
+      method="POST" enctype="multipart/form-data">
+      @csrf
+
+      <div class="form-group col-md-6">
+        <label for="type">Tipo</label>
+        <select class="form-control" id="type" name="type">
+          <option value="">Selecciona</option>
+          <option value="Factura electrónica" @selected( "Factura electrónica"==$factura -> type)>Factura electrónica
+          </option>
+          <option value="Nota de crédito electrónica" @selected( "Nota de crédito electrónica"==$factura ->
+            type)>Financiera</option>
+          <option value="Reembolso" @selected( "Reembolso"==$factura -> type)>Reembolso</option>
+          <option value="Legalizacion" @selected( "Legalizacion"==$factura -> type) >Legalizacion</option>
+
+        </select>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="nombre">Nombre</label>
+          <input type="text" class="form-control" id="name" name="name" value="{{$factura->name}}" placeholder="Nombre">
+        </div>
+        <div class="form-group col-md-6">
+          <label for="folio">Folio</label>
+          <input type="text" class="form-control" id="folio" name="folio" value="{{$factura->folio}}"
+            placeholder="Contrato">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="issuer_name">Nombre Emisor</label>
+          <input type="text" class="form-control" id="issuer_name" name="issuer_name" value="{{$factura->issuer_name}}">
+        </div>
+        <div class="form-group col-md-6">
+          <label for="issuer_nit">Nit Emisor</label>
+          <input type="text" class="form-control" id="issuer_nit" name="issuer_nit" value="{{$factura->issuer_nit}}">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="prefix">Prefijo</label>
+          <input type="text" class="form-control" id="prefix" name="prefix" value="{{$factura->prefix}}">
+        </div>
+        
+      <div class="form-group col-md-6">
+        <label for="cude">CUFE</label>
+        <textarea class="form-control" id="cude" name="cude" >{{$factura->cude}}</textarea>
+        <a href="https://catalogo-vpfe.dian.gov.co/User/SearchDocument" target="_blank" >Buscar</a>
+      </div>
+
+        <div class="form-group col-md-6">
+          <label for="area">Área</label>
+          <select class="form-control" id="area" name="area">
+            <option value="">Selecciona</option>
+            <option value="Compras" @selected( "Compras"==$factura -> area)>Compras</option>
+            <option value="Financiera" @selected( "Financiera"==$factura -> area)>Financiera</option>
+            <option value="Logistica" @selected( "Logistica"==$factura -> area)>Logística</option>
+            <option value="Mantenimiento" @selected( "Mantenimiento"==$factura -> area) >Mantenimiento</option>
+            <option value="Tecnologia" @selected( "Tecnologia"==$factura -> area)>Tecnología</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="anexo1">Anexo 1</label>
+          <input type="file" class="form-control-file" id="anexo1" name="anexos[]" placeholder="cargue aquí">
+          <!-- Lista de archivos seleccionados -->
+        </div>
+      </div>
+      <div id="anexosContainer"></div>
+      <button type="button" class="btn btn-secondary" onclick="agregarAnexo()">Agregar Anexo</button>
+
       <div class="form-group col-md-6">
         <label for="note">Nota</label>
         <textarea class="form-control" id="note" name="note" value="{{$factura->note}}"></textarea>
@@ -281,25 +497,32 @@
 </div>
 @endforeach
 <script>
- document.getElementById('anexos').addEventListener('change', function (event) {
-  var fileList = event.target.files;
-  var fileListElement = document.getElementById('file-list');
-  fileListElement.innerHTML = ''; // Limpiar la lista antes de agregar nuevos archivos
-  for (var i = 0; i < fileList.length; i++) {
-    var fileName = fileList[i].name;
-    var fileSize = (fileList[i].size / 1024).toFixed(2) + ' KB'; // Calcula el tamaño del archivo en KB
-    var fileItem = document.createElement('div');
-    fileItem.classList.add('file-item');
-    fileItem.innerHTML = '<i class="fas fa-file"></i> <span class="file-name">' + fileName + '</span><span class="file-size"></span>';
-    fileListElement.appendChild(fileItem);
+  var contadorAnexos = 2; // Empezamos en 2 porque ya hay un campo de anexo inicial
+
+  function agregarAnexo() {
+    var nuevoAnexo = '<div class="form-group col-md-6">' +
+      '<label for="anexo' + contadorAnexos + '">Anexo ' + contadorAnexos + '</label>' +
+      '<input type="file" class="form-control-file" id="anexo' + contadorAnexos + '" name="anexos[]" placeholder="cargue aquí">' +
+      '</div>';
+
+    document.getElementById('anexosContainer').innerHTML += nuevoAnexo;
+    contadorAnexos++;
   }
-});
 </script>
+
 <script>
   function confirmarEntrega(formId, facturaId) {
     // Verificar si al menos un archivo ha sido seleccionado
-    var files = document.getElementById('anexos').files;
-    if (files.length === 0) {
+    var files = document.querySelectorAll('input[type="file"]');
+    var archivosAdjuntos = false;
+
+    files.forEach(function (fileInput) {
+      if (fileInput.files.length > 0) {
+        archivosAdjuntos = true;
+      }
+    });
+
+    if (!archivosAdjuntos) {
       alert('Debes adjuntar al menos un anexo.');
       return false; // Evita enviar el formulario si no se han adjuntado archivos
     }
@@ -313,6 +536,7 @@
       document.getElementById('loading' + facturaId).style.display = "block"; // Mostrar la animación de carga
     }
   }
+
 </script>
 
 <!-- ================ Abrir PopUp ================= -->

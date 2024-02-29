@@ -47,7 +47,8 @@ class CargadosController extends Controller
     public function rechazar(Request $request, $id){
      
         $factura = Factura::find($id);
-        $factura->status = 'Rechazada';
+        $factura->status = 'Pendiente';
+        $factura->subtype = 'FN/Rechazada';
         $factura->save();
 
         return redirect()->back()->with('success', 'Factura rechazada');

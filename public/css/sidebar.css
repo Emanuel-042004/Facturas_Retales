@@ -417,12 +417,40 @@ body {
 
 .status.pending {
   padding: 2px 4px;
-  background: #af0000;
+  background: #ac0101;
   color: var(--white);
   border-radius: 4px;
   font-size: 14px;
   font-weight: 500;
 }
+
+.status.loaded1 {
+  padding: 2px 4px;
+  background: #397a00;
+  color: var(--white);
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.status.approved {
+  padding: 2px 4px;
+  background: #3d8001;
+  color: var(--white);
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.status.refused {
+  padding: 2px 4px;
+  background: #db8000;
+  color: var(--white);
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
 
 .status.loaded {
   padding: 2px 4px;

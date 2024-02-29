@@ -40,61 +40,6 @@ public function index(Request $request)
     return view('pendientes.pendientes', compact('pendientes', 'area'));
 }
 
-   /*public function cargarFactura(Request $request, $id)
-{
-    // Valida y guarda el archivo PDF
-    $request->validate([
-        'anexo1' => 'required|mimes:pdf,doc,docx|max:2048', // Ajusta los tipos de archivo según tus necesidades
-    ]);
-
-  
-    $factura = Factura::findOrFail($id);
-
-    // Actualiza la base de datos con los datos de entrega
-    
-   
-    $factura->type = $request->input('type');
-    $factura->name = $request->input('name');
-    $factura->folio = $request->input('folio');
-    $factura->issuer_name = $request->input('issuer_name');
-    $factura->issuer_nit = $request->input('issuer_nit');
-    $factura->area = $request->input('area');
-
-    $factura->delivery_date = now();
-    $user = Auth::user();
-    $factura->delivered_by = $user->name;
-   
-
-    // Cambia el estado de la factura a 'delivered'
-    $factura->status ='Cargada';
-
-    if ($request->hasFile('anexo1')) {
-        $anexo1 = $request->file('anexo1');
-        $anexo1Nombre = time() . '_' . $anexo1->getClientOriginalName();
-        $anexo1->move(public_path('anexos'), $anexo1Nombre); // Mueve el archivo a la carpeta deseada
- 
-        // Asigna el nombre del archivo a la factura
-        $factura->anexo1 = $anexo1Nombre;
-    }
-
-    $factura->save();
-
-    // Obtén el nombre del usuario financiero
-    $usuarioFinanciero = User::where('area', 'Financiera')->first();
-
-    // Cambia el saludo del correo según el nombre del usuario que entregó y del usuario financiero
-    $userSalutation = "Hola $user->name";
-    $financieroSalutation = "Hola $usuarioFinanciero->name";
-
-    // Envía el correo al usuario que entregó la factura
-    Mail::to($user->email)->send(new InvoiceDelivered($factura, $user, $userSalutation));
-
-    // Envía el correo al usuario financiero
-    Mail::to($usuarioFinanciero->email)->send(new InvoiceDelivered($factura, $usuarioFinanciero, $financieroSalutation));
-
-
-    return redirect()->back()->with('success', 'Factura entregada con éxito.');
-}*/
 
 public function cargarFactura(Request $request, $id)
 {
@@ -121,20 +66,65 @@ public function cargarFactura(Request $request, $id)
         'note' => $request->input('note'),
         'delivery_date' => now(),
         'delivered_by' => Auth::user()->name,
+        'subtype' => 'Adjuntada', 
+    ]);
+    $factura->subtype = 'Adjuntada';
+
+   // Procesa los archivos anexos
+if ($request->hasFile('anexos')) {
+    $contadorAnexos = 1; // Inicializa el contador de anexos
+    foreach ($request->file('anexos') as $anexo) {
+        $nombreArchivo = time() . '_' . $contadorAnexos . '_' . $anexo->getClientOriginalName();
+        $anexo->move(public_path('anexos'), $nombreArchivo);
+        // Guarda el nombre del archivo en el campo correspondiente (anexo1, anexo2, etc.)
+        $factura->{'anexo' . $contadorAnexos} = $nombreArchivo;
+        $contadorAnexos++;
+    }
+    // Guarda los cambios en la base de datos
+    $factura->save();
+}
+
+
+    // Obtén el nombre del usuario financiero
+    $usuarioFinanciero = User::where('area', 'Financiera')->first();
+
+    // Saludos para el correo electrónico
+    $userSalutation = "Hola " . Auth::user()->name;
+    $financieroSalutation = "Hola " . $usuarioFinanciero->name;
+
+    // Envía el correo al usuario que entregó la factura
+    Mail::to(Auth::user()->email)->send(new InvoiceDelivered($factura, Auth::user(), $userSalutation));
+
+    // Envía el correo al usuario financiero
+    Mail::to($usuarioFinanciero->email)->send(new InvoiceDelivered($factura, $usuarioFinanciero, $financieroSalutation));
+
+    // Redirecciona de vuelta con un mensaje de éxito
+    return redirect()->back()->with('success', 'Factura cargada con éxito.');
+}
+
+public function aprobar(Request $request, $id)
+{
+   
+    // Encuentra la factura por ID
+    $factura = Factura::findOrFail($id);
+
+    // Actualiza los datos de la factura con los valores del formulario
+    $factura->update([
+        'type' => $request->input('type'),
+        'name' => $request->input('name'),
+        'folio' => $request->input('folio'),
+        'issuer_name' => $request->input('issuer_name'),
+        'issuer_nit' => $request->input('issuer_nit'),
+        'area' => $request->input('area'),
+        'delivery_date' => now(),
+        'delivered_by' => Auth::user()->name,
         'status' => 'Cargada', // Cambia el estado de la factura a 'Cargada'
     ]);
-
-    // Procesa los archivos anexos
-    if ($request->hasFile('anexos')) {
-        foreach ($request->file('anexos') as $key => $anexo) {
-            $nombreArchivo = time() . '_' . $key . '_' . $anexo->getClientOriginalName();
-            $anexo->move(public_path('anexos'), $nombreArchivo);
-            // Guarda el nombre del archivo en el campo correspondiente (anexo1, anexo2, etc.)
-            $factura->{'anexo' . ($key + 1)} = $nombreArchivo;
-        }
+      $factura->subtype = 'Aprobada';
+ 
         // Guarda los cambios en la base de datos
         $factura->save();
-    }
+    
 
     // Obtén el nombre del usuario financiero
     $usuarioFinanciero = User::where('area', 'Financiera')->first();
@@ -154,7 +144,6 @@ public function cargarFactura(Request $request, $id)
 }
 
 
-
 public function cambiarTipoFacturas(Request $request)
 {
     $tipo = $request->input('tipo');
@@ -167,22 +156,40 @@ public function cambiarTipoFacturas(Request $request)
 }
 
 
-public function anexo1 (Request $request){
+public function rechazar(Request $request, $id)
+{
+    // Encuentra la factura por ID
+    $factura = Factura::findOrFail($id);
 
-    $request->validate([
-        'anexo1'=> 'required|mimes:csv,txt,xls,ppt,pdf|max:2048',
-    ]);
+    // Elimina los anexos de la carpeta de anexos
+    for ($i = 1; $i <= 6; $i++) { // Ahora consideramos hasta 6 anexos
+        $nombreArchivo = $factura->{'anexo' . $i};
+        if ($nombreArchivo) {
+            $rutaArchivo = public_path('anexos/' . $nombreArchivo);
+            if (file_exists($rutaArchivo)) {
+                unlink($rutaArchivo); // Elimina el archivo
+            }
+        }
+    }
 
-    $uploadedFile = $request->anexo1('anexo1');
-    $anexo1= time() . $uploadedFile->getClientOriginalname();
-    Storage::putFileAs('file/' . $anexo1, $uploadedFile, $anexo1);
+    // Elimina los nombres de los anexos de la base de datos
+    $factura->anexo1 = null;
+    $factura->anexo2 = null;
+    $factura->anexo3 = null;
+    $factura->anexo4 = null;
+    $factura->anexo5 = null;
+    $factura->anexo6 = null;
 
-    $upload = new Factura();
-    $upload->anexo1 =$anexo1;
-    $upload->save();
+    // Guarda los cambios en la base de datos
+    $factura->save();
 
-    
+    // Actualiza el subtype a "Rechazada"
+    $factura->subtype = 'Rechazada';
+    $factura->save();
+
+    return redirect()->back()->with('success', 'Factura rechazada');
 }
+
 
 
     public function eliminarFactura($id)

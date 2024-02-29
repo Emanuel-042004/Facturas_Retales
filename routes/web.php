@@ -40,6 +40,8 @@ Route::post('/cargar-factura/{id}', [PendientesController::class, 'cargarFactura
 Route::get('/eliminar-factura/{id}', [PendientesController::class, 'eliminarFactura'])->name('eliminar_factura');
 Route::get('/asignar_area/{id}', [PendientesController::class, 'asignarArea'])->name('asignar_area');
 Route::post('/realizar-acciones', [PendientesController::class, 'eliminarSeleccion'])->name('eliminar_seleccion');
+Route::get('/pendientes/{id}/rechazar', [PendientesController::class, 'rechazar'])->name('pendientes.rechazar');
+Route::post('/pendientes/{id}/aprobar', [PendientesController::class, 'aprobar'])->name('pendientes.aprobar');
 
 Route::get('/cargados', [CargadosController::class, 'index'])->name('cargados.index');
 Route::get('/cargados/{id}/rechazar', [CargadosController::class, 'rechazar'])->name('cargados.rechazar');

@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('issuer_name')->nullable();
             $table->string('cude')->nullable();
             $table->date('issue_date')->nullable();
-            $table->enum('subtype', ['Rechazada','Adjuntada','Aprobada'])->nullable();
+            $table->enum('subtype', ['Rechazada','Adjuntada','Aprobada','FIN/Rechazada'])->nullable();
             $table->date('arrival_date')->nullable();
             $table->integer('valor')->nullable();
             $table->enum('location',['Centro','Octava','Lopez','Alameda','Acopi','Jamundi','Pondaje'])->nullable();
