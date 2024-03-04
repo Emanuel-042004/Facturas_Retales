@@ -90,6 +90,7 @@
 </div>
 
 
+
 <script>
   document.getElementById('searchInput').addEventListener('keyup', function () {
     let value = this.value;
@@ -277,12 +278,14 @@
             <ul class="no-bullet">
               @if($factura->anexo1)
               <li>
+              <input type="checkbox" name="documentos_malos[]">
                 <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo1) }}')">
                   <i class="fas fa-file"></i> Anexo 1 - {{ $factura->anexo1 }}</button>
               </li>
               @endif
               @if($factura->anexo2)
               <li>
+                <input type="checkbox" name="documentos_malos[]">
                 <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo2) }}')">
                   <i class="fas fa-file"></i>
                   Anexo 2 - {{ $factura->anexo2 }}</button>
@@ -290,6 +293,7 @@
               @endif
               @if($factura->anexo3)
               <li>
+                <input type="checkbox" name="documentos_malos[]">
                 <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo3) }}')">
                   <i class="fas fa-file"></i>
                   Anexo 3 - {{ $factura->anexo3 }}</button>
@@ -297,6 +301,7 @@
               @endif
               @if($factura->anexo4)
               <li>
+                <input type="checkbox" name="documentos_malos[]">
                 <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo4) }}')">
                   <i class="fas fa-file"></i>
                   Anexo 4 - {{ $factura->anexo4 }}</button>
@@ -304,6 +309,7 @@
               @endif
               @if($factura->anexo5)
               <li>
+                <input type="checkbox" name="documentos_malos[]">
                 <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo5) }}')">
                   <i class="fas fa-file"></i>
                   Anexo 5 - {{ $factura->anexo5 }}</button>
@@ -311,6 +317,7 @@
               @endif
               @if($factura->anexo6)
               <li>
+                <input type="checkbox" name="documentos_malos[]">
                 <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo6) }}')">
                   <i class="fas fa-file"></i>
                   Anexo 6 - {{ $factura->anexo6 }}</button>
@@ -327,7 +334,7 @@
       </div>
       <div class="modal-footer">
         <a href="{{route('pendientes.rechazar', ['id' => $factura->id])}}" class="btn btn-danger">Rechazar</a>
-        <button type="submit" class="btn btn-primary">Entregar</button>
+        <button type="submit" class="btn btn-primary">Aprobar</button>
       </div>
     </form>
   </div>
@@ -356,7 +363,7 @@
     header.style.backgroundColor = '#ffffff'; // Fondo blanco
     header.style.padding = '10px'; // Agregar relleno
     header.style.boxShadow = '0 2px 5px rgba(0, 0, 0, 0.2)'; // Sombra
-    header.style.zIndex = '9999'; // Asegurar que esté por encima de otros elementos
+    header.style.zIndex = '9998'; // Asegurar que esté por encima de otros elementos
 
     const title = document.createElement('h2');
     title.classList.add('modal-title');
@@ -377,8 +384,8 @@
 
     const iframe = document.createElement('iframe');
     iframe.src = url;
-    iframe.width = '800px'; // Ancho completo
-    iframe.height = '900px'; // Altura menos la altura del encabezado y un poco de margen
+    iframe.width = '1000px'; // Ancho completo
+    iframe.height = '1020px'; // Altura menos la altura del encabezado y un poco de margen
     iframe.frameBorder = '0';
 
     popupContent.appendChild(header);
@@ -472,12 +479,13 @@
       <div class="form-row">
         <div class="form-group col-md-6">
           <label for="anexo1">Anexo 1</label>
-          <input type="file" class="form-control-file" id="anexo1" name="anexos[]" placeholder="cargue aquí">
+          <input type="file" class="form-control-file" id="anexo{{$factura->id}}_1" name="anexos[]" placeholder="cargue aquí">
           <!-- Lista de archivos seleccionados -->
         </div>
       </div>
-      <div id="anexosContainer"></div>
-      <button type="button" class="btn btn-secondary" onclick="agregarAnexo()">Agregar Anexo</button>
+      <div id="anexosContainer{{$factura->id}}"></div>
+      <button type="button" class="btn btn-secondary" onclick="agregarAnexo({{$factura->id}})">Agregar Anexo</button>
+
 
       <div class="form-group col-md-6">
         <label for="note">Nota</label>
@@ -486,7 +494,7 @@
       <div class="modal-footer">
         <!-- Botón de "cargar" -->
         <button type="button" id="cargarBtn{{$factura->id}}" class="btn btn-primary"
-          onclick="confirmarEntrega('cargarFacturaForm{{$factura->id}}', '{{$factura->id}}')">Cargar</button>
+          onclick="confirmarCarga('cargarFacturaForm{{$factura->id}}', '{{$factura->id}}')">Cargar</button>
         <!-- Elemento para la animación de carga -->
         <div id="loading{{$factura->id}}" style="display: none;">
           <div class="loading-icon"></div>
@@ -496,22 +504,34 @@
   </div>
 </div>
 @endforeach
+
 <script>
-  var contadorAnexos = 2; // Empezamos en 2 porque ya hay un campo de anexo inicial
 
-  function agregarAnexo() {
-    var nuevoAnexo = '<div class="form-group col-md-6">' +
-      '<label for="anexo' + contadorAnexos + '">Anexo ' + contadorAnexos + '</label>' +
-      '<input type="file" class="form-control-file" id="anexo' + contadorAnexos + '" name="anexos[]" placeholder="cargue aquí">' +
-      '</div>';
+  function agregarAnexo(facturaId) {
+    var contadorAnexos = document.querySelectorAll('#facturaPopup' + facturaId + ' input[type="file"]').length + 1;
+    if (contadorAnexos <= 6) { // Solo agregar hasta 6 anexos
+      var nuevoAnexo = '<div class="form-group col-md-6">' +
+        '<label for="anexo' + facturaId + '_' + contadorAnexos + '">Anexo ' + contadorAnexos + '</label>' +
+        '<input type="file" class="form-control-file" id="anexo' + facturaId + '_' + contadorAnexos + '" name="anexos[]" placeholder="cargue aquí">' +
+        '</div>';
 
-    document.getElementById('anexosContainer').innerHTML += nuevoAnexo;
-    contadorAnexos++;
+      document.getElementById('anexosContainer' + facturaId).innerHTML += nuevoAnexo;
+    } else {
+      // Mostrar alerta de SweetAlert con el z-index personalizado
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'No se pueden agregar más de 6 anexos.',
+        customClass: {
+          container: 'swal-overlay' // Agrega una clase personalizada para que SweetAlert use el estilo personalizado
+        }
+      });
+    }
   }
 </script>
 
 <script>
-  function confirmarEntrega(formId, facturaId) {
+  function confirmarCarga(formId, facturaId) {
     // Verificar si al menos un archivo ha sido seleccionado
     var files = document.querySelectorAll('input[type="file"]');
     var archivosAdjuntos = false;
@@ -523,21 +543,65 @@
     });
 
     if (!archivosAdjuntos) {
-      alert('Debes adjuntar al menos un anexo.');
+      // Mostrar una alerta de SweetAlert si no se han adjuntado archivos
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Debes adjuntar al menos un anexo.',
+        // Establecer z-index
+        customClass: {
+          container: 'swal-overlay',
+          popup: 'swal-popup',
+          header: 'swal-header',
+          title: 'swal-title',
+          closeButton: 'swal-close-button',
+          icon: 'swal-icon',
+          image: 'swal-image',
+          content: 'swal-content',
+          input: 'swal-input',
+          actions: 'swal-actions',
+          confirmButton: 'swal-confirm-button',
+          cancelButton: 'swal-cancel-button',
+          footer: 'swal-footer'
+        }
+      });
       return false; // Evita enviar el formulario si no se han adjuntado archivos
     }
 
-    // Mostrar una alerta de confirmación del navegador
-    var confirmacion = confirm("¿Estás seguro de que deseas cargar la factura?");
-    // Si el usuario hace clic en "Aceptar", enviar el formulario y mostrar la animación de carga
-    if (confirmacion) {
-      document.getElementById(formId).submit();
-      document.getElementById('cargarBtn' + facturaId).style.display = "none"; // Ocultar el botón de "cargar"
-      document.getElementById('loading' + facturaId).style.display = "block"; // Mostrar la animación de carga
-    }
+    // Mostrar una confirmación de SweetAlert en lugar de la confirmación del navegador
+    Swal.fire({
+      title: '¿Estás seguro de que deseas cargar la factura?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, cargar factura',
+      cancelButtonText: 'Cancelar',
+      // Establecer z-index
+      customClass: {
+        container: 'swal-overlay',
+        popup: 'swal-popup',
+        header: 'swal-header',
+        title: 'swal-title',
+        closeButton: 'swal-close-button',
+        icon: 'swal-icon',
+        image: 'swal-image',
+        content: 'swal-content',
+        input: 'swal-input',
+        actions: 'swal-actions',
+        confirmButton: 'swal-confirm-button',
+        cancelButton: 'swal-cancel-button',
+        footer: 'swal-footer'
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Si el usuario confirma, enviar el formulario y mostrar la animación de carga
+        document.getElementById(formId).submit();
+        document.getElementById('cargarBtn' + facturaId).style.display = "none"; // Ocultar el botón de "cargar"
+        document.getElementById('loading' + facturaId).style.display = "block"; // Mostrar la animación de carga
+      }
+    });
   }
-
 </script>
+
 
 <!-- ================ Abrir PopUp ================= -->
 <script>

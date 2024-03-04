@@ -80,7 +80,7 @@ class CargadosController extends Controller
         $factura->save();
     
 
-    // Obtén el nombre del usuario financiero
+    /*// Obtén el nombre del usuario financiero
     $usuarioFinanciero = User::where('area', 'Financiera')->first();
 
     // Saludos para el correo electrónico
@@ -91,7 +91,7 @@ class CargadosController extends Controller
     Mail::to(Auth::user()->email)->send(new InvoiceDelivered($factura, Auth::user(), $userSalutation));
 
     // Envía el correo al usuario financiero
-    Mail::to($usuarioFinanciero->email)->send(new InvoiceDelivered($factura, $usuarioFinanciero, $financieroSalutation));
+    Mail::to($usuarioFinanciero->email)->send(new InvoiceDelivered($factura, $usuarioFinanciero, $financieroSalutation));*/
 
     // Redirecciona de vuelta con un mensaje de éxito
     return redirect()->back()->with('success', 'Factura cargada con éxito.');

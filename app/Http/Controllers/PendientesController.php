@@ -11,6 +11,8 @@ use App\Models\User;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\RedirectResponse;
+use App\Models\GrupoReembolso;
+use App\Models\Reembolso;
 
 
 class PendientesController extends Controller
@@ -26,7 +28,7 @@ public function index(Request $request)
         $query->where('area', $area);
     }
 
-    $perPage = 10; // Número de elementos por página
+    $perPage = 15; // Número de elementos por página
     $page = $request->input('page', 1); // Página actual, por defecto es 1
     $query->orderBy('id', 'desc');
 
@@ -85,7 +87,7 @@ if ($request->hasFile('anexos')) {
 }
 
 
-    // Obtén el nombre del usuario financiero
+    /*// Obtén el nombre del usuario financiero
     $usuarioFinanciero = User::where('area', 'Financiera')->first();
 
     // Saludos para el correo electrónico
@@ -96,7 +98,7 @@ if ($request->hasFile('anexos')) {
     Mail::to(Auth::user()->email)->send(new InvoiceDelivered($factura, Auth::user(), $userSalutation));
 
     // Envía el correo al usuario financiero
-    Mail::to($usuarioFinanciero->email)->send(new InvoiceDelivered($factura, $usuarioFinanciero, $financieroSalutation));
+    Mail::to($usuarioFinanciero->email)->send(new InvoiceDelivered($factura, $usuarioFinanciero, $financieroSalutation));*/
 
     // Redirecciona de vuelta con un mensaje de éxito
     return redirect()->back()->with('success', 'Factura cargada con éxito.');
@@ -144,12 +146,38 @@ public function aprobar(Request $request, $id)
 }
 
 
-public function cambiarTipoFacturas(Request $request)
+/*public function cambiarTipoFacturas(Request $request)
 {
     $tipo = $request->input('tipo');
     $ids = $request->input('ids');
 
     
+    Factura::whereIn('id', $ids)->update(['type' => $tipo]);
+
+    return response()->json(['success' => true]);
+}*/
+
+
+
+
+public function cambiarTipoFacturas(Request $request)
+{
+    $tipo = $request->input('tipo');
+    $ids = $request->input('ids');
+
+    // Crear un nuevo grupo de reembolso
+    $consecutivo = date('YmdHis');
+$grupoReembolso = GrupoReembolso::create(['consecutivo' => $consecutivo]);
+
+    // Asociar las facturas seleccionadas al nuevo grupo de reembolso
+    foreach ($ids as $id) {
+        Reembolso::create([
+            'factura_id' => $id,
+            'grupo_reembolso_id' => $grupoReembolso->id,
+        ]);
+    }
+
+    // Actualizar el tipo de las facturas seleccionadas a "Reembolso"
     Factura::whereIn('id', $ids)->update(['type' => $tipo]);
 
     return response()->json(['success' => true]);

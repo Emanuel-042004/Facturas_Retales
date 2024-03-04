@@ -101,6 +101,15 @@
                 <li>
                     <a href="#">
                         <span class="icon">
+                        <ion-icon name="refresh-circle-outline"></ion-icon>
+                        </span>
+                        <span class="title">Reembolsos</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#">
+                        <span class="icon">
                             <ion-icon name="checkmark-circle-outline"></ion-icon>
                         </span>
                         <span class="title">Finalizadas</span>
@@ -108,11 +117,11 @@
                 </li>
 
                 <li>
-                    <a class="salir" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                    <a  href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                         <span class="icon">
                             <ion-icon name="log-out-outline"></ion-icon>
                         </span>
-                        <span class="">{{ __('Salir') }}</span>
+                        <span class="title">{{ __('Salir') }}</span>
                     </a>
                     <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                         @csrf
