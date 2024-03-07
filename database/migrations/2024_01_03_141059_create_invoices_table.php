@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('invoices', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->nullable();
             $table->enum('type', ['Factura electrónica', 'Nota de crédito electrónica', 'Reembolso', 'Legalizacion'])->nullable();
             $table->string('folio', 255)->nullable();
             $table->string('prefix')->nullable();
@@ -23,7 +22,6 @@ return new class extends Migration
             $table->date('issue_date')->nullable();
             $table->enum('subtype', ['Rechazada','Adjuntada','Aprobada','FIN/Rechazada'])->nullable();
             $table->date('arrival_date')->nullable();
-            $table->integer('valor')->nullable();
             $table->enum('location',['Centro','Octava','Lopez','Alameda','Acopi','Jamundi','Pondaje'])->nullable();
             $table->enum('area',['Compras','Financiera','Logistica','Mantenimiento','Tecnologia'])->nullable();
             $table->text('note',)->nullable();
@@ -42,6 +40,7 @@ return new class extends Migration
             $table->string('costo2')->nullable();
             $table->string('costo3')->nullable();
             $table->string('costo4')->nullable();
+            $table->foreignId('reembolso_id')->nullable()->constrained('reembolsos');
             $table->timestamps();
         });
     }
@@ -52,5 +51,10 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('invoices');
+
+        Schema::table('invoices', function (Blueprint $table) {
+            $table->dropForeign(['reembolso_id']);
+            $table->dropColumn('reembolso_id');
+        });
     }
 };

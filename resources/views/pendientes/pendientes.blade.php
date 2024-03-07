@@ -8,7 +8,12 @@
     <h2>Facturas DIAN</h2>
     <!-- Botones ocultos al principio -->
     <div id="botonesContainer" style="display: none;">
-      <button id="Reembolso" class="btn" onclick="cambiarTipo('Reembolso')">Reembolso</button>
+    <form id="reembolsoForm" action="{{ route('crear_reembolso') }}" method="POST">
+    @csrf
+    <input type="hidden" name="ids[]" id="idsInput">
+    <button type="button" class="btn" onclick="cambiarTipo('Reembolso')">Reembolso</button>
+   </form>
+
       <button id="Legalizacion" class="btn" onclick="cambiarTipo('Legalizacion')">Legalizacion</button>
     </div>
     <a href="#" class="btn" onclick="openPopup('facturaPopup')">Factura Manual</a>
@@ -89,8 +94,6 @@
   </div>
 </div>
 
-
-
 <script>
   document.getElementById('searchInput').addEventListener('keyup', function () {
     let value = this.value;
@@ -123,28 +126,32 @@
 </script>
 
 <script>
-  function cambiarTipo(tipo) {
+function cambiarTipo(tipo) {
     var checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
-    var ids = [];
-    checkboxes.forEach(function (checkbox) {
-      ids.push(checkbox.value);
+    var form = document.getElementById('reembolsoForm');
+
+    // Eliminar los campos de entrada ocultos existentes
+    var hiddenInputs = document.querySelectorAll('input[name="ids[]"]');
+    hiddenInputs.forEach(function (input) {
+        form.removeChild(input);
     });
 
-    if (ids.length > 0) {
-      axios.post('{{ route("cambiar_tipo_facturas") }}', {
-        tipo: tipo,
-        ids: ids
-      })
-        .then(function (response) {
-          location.reload(); // Recarga la página después de que se compsolicitud
-        })
-        .catch(function (error) {
-          console.error(error);
-        });
+    // Crear un nuevo campo de entrada oculto para cada ID de factura seleccionada
+    checkboxes.forEach(function (checkbox) {
+        var input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'ids[]';
+        input.value = checkbox.value;
+        form.appendChild(input);
+    });
+
+    if (checkboxes.length > 0) {
+        form.submit();
     } else {
-      alert('Por favor selecciona al menos una factura.');
+        alert('Por favor selecciona al menos una factura.');
     }
-  }
+}
+
 </script>
 
 
@@ -458,11 +465,18 @@
           <input type="text" class="form-control" id="prefix" name="prefix" value="{{$factura->prefix}}">
         </div>
         
-      <div class="form-group col-md-6">
-        <label for="cude">CUFE</label>
-        <textarea class="form-control" id="cude" name="cude" >{{$factura->cude}}</textarea>
-        <a href="https://catalogo-vpfe.dian.gov.co/User/SearchDocument" target="_blank" >Buscar</a>
-      </div>
+        <div class="form-group col-md-6">
+  <label for="cude">CUFE</label>
+  <div class="input-group">
+    <textarea class="form-control" id="cude" name="cude">{{$factura->cude}}</textarea>
+    <div class="input-group-append">
+      <button class="btn btn-outline-secondary" type="button" onclick="buscarCUFE()">
+        <ion-icon name="search-outline"></ion-icon>
+      </button>
+    </div>
+  </div>
+</div>
+
 
         <div class="form-group col-md-6">
           <label for="area">Área</label>
@@ -504,6 +518,13 @@
   </div>
 </div>
 @endforeach
+<script>
+  function buscarCUFE() {
+    // Aquí puedes agregar el código para manejar la acción de búsqueda del CUFE
+    // Por ejemplo, podrías abrir una nueva ventana o redirigir a una página de búsqueda
+    window.open("https://catalogo-vpfe.dian.gov.co/User/SearchDocument", "_blank");
+  }
+</script>
 
 <script>
 

@@ -129,7 +129,7 @@ public function aprobar(Request $request, $id)
     
 
     // Obtén el nombre del usuario financiero
-    $usuarioFinanciero = User::where('area', 'Financiera')->first();
+   /* $usuarioFinanciero = User::where('area', 'Financiera')->first();
 
     // Saludos para el correo electrónico
     $userSalutation = "Hola " . Auth::user()->name;
@@ -139,11 +139,81 @@ public function aprobar(Request $request, $id)
     Mail::to(Auth::user()->email)->send(new InvoiceDelivered($factura, Auth::user(), $userSalutation));
 
     // Envía el correo al usuario financiero
-    Mail::to($usuarioFinanciero->email)->send(new InvoiceDelivered($factura, $usuarioFinanciero, $financieroSalutation));
+    Mail::to($usuarioFinanciero->email)->send(new InvoiceDelivered($factura, $usuarioFinanciero, $financieroSalutation));*/
 
     // Redirecciona de vuelta con un mensaje de éxito
     return redirect()->back()->with('success', 'Factura cargada con éxito.');
 }
+
+
+public function crearReembolso(Request $request)
+{
+    // Obtén los IDs de las facturas seleccionadas
+    $ids = $request->input('ids');
+    
+
+    if (empty($ids)) {
+        return redirect()->back()->with('error', 'No se seleccionaron facturas para crear el reembolso.');
+    }
+
+    // Crear un nuevo grupo de reembolso
+    $reembolso = Reembolso::create([
+        'consecutivo' => $this->generarConsecutivo(),
+    ]);
+
+    // Actualizar todas las facturas seleccionadas con el reembolso y el subtype
+    Factura::whereIn('id', $ids)->update(['reembolso_id' => $reembolso->id, 'type' => 'Reembolso']);
+
+    return redirect()->back()->with('success', 'Se ha creado el reembolso correctamente.');
+}
+private function generarConsecutivo()
+{
+    // Obtener el último consecutivo registrado
+    $ultimoReembolso = Reembolso::latest()->first();
+
+    // Si no hay ningún reembolso registrado todavía, comenzar desde 1
+    if (!$ultimoReembolso) {
+        return 'R001'; // O el formato que desees para tus consecutivos
+    }
+
+    // Extraer el número del último consecutivo y agregarle 1
+    $ultimoNumero = intval(substr($ultimoReembolso->consecutivo, 1));
+    $nuevoNumero = $ultimoNumero + 1;
+
+    // Formatear el nuevo consecutivo con ceros a la izquierda si es necesario
+    $nuevoConsecutivo = 'R' . str_pad($nuevoNumero, 3, '0', STR_PAD_LEFT);
+
+    return $nuevoConsecutivo;
+}
+
+
+public function verFacturas($reembolsoId)
+{
+    // Busca el reembolso por ID
+    $reembolso = Reembolso::findOrFail($reembolsoId);
+    
+    // Obtén las facturas asociadas al reembolso
+    $facturas = Factura::where('reembolso_id', $reembolsoId)->get();
+    
+    // Retorna la vista con los datos del reembolso y las facturas
+    return view('pendientes.pendientes', compact('reembolso', 'facturas'));
+}
+/*public function cambiarTipoFacturas(Request $request)
+{
+    $tipo = $request->input('tipo');
+    $ids = $request->input('ids');
+
+    // Crear un nuevo grupo de reembolso
+    $reembolso = Reembolso::create([
+        'consecutivo' => $this->generarConsecutivo(), // Implementa la lógica para generar el consecutivo
+    ]);
+
+    // Asignar las facturas seleccionadas al grupo de reembolso creado
+    Factura::whereIn('id', $ids)->update(['type' => $tipo, 'reembolso_id' => $reembolso->id]);
+
+    return response()->json(['success' => true]);
+}*/
+
 
 
 /*public function cambiarTipoFacturas(Request $request)
@@ -158,9 +228,7 @@ public function aprobar(Request $request, $id)
 }*/
 
 
-
-
-public function cambiarTipoFacturas(Request $request)
+/*public function cambiarTipoFacturas(Request $request)
 {
     $tipo = $request->input('tipo');
     $ids = $request->input('ids');
@@ -181,7 +249,7 @@ $grupoReembolso = GrupoReembolso::create(['consecutivo' => $consecutivo]);
     Factura::whereIn('id', $ids)->update(['type' => $tipo]);
 
     return response()->json(['success' => true]);
-}
+}*/
 
 
 public function rechazar(Request $request, $id)

@@ -52,6 +52,7 @@ class FacturasController extends Controller
             'issuer_name' => $request->input('issuer_name'),
             'cude' => $request->input('cude'),
             'arrival_date' => $request->input('arrival_date'),
+            'issue_date' => $request->input('issue_date'),
             'prefix' => $request->input('prefix'),
             'area' => $request->input('area'),
             'note' => $request->input('note'),

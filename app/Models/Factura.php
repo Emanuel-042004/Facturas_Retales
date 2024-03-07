@@ -16,8 +16,10 @@ class Factura extends Model
       'folio',
       'issuer_nit',
       'issuer_name',
+      'issue_date',
       'cude',
       'prefix',
+      'subtype',
       'arrival_date',
       'location',
       'area',
@@ -29,5 +31,15 @@ class Factura extends Model
       'received_by',
       'anexo1',
       'anexo2',
+      'anexo3',
+      'anexo4',
+      'anexo5',
+      'anexo6',
+      'reembolso_id',
     ];
+
+    public function reembolso()
+{
+    return $this->belongsTo(Reembolso::class);
+}
 }

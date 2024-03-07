@@ -403,13 +403,13 @@ body {
   color: var(--white);
 }
 .details .tablas table tr td {
-  padding: 10px;
+  padding: 5px;
 }
 .details .tablas table tr td:last-child {
-  text-align: end;
+  text-align: center;
 }
 .details .tablas table tr td:nth-child(2) {
-  text-align: end;
+  text-align: center;
 }
 .details .tablas table tr td:nth-child(3) {
   text-align: center;
@@ -827,3 +827,74 @@ body {
   .swal-overlay {
     z-index: 9999 !important;
   }
+
+
+
+  /* Estilo para la tarjeta de reembolso */
+.reembolso-card {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+/* Estilo para el encabezado de la tarjeta */
+.reembolso-header {
+  background-color: #f2f2f2;
+  padding: 10px;
+}
+
+/* Estilo para el título del reembolso */
+.reembolso-title {
+  margin: 0;
+  font-size: 18px;
+  color: #333;
+}
+
+/* Estilo para el cuerpo de la tarjeta */
+.reembolso-body {
+  padding: 10px;
+}
+
+/* Estilo para el subtítulo de las facturas */
+.reembolso-subtitle {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 16px;
+  color: #333;
+}
+
+/* Estilo para la tabla de facturas */
+.facturas-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+/* Estilo para las celdas de la tabla de facturas */
+.facturas-table th,
+.facturas-table td {
+  border: 1px solid #ccc;
+  padding: 8px;
+}
+
+/* Estilo para el pie de la tarjeta */
+.reembolso-footer {
+  padding: 10px;
+  text-align: center;
+}
+
+/* Estilo para el botón de ver facturas */
+.reembolso-button {
+  padding: 8px 16px;
+  background-color: #0a0000;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+/* Estilo hover para el botón */
+.reembolso-button:hover {
+  background-color: #8a0000;
+}

@@ -99,7 +99,7 @@
                 </li>
 
                 <li>
-                    <a href="#">
+                    <a href="{{route('reembolsos.index') }}">
                         <span class="icon">
                         <ion-icon name="refresh-circle-outline"></ion-icon>
                         </span>

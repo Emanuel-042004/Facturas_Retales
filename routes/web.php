@@ -6,6 +6,7 @@ use App\Http\Controllers\PendientesController;
 use App\Http\Controllers\EntregadosController;
 use App\Http\Controllers\RecibidosController;
 use App\Http\Controllers\CargadosController;
+use App\Http\Controllers\ReembolsosController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -35,6 +36,11 @@ Route::get('/pendientes', [PendientesController::class, 'index'])->name('pendien
 
 Route::get('/pendientes', [PendientesController::class, 'update'])->name('pendientes.update');
 Route::post('cambiar-tipo-facturas', [PendientesController::class, 'cambiarTipoFacturas'])->name('cambiar_tipo_facturas');
+Route::post('cambiar-tipo-facturas', [PendientesController::class, 'crearReembolso'])->name('crear_reembolso');
+
+
+Route::get('/reembolsos', [ReembolsosController::class, 'index'])->name('reembolsos.index');
+
 
 Route::post('/cargar-factura/{id}', [PendientesController::class, 'cargarFactura'])->name('cargar_factura');
 Route::get('/eliminar-factura/{id}', [PendientesController::class, 'eliminarFactura'])->name('eliminar_factura');
