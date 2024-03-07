@@ -56,41 +56,7 @@
                 <button class="reembolso-button" onclick="toggleFacturas({{ $reembolso->id }})">Ver Facturas</button>
             </div>
         </div>
-        @endforeach
-    </div>
-    @endif
-
-    <div>
-    <ul class="pagination">
-      <li class="{{ $reembolsos->onFirstPage() ? 'disabled' : '' }}">
-        <a href="{{ $reembolsos->previousPageUrl() }}" aria-label="Anterior">
-          <span aria-hidden="true">« Anterior</span>
-        </a>
-      </li>
-
-      <li class="{{ $reembolsos->hasMorePages() ? '' : 'disabled' }}">
-        <a href="{{ $reembolsos->nextPageUrl() }}" class="page-link" aria-label="Siguiente">
-          <span aria-hidden="true">Siguiente »</span>
-        </a>
-      </li>
-    </ul>
-  </div>
-</div>
-
-<script>
-    function toggleFacturas(reembolsoId) {
-        var facturasDiv = document.getElementById('facturas_' + reembolsoId);
-        if (facturasDiv.style.display === 'none') {
-            facturasDiv.style.display = 'block';
-        } else {
-            facturasDiv.style.display = 'none';
-        }
-    }
-</script>
-
-
-
-<!-- ================ ADJUNTADAS ================= -->
+        <!-- ================ ADJUNTADAS ================= -->
 <div class="popup-background" id="popupBackground"></div>
 @foreach ($reembolso->facturas as $factura)
 <div class="popup" id="facturaAdjuntadaPopup{{$factura->id}}">
@@ -223,6 +189,38 @@
   </div>
 </div>
 @endforeach
+        @endforeach
+    </div>
+    @endif
+
+    <div>
+    <ul class="pagination">
+      <li class="{{ $reembolsos->onFirstPage() ? 'disabled' : '' }}">
+        <a href="{{ $reembolsos->previousPageUrl() }}" aria-label="Anterior">
+          <span aria-hidden="true">« Anterior</span>
+        </a>
+      </li>
+
+      <li class="{{ $reembolsos->hasMorePages() ? '' : 'disabled' }}">
+        <a href="{{ $reembolsos->nextPageUrl() }}" class="page-link" aria-label="Siguiente">
+          <span aria-hidden="true">Siguiente »</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<script>
+    function toggleFacturas(reembolsoId) {
+        var facturasDiv = document.getElementById('facturas_' + reembolsoId);
+        if (facturasDiv.style.display === 'none') {
+            facturasDiv.style.display = 'block';
+        } else {
+            facturasDiv.style.display = 'none';
+        }
+    }
+</script>
+
 
 <script>
   function openDocument(url) {
