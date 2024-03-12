@@ -68,22 +68,10 @@
                         <span class="title">Cargadas</span>
                     </a>
                 </li>
-
-                <li>
-                    <a href="{{route('entregados.index') }}">
-                        <span class="icon">
-                            <ion-icon name="mail-outline"></ion-icon>
-
-                        </span>
-                        <span class="title">Entregadas</span>
-                    </a>
-                </li>
-
-            
                 <li>
                     <a href="#">
                         <span class="icon">
-                            <ion-icon name="time-outline"></ion-icon>
+                        <ion-icon name="calculator-outline"></ion-icon>
                         </span>
                         <span class="title">Causaciones</span>
                     </a>
@@ -92,7 +80,7 @@
                 <li>
                     <a href="#">
                         <span class="icon">
-                            <ion-icon name="mail-open-outline"></ion-icon>
+                        <ion-icon name="wallet-outline"></ion-icon>
                         </span>
                         <span class="title">Pagos</span>
                     </a>

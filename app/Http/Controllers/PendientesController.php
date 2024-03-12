@@ -20,7 +20,7 @@ class PendientesController extends Controller
 
 public function index(Request $request)
 {
-    $query = Factura::where('status', 'Pendiente');
+    $query = Factura::where('status', 'Pendiente')->where('type', '!=', 'Reembolso');
 
     $area = $request->input('area');
 
@@ -60,12 +60,15 @@ public function cargarFactura(Request $request, $id)
     // Actualiza los datos de la factura con los valores del formulario
     $factura->update([
         'type' => $request->input('type'),
-        'name' => $request->input('name'),
         'folio' => $request->input('folio'),
         'issuer_name' => $request->input('issuer_name'),
         'issuer_nit' => $request->input('issuer_nit'),
         'area' => $request->input('area'),
         'note' => $request->input('note'),
+        'costo1' => $request->input('costo1'),
+        'costo2' => $request->input('costo2'),
+        'costo3' => $request->input('costo3'),
+        'costo4' => $request->input('costo4'),
         'delivery_date' => now(),
         'delivered_by' => Auth::user()->name,
         'subtype' => 'Adjuntada', 
@@ -113,16 +116,16 @@ public function aprobar(Request $request, $id)
     // Actualiza los datos de la factura con los valores del formulario
     $factura->update([
         'type' => $request->input('type'),
-        'name' => $request->input('name'),
         'folio' => $request->input('folio'),
         'issuer_name' => $request->input('issuer_name'),
         'issuer_nit' => $request->input('issuer_nit'),
         'area' => $request->input('area'),
+        'note' => $request->input('note'),
         'delivery_date' => now(),
         'delivered_by' => Auth::user()->name,
         'status' => 'Cargada', // Cambia el estado de la factura a 'Cargada'
     ]);
-      $factura->subtype = 'Aprobada';
+      $factura->subtype = 'Adjuntada';
  
         // Guarda los cambios en la base de datos
         $factura->save();
@@ -146,14 +149,56 @@ public function aprobar(Request $request, $id)
 }
 
 
+public function rechazar(Request $request, $id)
+{
+    // Encuentra la factura por ID
+    $factura = Factura::findOrFail($id);
+
+    // Elimina los anexos de la carpeta de anexos
+    for ($i = 1; $i <= 6; $i++) { // Ahora consideramos hasta 6 anexos
+        $nombreArchivo = $factura->{'anexo' . $i};
+        if ($nombreArchivo) {
+            $rutaArchivo = public_path('anexos/' . $nombreArchivo);
+            if (file_exists($rutaArchivo)) {
+                unlink($rutaArchivo); // Elimina el archivo
+            }
+        }
+    }
+
+    // Elimina los nombres de los anexos de la base de datos
+    $factura->anexo1 = null;
+    $factura->anexo2 = null;
+    $factura->anexo3 = null;
+    $factura->anexo4 = null;
+    $factura->anexo5 = null;
+    $factura->anexo6 = null;
+
+    // Guarda los cambios en la base de datos
+    $factura->save();
+
+    // Actualiza el subtype a "Rechazada"
+    $factura->subtype = 'Rechazada';
+
+    $factura->save();
+
+    return redirect()->back()->with('success', 'Factura rechazada');
+}
+
+
 public function crearReembolso(Request $request)
 {
     // Obtén los IDs de las facturas seleccionadas
     $ids = $request->input('ids');
     
+    // Verifica si alguna factura no tiene el subtype "Adjuntada"
+    $facturasNoAdjuntadas = Factura::whereIn('id', $ids)->where('subtype', '!=', 'Adjuntada')->exists();
+
+    if ($facturasNoAdjuntadas) {
+        return response()->json(['error' => 'Solo se pueden crear reembolsos cuando todas las facturas seleccionadas tienen el subtype "Adjuntada".'], 400);
+    }
 
     if (empty($ids)) {
-        return redirect()->back()->with('error', 'No se seleccionaron facturas para crear el reembolso.');
+        return response()->json(['error' => 'No se seleccionaron facturas para crear el reembolso.'], 400);
     }
 
     // Crear un nuevo grupo de reembolso
@@ -164,8 +209,9 @@ public function crearReembolso(Request $request)
     // Actualizar todas las facturas seleccionadas con el reembolso y el subtype
     Factura::whereIn('id', $ids)->update(['reembolso_id' => $reembolso->id, 'type' => 'Reembolso']);
 
-    return redirect()->back()->with('success', 'Se ha creado el reembolso correctamente.');
+    return response()->json(['success' => 'Se ha creado el reembolso correctamente.'], 200);
 }
+
 private function generarConsecutivo()
 {
     // Obtener el último consecutivo registrado
@@ -186,6 +232,34 @@ private function generarConsecutivo()
     return $nuevoConsecutivo;
 }
 
+
+
+
+public function editarAnexo(Request $request, $id, $numeroAnexo)
+{
+    // Encuentra la factura por ID
+    $factura = Factura::findOrFail($id);
+
+    // Validar y guardar el nuevo archivo adjunto
+    if ($request->hasFile('nuevo_anexo')) {
+        // Eliminar el anexo anterior si existe
+        $nombreAnexoAnterior = $factura->{'anexo' . $numeroAnexo};
+        if ($nombreAnexoAnterior) {
+            Storage::delete('anexos/' . $nombreAnexoAnterior);
+        }
+
+        // Guardar el nuevo anexo
+        $nombreNuevoAnexo = time() . '_' . $numeroAnexo . '_' . $request->file('nuevo_anexo')->getClientOriginalName();
+        $request->file('nuevo_anexo')->storeAs('anexos', $nombreNuevoAnexo);
+        $factura->{'anexo' . $numeroAnexo} = $nombreNuevoAnexo;
+        // Guardar los cambios en la base de datos
+        $factura->save();
+
+        return redirect()->back()->with('success', 'Anexo ' . $numeroAnexo . ' actualizado con éxito.');
+    }
+
+    return redirect()->back()->with('error', 'No se seleccionó ningún archivo para actualizar.');
+}
 
 public function verFacturas($reembolsoId)
 {
@@ -252,39 +326,6 @@ $grupoReembolso = GrupoReembolso::create(['consecutivo' => $consecutivo]);
 }*/
 
 
-public function rechazar(Request $request, $id)
-{
-    // Encuentra la factura por ID
-    $factura = Factura::findOrFail($id);
-
-    // Elimina los anexos de la carpeta de anexos
-    for ($i = 1; $i <= 6; $i++) { // Ahora consideramos hasta 6 anexos
-        $nombreArchivo = $factura->{'anexo' . $i};
-        if ($nombreArchivo) {
-            $rutaArchivo = public_path('anexos/' . $nombreArchivo);
-            if (file_exists($rutaArchivo)) {
-                unlink($rutaArchivo); // Elimina el archivo
-            }
-        }
-    }
-
-    // Elimina los nombres de los anexos de la base de datos
-    $factura->anexo1 = null;
-    $factura->anexo2 = null;
-    $factura->anexo3 = null;
-    $factura->anexo4 = null;
-    $factura->anexo5 = null;
-    $factura->anexo6 = null;
-
-    // Guarda los cambios en la base de datos
-    $factura->save();
-
-    // Actualiza el subtype a "Rechazada"
-    $factura->subtype = 'Rechazada';
-    $factura->save();
-
-    return redirect()->back()->with('success', 'Factura rechazada');
-}
 
 
 

@@ -11,7 +11,7 @@ class Factura extends Model
     protected $table = 'invoices';
     
     protected $fillable = [
-      'name',
+
       'type',
       'folio',
       'issuer_nit',
@@ -35,7 +35,18 @@ class Factura extends Model
       'anexo4',
       'anexo5',
       'anexo6',
+      'costo1',
+      'costo2',
+      'costo3',
+      'costo4',
+      'causacion1',
+      'causacion2',
+      'causacion3',
+      'causacion4',
+      'causacion5',
+      'causacion6',
       'reembolso_id',
+
     ];
 
     public function reembolso()

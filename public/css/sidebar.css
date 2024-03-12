@@ -422,6 +422,7 @@ body {
   border-radius: 4px;
   font-size: 14px;
   font-weight: 500;
+  box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.2);
 }
 
 .status.loaded1 {
@@ -431,6 +432,7 @@ body {
   border-radius: 4px;
   font-size: 14px;
   font-weight: 500;
+  box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.2);
 }
 
 .status.approved {
@@ -440,6 +442,7 @@ body {
   border-radius: 4px;
   font-size: 14px;
   font-weight: 500;
+  box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.2);
 }
 
 .status.refused {
@@ -449,16 +452,18 @@ body {
   border-radius: 4px;
   font-size: 14px;
   font-weight: 500;
+  box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.2);
 }
 
 
 .status.loaded {
   padding: 2px 4px;
   background: #fc8200;
-  color: var(--black1);
+  color: var(--white);
   border-radius: 4px;
   font-size: 14px;
   font-weight: 500;
+  box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.2);
 }
 
 .status.delivered {
@@ -468,6 +473,7 @@ body {
   border-radius: 4px;
   font-size: 14px;
   font-weight: 500;
+  box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.2);
   
 }
 .status.return {
@@ -477,6 +483,7 @@ body {
   border-radius: 4px;
   font-size: 14px;
   font-weight: 500;
+  box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.2);
 }
 .status.inProgress {
   padding: 2px 4px;
@@ -485,6 +492,7 @@ body {
   border-radius: 4px;
   font-size: 14px;
   font-weight: 500;
+  box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.2);
 }
 
 
@@ -703,7 +711,18 @@ body {
     -moz-border-radius: 20px;
     -ms-border-radius: 20px;
     -o-border-radius: 20px;
+    padding: 10px;
 }
+.popup h1 {
+  margin-top: 5px;
+  text-align: center;
+  margin-bottom: 20px;
+
+}
+
+ .btn-secondary{
+  margin-bottom: 20px;
+ }
   
   .popup-content {
     padding: 20px;
@@ -728,18 +747,31 @@ body {
   .form-group {
     margin-bottom: 20px;
   }
+
+  .form-group2 {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    display: flex;
+  }
   
   label {
     font-weight: bold;
+    margin-top: 8px;
   }
   
   input[type="text"],
   select {
+    margin-top: 10px;
     width: 100%;
     padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
+    border: 1px solid #cccccc;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
+    box-shadow: 0 0 5px #8f8c8c;
+}
 
   textarea{
     width: 100%;
@@ -747,6 +779,7 @@ body {
     border: 1px solid #ccc;
     border-radius: 4px;
     resize: vertical;
+
   }
   
   
@@ -785,6 +818,7 @@ body {
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.2);
   }
   
   .btn-danger {

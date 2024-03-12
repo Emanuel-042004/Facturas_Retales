@@ -19,7 +19,7 @@
     <a href="#" class="btn" onclick="openPopup('facturaPopup')">Factura Manual</a>
   </div><br>
   <div class="search">
-    <label>
+    <label>  
       <input type="text" placeholder="Buscar" id="searchInput">
       <ion-icon name="search-outline"></ion-icon>
     </label>
@@ -32,9 +32,11 @@
       <td>Tipo</td>
       <td>Area</td>
       <td>Folio</td>
+      <td>Prefijo</td>
       <td>Nombre de Emisor</td>
       <td>NIT de Emisor</td>
       <td>Fecha de Emision</td>
+      <td>Entregado por</td>
       <td>Acciones</td>
       </tr>
     </thead>
@@ -49,7 +51,7 @@
       <td>
         @if (!empty($factura->subtype))
         @if ($factura->subtype == 'Adjuntada')
-        <span class="status loaded1">{{ $factura->subtype }}</span>
+        <span class="status inProgress">{{ $factura->subtype }}</span>
         @else
         <span class="status refused">{{ $factura->subtype }}</span>
         @endif
@@ -58,9 +60,11 @@
       <td>{{ $factura->type }}</td>
       <td>{{ $factura->area }}</td>
       <td>{{ $factura->folio}}</td>
+      <td>{{ $factura->prefix}}</td>
       <td>{{ $factura->issuer_name}}</td>
       <td>{{ $factura->issuer_nit }}</td>
       <td>{{ $factura->issue_date }}</td>
+      <td>{{ $factura->delivered_by }}</td>
       <td>
         @if ($factura->subtype == 'Adjuntada')
         <ion-icon name="ellipsis-vertical-outline"
@@ -130,25 +134,59 @@ function cambiarTipo(tipo) {
     var checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
     var form = document.getElementById('reembolsoForm');
 
-    // Eliminar los campos de entrada ocultos existentes
-    var hiddenInputs = document.querySelectorAll('input[name="ids[]"]');
-    hiddenInputs.forEach(function (input) {
-        form.removeChild(input);
+    // Verificar si todas las facturas seleccionadas tienen el subtype "Adjuntada"
+    var todasAdjuntadas = Array.from(checkboxes).every(function (checkbox) {
+        var row = checkbox.closest('tr');
+        var subtype = row.querySelector('td:nth-child(3)').textContent.trim();
+        return subtype === 'Adjuntada';
     });
 
-    // Crear un nuevo campo de entrada oculto para cada ID de factura seleccionada
-    checkboxes.forEach(function (checkbox) {
-        var input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = 'ids[]';
-        input.value = checkbox.value;
-        form.appendChild(input);
-    });
+    // Si todas las facturas están adjuntadas, continuar con la creación del reembolso
+    if (todasAdjuntadas) {
+        // Eliminar los campos de entrada ocultos existentes
+        var hiddenInputs = document.querySelectorAll('input[name="ids[]"]');
+        hiddenInputs.forEach(function (input) {
+            form.removeChild(input);
+        });
 
-    if (checkboxes.length > 0) {
-        form.submit();
+        // Crear un nuevo campo de entrada oculto para cada ID de factura seleccionada
+        checkboxes.forEach(function (checkbox) {
+            var input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'ids[]';
+            input.value = checkbox.value;
+            form.appendChild(input);
+        });
+
+        // Realizar la petición AJAX para crear el reembolso
+        fetch(form.action, {
+            method: 'POST',
+            body: new FormData(form)
+        })
+        .then(response => {
+            if (response.ok) {
+                // Si la respuesta es exitosa, mostrar mensaje de éxito
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Éxito',
+                    text: 'Se ha creado el reembolso correctamente.',
+                });
+            } else {
+                // Si hay un error, mostrar mensaje de error
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Opps',
+                    text: 'Ha ocurrido un error al crear el reembolso.',
+                });
+            }
+        });
     } else {
-        alert('Por favor selecciona al menos una factura.');
+        // Mostrar un mensaje de error indicando que todas las facturas deben ser adjuntadas
+        Swal.fire({
+            icon: 'error',
+            title: 'Opps',
+            text: 'Solo se pueden crear reembolsos cuando todas las facturas seleccionadas tienen el subtype "Adjuntada".',
+        });
     }
 }
 
@@ -168,31 +206,16 @@ function cambiarTipo(tipo) {
     </div>
     <form id="crearfactura" action="{{ route('facturas.store') }}" method="POST" enctype="multipart/form-data">
       @csrf
-      <div class="form-row">
+
         <div class="form-group col-md-6">
-          <label for="nombre">Nombre</label>
-          <input type="text" class="form-control" id="name" name="name" placeholder="Nombre">
+          <label for="type">Tipo</label>
+          <select class="form-control" id="type" name="type">
+            <option value="">Selecciona</option>
+            <option value="Factura electrónica">Factura electrónica</option>
+            <option value="Nota de crédito electrónica">Nota de crédito electrónica</option>
+          </select>
         </div>
-        <div class="form-group col-md-6">
-          <label for="folio">Folio</label>
-          <input type="text" class="form-control" id="folio" name="folio" placeholder="Contrato">
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group col-md-6">
-          <label for="issuer_name">Nombre Emisor</label>
-          <input type="text" class="form-control" id="issuer_name" name="issuer_name">
-        </div>
-        <div class="form-group col-md-6">
-          <label for="issuer_nit">Nit Emisor</label>
-          <input type="text" class="form-control" id="issuer_nit" name="issuer_nit">
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group col-md-6">
-          <label for="prefix">Prefijo</label>
-          <input type="text" class="form-control" id="prefix" name="prefix">
-        </div>
+
         <div class="form-group col-md-6">
           <label for="area">Área</label>
           <select class="form-control" id="area" name="area">
@@ -204,6 +227,27 @@ function cambiarTipo(tipo) {
             <option value="Tecnologia">Tecnología</option>
           </select>
         </div>
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="folio">Folio</label>
+          <input type="text" class="form-control" id="folio" name="folio" placeholder="Contrato">
+        </div>
+      
+        
+        <div class="form-group col-md-6">
+          <label for="prefix">Prefijo</label>
+          <input type="text" class="form-control" id="prefix" name="prefix">
+        </div>
+     
+        <div class="form-group col-md-6">
+          <label for="issuer_name">Nombre Emisor</label>
+          <input type="text" class="form-control" id="issuer_name" name="issuer_name">
+        </div>
+        <div class="form-group col-md-6">
+          <label for="issuer_nit">Nit Emisor</label>
+          <input type="text" class="form-control" id="issuer_nit" name="issuer_nit">
+        </div>
+        
       </div>
 
       <div class="modal-footer">
@@ -241,10 +285,6 @@ function cambiarTipo(tipo) {
         </select>
       </div>
       <div class="form-row">
-        <div class="form-group col-md-6">
-          <label for="nombre">Nombre</label>
-          <input type="text" class="form-control" id="name" name="name" value="{{$factura->name}}" placeholder="Nombre">
-        </div>
         <div class="form-group col-md-6">
           <label for="folio">Folio</label>
           <input type="text" class="form-control" id="folio" name="folio" value="{{$factura->folio}}"
@@ -285,14 +325,14 @@ function cambiarTipo(tipo) {
             <ul class="no-bullet">
               @if($factura->anexo1)
               <li>
-              <input type="checkbox" name="documentos_malos[]">
+              
                 <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo1) }}')">
                   <i class="fas fa-file"></i> Anexo 1 - {{ $factura->anexo1 }}</button>
               </li>
               @endif
               @if($factura->anexo2)
               <li>
-                <input type="checkbox" name="documentos_malos[]">
+                
                 <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo2) }}')">
                   <i class="fas fa-file"></i>
                   Anexo 2 - {{ $factura->anexo2 }}</button>
@@ -300,7 +340,7 @@ function cambiarTipo(tipo) {
               @endif
               @if($factura->anexo3)
               <li>
-                <input type="checkbox" name="documentos_malos[]">
+                
                 <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo3) }}')">
                   <i class="fas fa-file"></i>
                   Anexo 3 - {{ $factura->anexo3 }}</button>
@@ -308,7 +348,7 @@ function cambiarTipo(tipo) {
               @endif
               @if($factura->anexo4)
               <li>
-                <input type="checkbox" name="documentos_malos[]">
+                
                 <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo4) }}')">
                   <i class="fas fa-file"></i>
                   Anexo 4 - {{ $factura->anexo4 }}</button>
@@ -316,7 +356,7 @@ function cambiarTipo(tipo) {
               @endif
               @if($factura->anexo5)
               <li>
-                <input type="checkbox" name="documentos_malos[]">
+                
                 <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo5) }}')">
                   <i class="fas fa-file"></i>
                   Anexo 5 - {{ $factura->anexo5 }}</button>
@@ -324,7 +364,7 @@ function cambiarTipo(tipo) {
               @endif
               @if($factura->anexo6)
               <li>
-                <input type="checkbox" name="documentos_malos[]">
+                
                 <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo6) }}')">
                   <i class="fas fa-file"></i>
                   Anexo 6 - {{ $factura->anexo6 }}</button>
@@ -335,9 +375,30 @@ function cambiarTipo(tipo) {
           </div>
         </div>
       </div>
+      <div class="form-group2 col-md-6">
+          <div>
+          <label for="costo1">Costo 1 </label>
+          <input type="text" class="form-control" id="costo1" name="costo1" value="{{$factura->costo1}}">
+          </div>
+
+          <div>
+          <label for="costo2">Costo 2 </label>
+          <input type="text" class="form-control" id="costo2" name="costo2" value="{{$factura->costo2}}">
+          </div>
+          
+          <div>
+          <label for="costo3">Costo 3 </label>
+          <input type="text" class="form-control" id="costo3" name="costo3" value="{{$factura->costo3}}">
+          </div>
+
+          <div>
+          <label for="costo4">Costo 4 </label>
+          <input type="text" class="form-control" id="costo4" name="costo4" value="{{$factura->costo4}}">
+          </div>
+      </div>
       <div class="form-group col-md-6">
         <label for="note">Nota</label>
-        <textarea class="form-control" id="note" name="note">{{$factura->note}}</textarea>
+        <textarea class="form-control" id="note" name="note" value="{{$factura->note}}">{{$factura->note}}</textarea>
       </div>
       <div class="modal-footer">
         <a href="{{route('pendientes.rechazar', ['id' => $factura->id])}}" class="btn btn-danger">Rechazar</a>
@@ -347,7 +408,6 @@ function cambiarTipo(tipo) {
   </div>
 </div>
 @endforeach
-
 <script>
   function openDocument(url) {
     event.preventDefault(); // Evitar que el formulario se envíe
@@ -412,6 +472,7 @@ function cambiarTipo(tipo) {
   }
 </script>
 
+
 <!-- ================ ACCIONES ================= -->
 <div class="popup-background" id="popupBackground"></div>
 @foreach ($pendientes as $factura)
@@ -431,18 +492,12 @@ function cambiarTipo(tipo) {
           <option value="">Selecciona</option>
           <option value="Factura electrónica" @selected( "Factura electrónica"==$factura -> type)>Factura electrónica
           </option>
-          <option value="Nota de crédito electrónica" @selected( "Nota de crédito electrónica"==$factura ->
-            type)>Financiera</option>
-          <option value="Reembolso" @selected( "Reembolso"==$factura -> type)>Reembolso</option>
+          <option value="Nota de crédito electrónica" @selected( "Nota de crédito electrónica"==$factura ->type)>Nota de crédito electrónica</option>
           <option value="Legalizacion" @selected( "Legalizacion"==$factura -> type) >Legalizacion</option>
 
         </select>
       </div>
       <div class="form-row">
-        <div class="form-group col-md-6">
-          <label for="nombre">Nombre</label>
-          <input type="text" class="form-control" id="name" name="name" value="{{$factura->name}}" placeholder="Nombre">
-        </div>
         <div class="form-group col-md-6">
           <label for="folio">Folio</label>
           <input type="text" class="form-control" id="folio" name="folio" value="{{$factura->folio}}"
@@ -466,18 +521,16 @@ function cambiarTipo(tipo) {
         </div>
         
         <div class="form-group col-md-6">
-  <label for="cude">CUFE</label>
-  <div class="input-group">
-    <textarea class="form-control" id="cude" name="cude">{{$factura->cude}}</textarea>
-    <div class="input-group-append">
-      <button class="btn btn-outline-secondary" type="button" onclick="buscarCUFE()">
-        <ion-icon name="search-outline"></ion-icon>
-      </button>
-    </div>
-  </div>
-</div>
-
-
+        <label for="cude">CUFE</label>
+        <div class="input-group">
+          <textarea class="form-control" id="cude" name="cude">{{$factura->cude}}</textarea>
+          <div class="input-group-append">
+            <button class="btn btn-outline-secondary" type="button" onclick="buscarCUFE()">
+              <ion-icon name="search-outline"></ion-icon>
+            </button>
+          </div>
+        </div>
+      </div>
         <div class="form-group col-md-6">
           <label for="area">Área</label>
           <select class="form-control" id="area" name="area">
@@ -500,10 +553,31 @@ function cambiarTipo(tipo) {
       <div id="anexosContainer{{$factura->id}}"></div>
       <button type="button" class="btn btn-secondary" onclick="agregarAnexo({{$factura->id}})">Agregar Anexo</button>
 
+      <div class="form-group2 col-md-6">
+          <div>
+          <label for="costo1">Costo 1 </label>
+          <input type="text" class="form-control" id="costo1" name="costo1" value="{{$factura->costo1}}">
+          </div>
+
+          <div>
+          <label for="costo2">Costo 2 </label>
+          <input type="text" class="form-control" id="costo2" name="costo2" value="{{$factura->costo2}}">
+          </div>
+          
+          <div>
+          <label for="costo3">Costo 3 </label>
+          <input type="text" class="form-control" id="costo3" name="costo3" value="{{$factura->costo3}}">
+          </div>
+
+          <div>
+          <label for="costo4">Costo 4 </label>
+          <input type="text" class="form-control" id="costo4" name="costo4" value="{{$factura->costo4}}">
+          </div>
+      </div>
 
       <div class="form-group col-md-6">
         <label for="note">Nota</label>
-        <textarea class="form-control" id="note" name="note" value="{{$factura->note}}"></textarea>
+        <textarea class="form-control" id="note" name="note" value="{{$factura->note}}">{{$factura->note}}</textarea>
       </div>
       <div class="modal-footer">
         <!-- Botón de "cargar" -->
@@ -520,14 +594,11 @@ function cambiarTipo(tipo) {
 @endforeach
 <script>
   function buscarCUFE() {
-    // Aquí puedes agregar el código para manejar la acción de búsqueda del CUFE
-    // Por ejemplo, podrías abrir una nueva ventana o redirigir a una página de búsqueda
     window.open("https://catalogo-vpfe.dian.gov.co/User/SearchDocument", "_blank");
   }
 </script>
 
 <script>
-
   function agregarAnexo(facturaId) {
     var contadorAnexos = document.querySelectorAll('#facturaPopup' + facturaId + ' input[type="file"]').length + 1;
     if (contadorAnexos <= 6) { // Solo agregar hasta 6 anexos
@@ -538,7 +609,7 @@ function cambiarTipo(tipo) {
 
       document.getElementById('anexosContainer' + facturaId).innerHTML += nuevoAnexo;
     } else {
-      // Mostrar alerta de SweetAlert con el z-index personalizado
+      
       Swal.fire({
         icon: 'error',
         title: 'Oops...',

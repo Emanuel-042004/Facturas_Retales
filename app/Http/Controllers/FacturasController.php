@@ -64,13 +64,13 @@ class FacturasController extends Controller
         // Guardar la factura en la base de datos
         $factura->save();
  // Enviar el correo electrónico a los usuarios con la misma área
-        $usuariosConMismaArea = User::where('area', $factura->area)->get();
+     /*   $usuariosConMismaArea = User::where('area', $factura->area)->get();
         foreach ($usuariosConMismaArea as $usuario) {
             Mail::to($usuario->email)->send(new InvoiceCreated($factura));
-        }
+        }*/
 
  // Redireccionar a la vista principal después de crear
-        return redirect()->route('facturas.index')->with('success', 'Factura creada con éxito.');
+        return redirect()->route('pendientes.index')->with('success', 'Factura creada con éxito.');
     }
 
     /*public function importExcel(Request $request){

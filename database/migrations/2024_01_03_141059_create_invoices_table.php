@@ -25,7 +25,7 @@ return new class extends Migration
             $table->enum('location',['Centro','Octava','Lopez','Alameda','Acopi','Jamundi','Pondaje'])->nullable();
             $table->enum('area',['Compras','Financiera','Logistica','Mantenimiento','Tecnologia'])->nullable();
             $table->text('note',)->nullable();
-            $table->enum('status',['Pendiente', 'Cargada', 'Entregada', 'Recibida', 'Rechazada','Pendiente a Causar', 'Finalizada']);
+            $table->enum('status',['Pendiente', 'Cargada', 'Entregada', 'Recibida', 'Rechazada','Causada', 'Finalizada']);
             $table->date('delivery_date')->nullable();
             $table->date('received_date')->nullable();
             $table->string('delivered_by')->nullable();
@@ -40,6 +40,14 @@ return new class extends Migration
             $table->string('costo2')->nullable();
             $table->string('costo3')->nullable();
             $table->string('costo4')->nullable();
+            $table->string('costo5')->nullable();
+            $table->string('causacion1')->nullable();
+            $table->string('causacion2')->nullable();
+            $table->string('causacion3')->nullable();
+            $table->string('causacion4')->nullable();
+            $table->string('causacion5')->nullable();
+            $table->string('causacion6')->nullable();
+
             $table->foreignId('reembolso_id')->nullable()->constrained('reembolsos');
             $table->timestamps();
         });

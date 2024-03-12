@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Storage;
 
 class CargadosController extends Controller
 {
@@ -48,12 +49,55 @@ class CargadosController extends Controller
      
         $factura = Factura::find($id);
         $factura->status = 'Pendiente';
-        $factura->subtype = 'FN/Rechazada';
+        $factura->subtype = 'FIN/Rechazada';
         $factura->save();
 
         return redirect()->back()->with('success', 'Factura rechazada');
 
     }
+    public function causarFactura(Request $request, $id)
+{
+    if (!$request->hasFile('causaciones')) {
+        return redirect()->back()->with('error', 'Debes adjuntar al menos una causación.');
+    }
+    // Valida y guarda los archivos PDF
+    $request->validate([
+        'causaciones.*' => 'required|mimes:pdf,doc,docx|max:2048', // Ajusta los tipos de archivo según tus necesidades
+    ]);
+    // Encuentra la factura por ID
+    $factura = Factura::findOrFail($id);
+    // Actualiza los datos de la factura con los valores del formulario
+    $factura->update([
+        'type' => $request->input('type'),
+        'folio' => $request->input('folio'),
+        'issuer_name' => $request->input('issuer_name'),
+        'issuer_nit' => $request->input('issuer_nit'),
+        'area' => $request->input('area'),
+        'note' => $request->input('note'),
+        'costo1' => $request->input('costo1'),
+        'costo2' => $request->input('costo2'),
+        'costo3' => $request->input('costo3'),
+        'costo4' => $request->input('costo4'),
+        'status' => 'Causada',
+        'subtype' => 'Adjuntada', 
+    ]);
+    $factura->subtype = 'Adjuntada';
+    // Procesa los archivos de causación
+    if ($request->hasFile('causaciones')) {
+        $contadorCausaciones = 1; // Inicializa el contador de causaciones
+        foreach ($request->file('causaciones') as $causacion) {
+            $nombreArchivo = time() . '_' . $contadorCausaciones . '_' . $causacion->getClientOriginalName();
+            $causacion->move(public_path('causaciones'), $nombreArchivo);
+            // Guarda el nombre del archivo en el campo correspondiente (causacion1, causacion2, etc.)
+            $factura->{'causacion' . $contadorCausaciones} = $nombreArchivo;
+            $contadorCausaciones++;
+        }
+        // Guarda los cambios en la base de datos
+        $factura->save();
+    }
+    // Redirecciona de vuelta con un mensaje de éxito
+    return redirect()->back()->with('success', 'Factura cargada con éxito.');
+}
 
 
     public function entregar(Request $request, $id)
