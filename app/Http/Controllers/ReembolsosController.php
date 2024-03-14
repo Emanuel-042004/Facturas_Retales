@@ -13,7 +13,7 @@ class ReembolsosController extends Controller
 
     public function index(){
 
-        $reembolsos = Reembolso::paginate(7);
+        $reembolsos = Reembolso::orderBy('id', 'desc')->paginate(7);
 
         return view('reembolsos.reembolsos', compact('reembolsos'));
     }

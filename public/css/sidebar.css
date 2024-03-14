@@ -20,6 +20,7 @@
 body {
   min-height: 100vh;
   overflow-x: hidden;
+  background-image: url('imagenes/logo2.jpeg' );
 }
 
 .container {

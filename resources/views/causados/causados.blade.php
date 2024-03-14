@@ -5,21 +5,14 @@
 
 <div class="tablas">
   <div class="cardHeader">
-    <h2>Facturas Cargadas</h2>
-    <!-- Botones ocultos al principio -->
-    <div id="botonesContainer" style="display: none;">
-            <button id="Reembolso" class="btn">Reembolso</button>
-            <button id="Legalizacion" class="btn">Legalizacion</button>
-        </div>
-   
+    <h2>Facturas Causadas</h2>
   </div>
   <table>
     <thead>
-      <td></td>
+      
       <td>Estado</td>
-      <td>Proceso</td>
       <td>Area</td>
-      <td>Prefijo</td>
+      <td>Nombre</td>
       <td>Folio</td>
       <td>Nombre de Emisor</td>
       <td>NIT de Emisor</td>
@@ -27,30 +20,16 @@
       </tr>
     </thead>
     <tbody>
-      @foreach ($cargados as $factura)
+      @foreach ($causados as $factura)
       @if (!$area || $factura->area === $area)
-      <td>
-        <input type="checkbox" class="form-check-input" name="selectedFacturas[]" value="{{ $factura->id }}" onchange ="agregarBotones()">
-      </td>
-      <td><span class="status loaded">{{ $factura->status}}</span></td>
-      <td><span class="status approved">{{ $factura->subtype }}</span></td>
+      <td><span class="status delivered">{{ $factura->status}}</span></td>
       <td>{{ $factura->area }}</td>
-      <td>{{ $factura->prefix }}</td>
+      <td>{{ $factura->name }}</td>
       <td>{{ $factura->folio}}</td>
       <td>{{ $factura->issuer_name}}</td>
       <td>{{ $factura->issuer_nit }}</td>
       <td>
-      
-          @if ($factura->subtype == 'Adjuntada')
-         <ion-icon name="ellipsis-vertical-outline"
-           onclick="openPopup('facturaAdjuntadaPopup{{$factura->id}}')"></ion-icon>
-         @elseif($factura->subtype == 'Aprobada')
-         <ion-icon name="ellipsis-vertical-outline" onclick="openPopup('facturaAprobadaPopup{{$factura->id}}')"></ion-icon>
-         @else
-         <ion-icon name="ellipsis-vertical-outline" onclick="openPopup('facturaPopup{{$factura->id}}')"></ion-icon>
-         @endif
-                           
-        
+         <ion-icon name="ellipsis-vertical-outline" onclick="openPopup('facturaCausadaPopup{{$factura->id}}')"></ion-icon>             
       </td>
       
       </tr>
@@ -61,110 +40,31 @@
   <!-- Estilos Bootstrap para la paginación -->
   <div>
     <ul class="pagination">
-      <li class="{{ $cargados->onFirstPage() ? 'disabled' : '' }}">
-        <a href="{{ $cargados->previousPageUrl() }}" aria-label="Anterior">
+      <li class="{{ $causados->onFirstPage() ? 'disabled' : '' }}">
+        <a href="{{ $causados->previousPageUrl() }}" aria-label="Anterior">
           <span aria-hidden="true">« Anterior</span>
         </a>
       </li>
 
-      <li class="{{ $cargados->hasMorePages() ? '' : 'disabled' }}">
-        <a href="{{ $cargados->nextPageUrl() }}" class="page-link" aria-label="Siguiente">
+      <li class="{{ $causados->hasMorePages() ? '' : 'disabled' }}">
+        <a href="{{ $causados->nextPageUrl() }}" class="page-link" aria-label="Siguiente">
           <span aria-hidden="true">Siguiente »</span>
         </a>
       </li>
     </ul>
   </div>
 </div>
-<script>
-      function agregarBotones() {
-        var checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
-        var botonesContainer = document.getElementById('botonesContainer');
-
-        // Mostrar o ocultar los botones dependiendo de si hay checkboxes seleccionados
-        if (checkboxes.length > 0) {
-            botonesContainer.style.display = 'block';
-        } else {
-            botonesContainer.style.display = 'none';
-        }
-    }
-</script>
-
-
-
-<script>
-   function openDocument(url) {
-    event.preventDefault(); // Evitar que el formulario se envíe
-
-    const popup = document.createElement('div');
-    popup.id = 'documentoPopup'; // Asignar un ID al popup del documento
-    popup.classList.add('popup');
-    popup.style.display = 'block';
-
-    const popupContent = document.createElement('div');
-    popupContent.classList.add('popup-content');
-
-    const header = document.createElement('div');
-    header.classList.add('header');
-    header.style.position = 'fixed'; // Fijar el encabezado
-    header.style.top = '0'; // Fijar en la parte superior
-    header.style.left = '50%'; // Centrar horizontalmente
-    header.style.transform = 'translateX(-50%)'; // Centrar horizontalmente
-    header.style.width = '100%'; // Ancho del 90%
-    header.style.backgroundColor = '#ffffff'; // Fondo blanco
-    header.style.padding = '10px'; // Agregar relleno
-    header.style.boxShadow = '0 2px 5px rgba(0, 0, 0, 0.2)'; // Sombra
-    header.style.zIndex = '9999'; // Asegurar que esté por encima de otros elementos
-
-    const title = document.createElement('h2');
-    title.classList.add('modal-title');
-    title.textContent = 'Anexos';
-    title.style.margin = '0'; // Eliminar el margen superior del título
-
-    const closeButton = document.createElement('span');
-    closeButton.classList.add('close-icon');
-    closeButton.textContent = '×'; // Usar el carácter de multiplicación como icono de cierre
-    closeButton.style.cursor = 'pointer'; // Cambiar el cursor al pasar sobre el botón
-    closeButton.style.position = 'absolute'; // Posición absoluta
-    closeButton.style.top = '5px'; // Ajustar distancia desde la parte superior
-    closeButton.style.right = '5px'; // Ajustar distancia desde la derecha
-    closeButton.onclick = closeDocumentPopup; // Asignar la función de cierre al hacer clic
-
-    header.appendChild(title);
-    header.appendChild(closeButton);
-
-    const iframe = document.createElement('iframe');
-    iframe.src = url;
-    iframe.width = '800px'; // Ancho completo
-    iframe.height = '900px'; // Altura menos la altura del encabezado y un poco de margen
-    iframe.frameBorder = '0';
-
-    popupContent.appendChild(header);
-    popupContent.appendChild(iframe);
-    popup.appendChild(popupContent);
-
-    document.body.appendChild(popup);
-
-    document.getElementById('popupBackground').style.display = 'block'; // Mostrar el fondo gris
-}
-function closeDocumentPopup() {
-    const popup = document.querySelector('#documentoPopup');
-    if (popup) {
-        popup.remove(); // Eliminar el popup del DOM
-    }
-    // No ocultar el fondo gris aquí, ya que el popupBackground debe mantenerse visible
-}
-</script>
 
 <!-- ================ APROBADAS ================= -->
 <div class="popup-background" id="popupBackground"></div>
-      @foreach ($cargados as $factura)
-      <div class="popup" id="facturaAdjuntadaPopup{{$factura->id}}">
+      @foreach ($causados as $factura)
+      <div class="popup" id="facturaCausadaPopup{{$factura->id}}">
         <div class="popup-content">
           <div class="header">
             <h2 class="modal-title">Datos de Factura</h2>
-            <span class="close-icon" onclick="closePopup('facturaAdjuntadaPopup{{$factura->id}}')">&times;</span>
+            <span class="close-icon" onclick="closePopup('facturaCausadaPopup{{$factura->id}}')">&times;</span>
           </div>
-          <form id="causarFacturaForm{{$factura->id}}" action="{{ route('causar_factura', ['id' => $factura->id]) }}"
+          <form id="causarFacturaForm{{$factura->id}}" action="{{ route('comprobar_factura', ['id' => $factura->id]) }}"
             method="POST" enctype="multipart/form-data">
             @csrf
 
@@ -233,6 +133,8 @@ function closeDocumentPopup() {
             </div>
             <div class="form-row">
               <div class="form-group col-md-6">
+              <hr>
+            <h1>Factura</h1>
                 <label for="anexos">Archivos Adjuntos</label>
                 <div class="attachment-box">
                   <ul class="no-bullet">
@@ -283,27 +185,79 @@ function closeDocumentPopup() {
                 </div>
               </div>
             </div>
+
             <hr>
             <h1>Causaciones</h1>
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                
+                <div class="attachment-box">
+                  <ul class="no-bullet">
+                    @if($factura->causacion1)
+                    <li>
+                      <button class="btn " onclick="openDocument('{{ asset('causaciones/' . $factura->causacion1) }}')">
+                        <i class="fas fa-file"></i> causacion 1 - {{ $factura->causacion1 }}</button>
+                    </li>
+                    @endif
+                    @if($factura->causacion2)
+                    <li>
+                      <button class="btn " onclick="openDocument('{{ asset('causaciones/' . $factura->causacion2) }}')">
+                        <i class="fas fa-file"></i>
+                        causacion 2 - {{ $factura->causacion2 }}</button>
+                    </li>
+                    @endif
+                    @if($factura->causacion3)
+                    <li>
+                      <button class="btn " onclick="openDocument('{{ asset('causaciones/' . $factura->causacion3) }}')">
+                        <i class="fas fa-file"></i>
+                        causacion 3 - {{ $factura->causacion3 }}</button>
+                    </li>
+                    @endif
+                    @if($factura->causacion4)
+                    <li>
+                      <button class="btn " onclick="openDocument('{{ asset('causaciones/' . $factura->causacion4) }}')">
+                        <i class="fas fa-file"></i>
+                        causacion 4 - {{ $factura->causacion4 }}</button>
+                    </li>
+                    @endif
+                    @if($factura->causacion5)
+                    <li>
+                      <button class="btn " onclick="openDocument('{{ asset('causaciones/' . $factura->causacion5) }}')">
+                        <i class="fas fa-file"></i>
+                        causacion 5 - {{ $factura->causacion5 }}</button>
+                    </li>
+                    @endif
+                    @if($factura->causacion6)
+                    <li>
+                      <button class="btn " onclick="openDocument('{{ asset('causaciones/' . $factura->causacion6) }}')">
+                        <i class="fas fa-file"></i>
+                        causacion 6 - {{ $factura->causacion6 }}</button>
+                    </li>
+                    @endif
+
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <h1>Comprobantes</h1>
           <div class="form-row">
               <div class="form-group col-md-6">
-                <label for="causacion1">Causación 1</label>
-                <input type="file" class="form-control-file" id="causacion{{$factura->id}}_1" name="causaciones[]" placeholder="cargue aquí">
+                <label for="comprobante1">Comprobante 1</label>
+                <input type="file" class="form-control-file" id="comprobante{{$factura->id}}_1" name="comprobantes[]" placeholder="cargue aquí">
                 <!-- Lista de archivos seleccionados -->
               </div>
           </div>
-          <div id="causacionesContainer{{$factura->id}}"></div>
-          <button type="button" class="btn btn-secondary" onclick="agregarCausacion({{$factura->id}})">Agregar Causación</button>
+          <div id="comprobantesContainer{{$factura->id}}"></div>
+          <button type="button" class="btn btn-secondary" onclick="agregarComprobante({{$factura->id}})">Agregar Causación</button>
 
             <div class="form-group col-md-6">
               <label for="note">Nota</label>
               <textarea class="form-control" id="note" name="note">{{$factura->note}}</textarea>
             </div>
             <div class="modal-footer">
-              <a href="{{route('cargados.rechazar', ['id' => $factura->id])}}" class="btn btn-danger">Rechazar</a>
-             
               <button type="button" id="cargarBtn{{$factura->id}}" class="btn btn-primary"
-          onclick="confirmarCarga('causarFacturaForm{{$factura->id}}', '{{$factura->id}}')">Causar</button>
+          onclick="confirmarCarga('causarFacturaForm{{$factura->id}}', '{{$factura->id}}')">Pago</button>
             </div>
           </form>
         </div>
@@ -315,20 +269,20 @@ function closeDocumentPopup() {
     }
   </script>
 
-          <script>
-     function agregarCausacion(facturaId) {
-    var contadorCausaciones = document.querySelectorAll('#facturaAdjuntadaPopup' + facturaId + ' input[type="file"]').length + 1;
-    if (contadorCausaciones <= 6) { // Solo agregar hasta 6 causaciones
-        var nuevaCausacion = '<div class="form-group col-md-6">' +
-            '<label for="causacion' + facturaId + '_' + contadorCausaciones + '">Causación ' + contadorCausaciones + '</label>' +
-            '<input type="file" class="form-control-file" id="causacion' + facturaId + '_' + contadorCausaciones + '" name="causaciones[]" placeholder="cargue aquí">' +
+<script>
+     function agregarComprobante(facturaId) {
+    var contadorComprobantes = document.querySelectorAll('#facturaCausadaPopup' + facturaId + ' input[type="file"]').length + 1;
+    if (contadorComprobantes <= 3) { // Solo agregar hasta 6 comprobantes
+        var nuevaComprobante = '<div class="form-group col-md-6">' +
+            '<label for="comprobante' + facturaId + '_' + contadorComprobantes + '">Comprobante ' + contadorComprobantes + '</label>' +
+            '<input type="file" class="form-control-file" id="comprobante' + facturaId + '_' + contadorComprobantes + '" name="comprobantes[]" placeholder="cargue aquí">' +
             '</div>';
-        document.getElementById('causacionesContainer' + facturaId).innerHTML += nuevaCausacion;
+        document.getElementById('comprobantesContainer' + facturaId).innerHTML += nuevaComprobante;
     } else {
         Swal.fire({
             icon: 'error',
             title: 'Oops...',
-            text: 'No se pueden agregar más de 6 causaciones.',
+            text: 'No se pueden agregar más de 6 comprobantes.',
             customClass: {
                 container: 'swal-overlay' // Agrega una clase personalizada para que SweetAlert use el estilo personalizado
             }
@@ -405,11 +359,70 @@ function confirmarCarga(formId, facturaId) {
 }
 </script>
 
-    </script>
+<script>
+   function openDocument(url) {
+    event.preventDefault(); // Evitar que el formulario se envíe
 
+    const popup = document.createElement('div');
+    popup.id = 'documentoPopup'; // Asignar un ID al popup del documento
+    popup.classList.add('popup');
+    popup.style.display = 'block';
 
+    const popupContent = document.createElement('div');
+    popupContent.classList.add('popup-content');
 
-<!-- ================ Abrir PopUp ================= -->
+    const header = document.createElement('div');
+    header.classList.add('header');
+    header.style.position = 'fixed'; // Fijar el encabezado
+    header.style.top = '0'; // Fijar en la parte superior
+    header.style.left = '50%'; // Centrar horizontalmente
+    header.style.transform = 'translateX(-50%)'; // Centrar horizontalmente
+    header.style.width = '100%'; // Ancho del 90%
+    header.style.backgroundColor = '#ffffff'; // Fondo blanco
+    header.style.padding = '10px'; // Agregar relleno
+    header.style.boxShadow = '0 2px 5px rgba(0, 0, 0, 0.2)'; // Sombra
+    header.style.zIndex = '9999'; // Asegurar que esté por encima de otros elementos
+
+    const title = document.createElement('h2');
+    title.classList.add('modal-title');
+    title.textContent = 'Anexos';
+    title.style.margin = '0'; // Eliminar el margen superior del título
+
+    const closeButton = document.createElement('span');
+    closeButton.classList.add('close-icon');
+    closeButton.textContent = '×'; // Usar el carácter de multiplicación como icono de cierre
+    closeButton.style.cursor = 'pointer'; // Cambiar el cursor al pasar sobre el botón
+    closeButton.style.position = 'absolute'; // Posición absoluta
+    closeButton.style.top = '5px'; // Ajustar distancia desde la parte superior
+    closeButton.style.right = '5px'; // Ajustar distancia desde la derecha
+    closeButton.onclick = closeDocumentPopup; // Asignar la función de cierre al hacer clic
+
+    header.appendChild(title);
+    header.appendChild(closeButton);
+
+    const iframe = document.createElement('iframe');
+    iframe.src = url;
+    iframe.width = '800px'; // Ancho completo
+    iframe.height = '900px'; // Altura menos la altura del encabezado y un poco de margen
+    iframe.frameBorder = '0';
+
+    popupContent.appendChild(header);
+    popupContent.appendChild(iframe);
+    popup.appendChild(popupContent);
+
+    document.body.appendChild(popup);
+
+    document.getElementById('popupBackground').style.display = 'block'; // Mostrar el fondo gris
+}
+function closeDocumentPopup() {
+    const popup = document.querySelector('#documentoPopup');
+    if (popup) {
+        popup.remove(); // Eliminar el popup del DOM
+    }
+    // No ocultar el fondo gris aquí, ya que el popupBackground debe mantenerse visible
+}
+</script>
+
 <script>
   
   function openPopup(popupId) {
@@ -422,5 +435,6 @@ function confirmarCarga(formId, facturaId) {
     document.getElementById('popupBackground').style.display = "none"; // Ocultar el fondo gris
   }
 </script>
+
 
 @endsection

@@ -52,6 +52,9 @@ public function cargarFactura(Request $request, $id)
     // Valida y guarda los archivos PDF
     $request->validate([
         'anexos.*' => 'required|mimes:pdf,doc,docx|max:2048', // Ajusta los tipos de archivo según tus necesidades
+    ], [
+            'area.required' => 'Debes seleccionar un área antes de cargar el archivo.',
+        
     ]);
 
     // Encuentra la factura por ID
@@ -76,34 +79,18 @@ public function cargarFactura(Request $request, $id)
     $factura->subtype = 'Adjuntada';
 
    // Procesa los archivos anexos
-if ($request->hasFile('anexos')) {
-    $contadorAnexos = 1; // Inicializa el contador de anexos
-    foreach ($request->file('anexos') as $anexo) {
-        $nombreArchivo = time() . '_' . $contadorAnexos . '_' . $anexo->getClientOriginalName();
+   if ($request->hasFile('anexos')) {
+    foreach ($request->file('anexos') as $index => $anexo) {
+        $nombreCampo = 'anexo' . ($index + 1); // Calcula el nombre del campo de anexo
+        $nombreArchivo = time() . '_' . ($index + 1) . '_' . $anexo->getClientOriginalName();
         $anexo->move(public_path('anexos'), $nombreArchivo);
         // Guarda el nombre del archivo en el campo correspondiente (anexo1, anexo2, etc.)
-        $factura->{'anexo' . $contadorAnexos} = $nombreArchivo;
-        $contadorAnexos++;
+        $factura->$nombreCampo = $nombreArchivo;
     }
     // Guarda los cambios en la base de datos
     $factura->save();
 }
 
-
-    /*// Obtén el nombre del usuario financiero
-    $usuarioFinanciero = User::where('area', 'Financiera')->first();
-
-    // Saludos para el correo electrónico
-    $userSalutation = "Hola " . Auth::user()->name;
-    $financieroSalutation = "Hola " . $usuarioFinanciero->name;
-
-    // Envía el correo al usuario que entregó la factura
-    Mail::to(Auth::user()->email)->send(new InvoiceDelivered($factura, Auth::user(), $userSalutation));
-
-    // Envía el correo al usuario financiero
-    Mail::to($usuarioFinanciero->email)->send(new InvoiceDelivered($factura, $usuarioFinanciero, $financieroSalutation));*/
-
-    // Redirecciona de vuelta con un mensaje de éxito
     return redirect()->back()->with('success', 'Factura cargada con éxito.');
 }
 
@@ -129,20 +116,7 @@ public function aprobar(Request $request, $id)
  
         // Guarda los cambios en la base de datos
         $factura->save();
-    
 
-    // Obtén el nombre del usuario financiero
-   /* $usuarioFinanciero = User::where('area', 'Financiera')->first();
-
-    // Saludos para el correo electrónico
-    $userSalutation = "Hola " . Auth::user()->name;
-    $financieroSalutation = "Hola " . $usuarioFinanciero->name;
-
-    // Envía el correo al usuario que entregó la factura
-    Mail::to(Auth::user()->email)->send(new InvoiceDelivered($factura, Auth::user(), $userSalutation));
-
-    // Envía el correo al usuario financiero
-    Mail::to($usuarioFinanciero->email)->send(new InvoiceDelivered($factura, $usuarioFinanciero, $financieroSalutation));*/
 
     // Redirecciona de vuelta con un mensaje de éxito
     return redirect()->back()->with('success', 'Factura cargada con éxito.');
@@ -151,10 +125,24 @@ public function aprobar(Request $request, $id)
 
 public function rechazar(Request $request, $id)
 {
+    
     // Encuentra la factura por ID
     $factura = Factura::findOrFail($id);
+    $factura->type = $request->input('type');
+    $factura->folio = $request->input('folio');
+    $factura->issuer_name = $request->input('issuer_name');
+    $factura->issuer_nit = $request->input('issuer_nit');
+    $factura->prefix = $request->input('prefix');
+    $factura->area = $request->input('area');
+    $factura->costo1 = $request->input('costo1');
+    $factura->costo2 = $request->input('costo2');
+    $factura->costo3 = $request->input('costo3');
+    $factura->costo4 = $request->input('costo4');
+    $factura->note = $request->input('note');
+    
 
-    // Elimina los anexos de la carpeta de anexos
+
+   /* // Elimina los anexos de la carpeta de anexos
     for ($i = 1; $i <= 6; $i++) { // Ahora consideramos hasta 6 anexos
         $nombreArchivo = $factura->{'anexo' . $i};
         if ($nombreArchivo) {
@@ -162,25 +150,19 @@ public function rechazar(Request $request, $id)
             if (file_exists($rutaArchivo)) {
                 unlink($rutaArchivo); // Elimina el archivo
             }
+            // Elimina el nombre del anexo de la base de datos
+            $factura->{'anexo' . $i} = null;
         }
-    }
-
-    // Elimina los nombres de los anexos de la base de datos
-    $factura->anexo1 = null;
-    $factura->anexo2 = null;
-    $factura->anexo3 = null;
-    $factura->anexo4 = null;
-    $factura->anexo5 = null;
-    $factura->anexo6 = null;
+    }*/
 
     // Guarda los cambios en la base de datos
     $factura->save();
 
     // Actualiza el subtype a "Rechazada"
     $factura->subtype = 'Rechazada';
-
     $factura->save();
 
+    // Redirecciona de vuelta con un mensaje de éxito
     return redirect()->back()->with('success', 'Factura rechazada');
 }
 
@@ -219,7 +201,7 @@ private function generarConsecutivo()
 
     // Si no hay ningún reembolso registrado todavía, comenzar desde 1
     if (!$ultimoReembolso) {
-        return 'R001'; // O el formato que desees para tus consecutivos
+        return 'R000001'; // O el formato que desees para tus consecutivos
     }
 
     // Extraer el número del último consecutivo y agregarle 1
@@ -227,7 +209,7 @@ private function generarConsecutivo()
     $nuevoNumero = $ultimoNumero + 1;
 
     // Formatear el nuevo consecutivo con ceros a la izquierda si es necesario
-    $nuevoConsecutivo = 'R' . str_pad($nuevoNumero, 3, '0', STR_PAD_LEFT);
+    $nuevoConsecutivo = 'R' . str_pad($nuevoNumero, 6, '0', STR_PAD_LEFT);
 
     return $nuevoConsecutivo;
 }

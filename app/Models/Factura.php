@@ -45,6 +45,9 @@ class Factura extends Model
       'causacion4',
       'causacion5',
       'causacion6',
+      'comprobante1',
+      'comprobante2',
+      'comprobante3',
       'reembolso_id',
 
     ];

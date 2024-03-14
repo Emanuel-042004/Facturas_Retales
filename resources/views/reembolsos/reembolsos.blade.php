@@ -215,9 +215,9 @@
               <textarea class="form-control" id="note" name="note">{{$factura->note}}</textarea>
             </div>
             <div class="modal-footer">
-              <a href="{{route('pendientes.rechazar', ['id' => $factura->id])}}" class="btn btn-danger">Rechazar</a>
-              <button type="submit" class="btn btn-primary">Aprobar</button>
-            </div>
+    <button type="submit" class="btn btn-danger" formaction="{{route('pendientes.rechazar', ['id' => $factura->id])}}">Rechazar</button>
+    <button type="submit" class="btn btn-primary">Aprobar</button>
+</div>
           </form>
         </div>
       </div>
@@ -309,7 +309,7 @@
       <button type="button" class="btn btn-secondary" onclick="agregarAnexo({{$factura->id}})">Agregar Anexo</button>
       <div class="form-group col-md-6">
         <label for="note">Nota</label>
-        <textarea class="form-control" id="note" name="note" value="{{$factura->note}}"></textarea>
+        <textarea class="form-control" id="note" name="note" >{{$factura->note}}</textarea>
       </div>
       <div class="modal-footer">
         <!-- Botón de "cargar" -->

@@ -397,17 +397,18 @@ function cambiarTipo(tipo) {
           </div>
       </div>
       <div class="form-group col-md-6">
-        <label for="note">Nota</label>
-        <textarea class="form-control" id="note" name="note" value="{{$factura->note}}">{{$factura->note}}</textarea>
-      </div>
-      <div class="modal-footer">
-        <a href="{{route('pendientes.rechazar', ['id' => $factura->id])}}" class="btn btn-danger">Rechazar</a>
-        <button type="submit" class="btn btn-primary">Aprobar</button>
-      </div>
+    <label for="note">Nota</label>
+    <textarea class="form-control" id="note" name="note">{{$factura->note}}</textarea>
+</div>
+<div class="modal-footer">
+    <button type="submit" class="btn btn-danger" formaction="{{route('pendientes.rechazar', ['id' => $factura->id])}}">Rechazar</button>
+    <button type="submit" class="btn btn-primary">Aprobar</button>
+</div>
     </form>
   </div>
 </div>
 @endforeach
+
 <script>
   function openDocument(url) {
     event.preventDefault(); // Evitar que el formulario se envíe
@@ -533,7 +534,7 @@ function cambiarTipo(tipo) {
       </div>
         <div class="form-group col-md-6">
           <label for="area">Área</label>
-          <select class="form-control" id="area" name="area">
+          <select class="form-control" id="area" name="area" required>
             <option value="">Selecciona</option>
             <option value="Compras" @selected( "Compras"==$factura -> area)>Compras</option>
             <option value="Financiera" @selected( "Financiera"==$factura -> area)>Financiera</option>
@@ -543,6 +544,63 @@ function cambiarTipo(tipo) {
           </select>
         </div>
       </div>
+      @if($factura->subtype == 'Rechazada' || $factura->subtype == 'FIN/Rechazada')
+      <div class="form-group col-md-6">
+          <label for="anexos">Archivos Adjuntos</label>
+          <div class="attachment-box">
+            <ul class="no-bullet">
+              @if($factura->anexo1)
+              <li>
+              
+                <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo1) }}')">
+                  <i class="fas fa-file"></i> Anexo 1 - {{ $factura->anexo1 }}</button>
+              </li>
+              @endif
+              @if($factura->anexo2)
+              <li>
+                
+                <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo2) }}')">
+                  <i class="fas fa-file"></i>
+                  Anexo 2 - {{ $factura->anexo2 }}</button>
+              </li>
+              @endif
+              @if($factura->anexo3)
+              <li>
+                
+                <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo3) }}')">
+                  <i class="fas fa-file"></i>
+                  Anexo 3 - {{ $factura->anexo3 }}</button>
+              </li>
+              @endif
+              @if($factura->anexo4)
+              <li>
+                
+                <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo4) }}')">
+                  <i class="fas fa-file"></i>
+                  Anexo 4 - {{ $factura->anexo4 }}</button>
+              </li>
+              @endif
+              @if($factura->anexo5)
+              <li>
+                
+                <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo5) }}')">
+                  <i class="fas fa-file"></i>
+                  Anexo 5 - {{ $factura->anexo5 }}</button>
+              </li>
+              @endif
+              @if($factura->anexo6)
+              <li>
+                
+                <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo6) }}')">
+                  <i class="fas fa-file"></i>
+                  Anexo 6 - {{ $factura->anexo6 }}</button>
+              </li>
+              @endif
+
+            </ul>
+          </div>
+        </div>
+      @endif
       <div class="form-row">
         <div class="form-group col-md-6">
           <label for="anexo1">Anexo 1</label>
@@ -577,7 +635,7 @@ function cambiarTipo(tipo) {
 
       <div class="form-group col-md-6">
         <label for="note">Nota</label>
-        <textarea class="form-control" id="note" name="note" value="{{$factura->note}}">{{$factura->note}}</textarea>
+        <textarea class="form-control" id="note" name="note">{{$factura->note}}</textarea>
       </div>
       <div class="modal-footer">
         <!-- Botón de "cargar" -->

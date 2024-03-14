@@ -60,6 +60,15 @@
                 </li>
 
                 <li>
+                    <a href="{{route('reembolsos.index') }}">
+                        <span class="icon">
+                        <ion-icon name="refresh-circle-outline"></ion-icon>
+                        </span>
+                        <span class="title">Reembolsos</span>
+                    </a>
+                </li>
+
+                <li>
                     <a href="{{route('cargados.index') }}">
                         <span class="icon">
                         <ion-icon name="save-outline"></ion-icon>
@@ -69,7 +78,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="{{route('causados.index') }}">
                         <span class="icon">
                         <ion-icon name="calculator-outline"></ion-icon>
                         </span>
@@ -86,14 +95,7 @@
                     </a>
                 </li>
 
-                <li>
-                    <a href="{{route('reembolsos.index') }}">
-                        <span class="icon">
-                        <ion-icon name="refresh-circle-outline"></ion-icon>
-                        </span>
-                        <span class="title">Reembolsos</span>
-                    </a>
-                </li>
+                
 
                 <li>
                     <a href="#">
