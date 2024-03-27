@@ -40,6 +40,7 @@ Route::post('cambiar-tipo-facturas', [PendientesController::class, 'crearReembol
 
 
 Route::get('/reembolsos', [ReembolsosController::class, 'index'])->name('reembolsos.index');
+Route::get('/reembolsos_causados', [ReembolsosController::class, 'reembolsoscausados'])->name('reembolsos_causados.index');
 
 
 Route::post('/cargar-factura/{id}', [PendientesController::class, 'cargarFactura'])->name('cargar_factura');
@@ -51,13 +52,17 @@ Route::post('/pendientes/{id}/aprobar', [PendientesController::class, 'aprobar']
 Route::post('/facturas/{id}/editar-anexo/{numero_anexo}', [PendientesController::class, 'editarAnexo'])->name('editar_anexo');
 
 Route::get('/cargados', [CargadosController::class, 'index'])->name('cargados.index');
-Route::get('/cargados/{id}/rechazar', [CargadosController::class, 'rechazar'])->name('cargados.rechazar');
+
+Route::post('/cargados/{id}/rechazar', [CargadosController::class, 'rechazar'])->name('cargados.rechazar');
 Route::get('/cargados/{id}/entregar', [CargadosController::class, 'entregar'])->name('cargados.entregar');
+
 Route::post('/causar-factura/{id}', [CargadosController::class, 'causarFactura'])->name('causar_factura');
 
 Route::get('/causados', [CausadosController::class, 'index'])->name('causados.index');
 
 Route::post('/comprobar-factura/{id}', [CausadosController::class, 'comprobarFactura'])->name('comprobar_factura');
+Route::get('/pagados', [CargadosController::class, 'pagosindex'])->name('pagos.index');
+
 
 Route::get('/entregados', [EntregadosController::class, 'index'])->name('entregados.index');
 Route::post('/recibir-factura/{id}', [EntregadosController::class, 'recibirFactura']);

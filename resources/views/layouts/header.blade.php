@@ -20,7 +20,7 @@
     <div class="container">
         <div class="navigation">
             <ul>
-                <li>
+                <li >
                     <a id="user" href="#">
                         <span class="icon">
                             <ion-icon id="icon1" name="person-circle-outline"></ion-icon>
@@ -31,7 +31,7 @@
                 </li>
 
 
-                <li>
+                <li class="active" data-menu="home">
 
                     <a href="{{route ('home')}}">
                         <span class="icon">
@@ -41,7 +41,7 @@
                     </a>
                 </li>
 
-                <li>
+                <li class="active">
                     <a href="{{route ('home')}}">
                         <span class="icon">
                             <ion-icon name="cloud-upload-outline"></ion-icon>
@@ -50,63 +50,86 @@
                     </a>
                 </li>
 
-                <li>
+                <li class="active">
                     <a href=" {{route('pendientes.index') }}">
                         <span class="icon">
                             <ion-icon name="document-text-outline"></ion-icon>
                         </span>
                         <span class="title">Facturas DIAN</span>
+                        <!-- Texto flotante -->
+                        <span class="tooltip">Pen...</span>
                     </a>
                 </li>
 
-                <li>
+                <li class="active">
                     <a href="{{route('reembolsos.index') }}">
                         <span class="icon">
                         <ion-icon name="refresh-circle-outline"></ion-icon>
                         </span>
                         <span class="title">Reembolsos</span>
+                        <!-- Texto flotante -->
+                        <span class="tooltip">Reem...</span>
                     </a>
                 </li>
 
-                <li>
-                    <a href="{{route('cargados.index') }}">
+                <li class="active">
+                    <a href="{{route('reembolsos_causados.index') }}">
                         <span class="icon">
-                        <ion-icon name="save-outline"></ion-icon>
+                        <ion-icon name="bag-check-outline"></ion-icon>
+                        </span>
+                        <span class="title">Causaciones de reembolso</span>
+                        <!-- Texto flotante -->
+                        <span class="tooltip">Cau/Rbs</span>
+                    </a>
+                </li>
 
+                <li class="active">
+                    <a href="{{ route('cargados.index') }}">
+                        <span class="icon" id="save-icon">
+                            <ion-icon name="save-outline"></ion-icon>
                         </span>
                         <span class="title">Cargadas</span>
+                        <!-- Texto flotante -->
+                        <span class="tooltip">Cargadas</span>
                     </a>
                 </li>
-                <li>
+
+                <li class="active">
                     <a href="{{route('causados.index') }}">
                         <span class="icon">
                         <ion-icon name="calculator-outline"></ion-icon>
                         </span>
                         <span class="title">Causaciones</span>
+                        <!-- Texto flotante -->
+                        <span class="tooltip">Causa...</span>
                     </a>
                 </li>
 
-                <li>
-                    <a href="#">
+                <li class="active">
+                    <a href="{{route('pagos.index')}}">
                         <span class="icon">
                         <ion-icon name="wallet-outline"></ion-icon>
                         </span>
                         <span class="title">Pagos</span>
+                        <!-- Texto flotante -->
+                        <span class="tooltip">Pagos</span>
                     </a>
                 </li>
 
                 
 
-                <li>
+                <li class="active">
                     <a href="#">
                         <span class="icon">
                             <ion-icon name="checkmark-circle-outline"></ion-icon>
                         </span>
                         <span class="title">Finalizadas</span>
+                        <!-- Texto flotante -->
+                        <span class="tooltip">Fin...</span>
                     </a>
                 </li>
 
-                <li>
+                <li class="active">
                     <a  href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                         <span class="icon">
                             <ion-icon name="log-out-outline"></ion-icon>
@@ -121,7 +144,32 @@
 
             </ul>
         </div>
+<script>
+// Ejemplo de JavaScript
+document.addEventListener('DOMContentLoaded', function() {
+    // Obtener todos los elementos <li>
+    var listItems = document.querySelectorAll('.navigation ul li');
 
+    // Eliminar la clase "active" de todos los elementos <li>
+    listItems.forEach(item => {
+        item.classList.remove('active');
+    });
+
+    // Agregar el evento click a cada elemento <li>
+    listItems.forEach(item => {
+        item.addEventListener('click', function() {
+            // Eliminar la clase "active" de todos los elementos <li>
+            listItems.forEach(li => {
+                li.classList.remove('active');
+            });
+            // Agregar la clase "active" al elemento seleccionado
+            this.classList.add('active');
+        });
+    });
+});
+
+
+</script>
         <!-- ========================= Main ==================== -->
         <div class="main">
             <div class="topbar">

@@ -7,9 +7,24 @@
   <div class="cardHeader">
     <h2>Facturas Causadas</h2>
   </div>
+  <div class="search">
+    <form action="{{ route('causados.index') }}" method="GET">
+    
+
+      <div class="search">
+    <label>  
+      <input type="text" name="q" placeholder="Buscar" id="searchInput">
+      <ion-icon name="search-outline"></ion-icon>
+      <button type="submit">
+       
+       </button>
+
+    </label>
+  </div>
+    </form>
+  </div>
   <table>
     <thead>
-      
       <td>Estado</td>
       <td>Area</td>
       <td>Nombre</td>
@@ -328,10 +343,10 @@ function confirmarCarga(formId, facturaId) {
 
     // Mostrar una confirmación de SweetAlert en lugar de la confirmación del navegador
     Swal.fire({
-        title: '¿Estás seguro de que deseas causar la factura?',
+        title: '¿Estás seguro de que deseas marcar como pagada la factura?',
         icon: 'question',
         showCancelButton: true,
-        confirmButtonText: 'Sí, cargar factura',
+        confirmButtonText: 'Sí',
         cancelButtonText: 'Cancelar',
         customClass: {
             container: 'swal-overlay',

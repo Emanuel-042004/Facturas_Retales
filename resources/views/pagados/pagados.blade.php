@@ -5,11 +5,10 @@
 
 <div class="tablas">
   <div class="cardHeader">
-    <h2>Facturas Cargadas</h2>
-    
-  </div>
-  <div class="search">
-    <form action="{{ route('cargados.index') }}" method="GET">
+    <h2>Facturas Pagadas</h2>
+    <!-- Botones ocultos al principio -->
+    <div class="search">
+    <form action="{{ route('pagos.index') }}" method="GET">
     
 
       <div class="search">
@@ -23,6 +22,7 @@
     </label>
   </div>
     </form>
+  </div>
   </div>
   <table>
     <thead>
@@ -38,7 +38,7 @@
       </tr>
     </thead>
     <tbody>
-      @foreach ($cargados as $factura)
+      @foreach ($pagados as $factura)
       @if (!$area || $factura->area === $area)
       <td>
         <input type="checkbox" class="form-check-input" name="selectedFacturas[]" value="{{ $factura->id }}" onchange ="agregarBotones()">
@@ -72,14 +72,14 @@
   <!-- Estilos Bootstrap para la paginación -->
   <div>
     <ul class="pagination">
-      <li class="{{ $cargados->onFirstPage() ? 'disabled' : '' }}">
-        <a href="{{ $cargados->previousPageUrl() }}" aria-label="Anterior">
+      <li class="{{ $pagados->onFirstPage() ? 'disabled' : '' }}">
+        <a href="{{ $pagados->previousPageUrl() }}" aria-label="Anterior">
           <span aria-hidden="true">« Anterior</span>
         </a>
       </li>
 
-      <li class="{{ $cargados->hasMorePages() ? '' : 'disabled' }}">
-        <a href="{{ $cargados->nextPageUrl() }}" class="page-link" aria-label="Siguiente">
+      <li class="{{ $pagados->hasMorePages() ? '' : 'disabled' }}">
+        <a href="{{ $pagados->nextPageUrl() }}" class="page-link" aria-label="Siguiente">
           <span aria-hidden="true">Siguiente »</span>
         </a>
       </li>
@@ -168,7 +168,7 @@ function closeDocumentPopup() {
 
 <!-- ================ APROBADAS ================= -->
 <div class="popup-background" id="popupBackground"></div>
-      @foreach ($cargados as $factura)
+      @foreach ($pagados as $factura)
       <div class="popup" id="facturaAdjuntadaPopup{{$factura->id}}">
         <div class="popup-content">
           <div class="header">
@@ -296,22 +296,95 @@ function closeDocumentPopup() {
             </div>
             <hr>
             <h1>Causaciones</h1>
-          <div class="form-row">
+            <div class="form-row">
               <div class="form-group col-md-6">
-                <label for="causacion1">Causación 1</label>
-                <input type="file" class="form-control-file" id="causacion{{$factura->id}}_1" name="causaciones[]" placeholder="cargue aquí">
-                <!-- Lista de archivos seleccionados -->
+                
+                <div class="attachment-box">
+                  <ul class="no-bullet">
+                    @if($factura->causacion1)
+                    <li>
+                      <button class="btn " onclick="openDocument('{{ asset('causaciones/' . $factura->causacion1) }}')">
+                        <i class="fas fa-file"></i> causacion 1 - {{ $factura->causacion1 }}</button>
+                    </li>
+                    @endif
+                    @if($factura->causacion2)
+                    <li>
+                      <button class="btn " onclick="openDocument('{{ asset('causaciones/' . $factura->causacion2) }}')">
+                        <i class="fas fa-file"></i>
+                        causacion 2 - {{ $factura->causacion2 }}</button>
+                    </li>
+                    @endif
+                    @if($factura->causacion3)
+                    <li>
+                      <button class="btn " onclick="openDocument('{{ asset('causaciones/' . $factura->causacion3) }}')">
+                        <i class="fas fa-file"></i>
+                        causacion 3 - {{ $factura->causacion3 }}</button>
+                    </li>
+                    @endif
+                    @if($factura->causacion4)
+                    <li>
+                      <button class="btn " onclick="openDocument('{{ asset('causaciones/' . $factura->causacion4) }}')">
+                        <i class="fas fa-file"></i>
+                        causacion 4 - {{ $factura->causacion4 }}</button>
+                    </li>
+                    @endif
+                    @if($factura->causacion5)
+                    <li>
+                      <button class="btn " onclick="openDocument('{{ asset('causaciones/' . $factura->causacion5) }}')">
+                        <i class="fas fa-file"></i>
+                        causacion 5 - {{ $factura->causacion5 }}</button>
+                    </li>
+                    @endif
+                    @if($factura->causacion6)
+                    <li>
+                      <button class="btn " onclick="openDocument('{{ asset('causaciones/' . $factura->causacion6) }}')">
+                        <i class="fas fa-file"></i>
+                        causacion 6 - {{ $factura->causacion6 }}</button>
+                    </li>
+                    @endif
+
+                  </ul>
+                </div>
               </div>
-          </div>
-          <div id="causacionesContainer{{$factura->id}}"></div>
-          <button type="button" class="btn btn-secondary" onclick="agregarCausacion({{$factura->id}})">Agregar Causación</button>
+            </div>
+
+            <h1>Comprobante</h1>
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                
+                <div class="attachment-box">
+                  <ul class="no-bullet">
+                    @if($factura->comprobante1)
+                    <li>
+                      <button class="btn " onclick="openDocument('{{ asset('comprobantes/' . $factura->comprobante1) }}')">
+                        <i class="fas fa-file"></i> comprobante 1 - {{ $factura->comprobante1 }}</button>
+                    </li>
+                    @endif
+                    @if($factura->comprobante2)
+                    <li>
+                      <button class="btn " onclick="openDocument('{{ asset('comprobantes/' . $factura->comprobante2) }}')">
+                        <i class="fas fa-file"></i>
+                        comprobante 2 - {{ $factura->comprobante2 }}</button>
+                    </li>
+                    @endif
+                    @if($factura->comprobante3)
+                    <li>
+                      <button class="btn " onclick="openDocument('{{ asset('comprobantes/' . $factura->comprobante3) }}')">
+                        <i class="fas fa-file"></i>
+                        comprobante 3 - {{ $factura->comprobante3 }}</button>
+                    </li>
+                    @endif
+                  </ul>
+                </div>
+              </div>
+            </div>
 
             <div class="form-group col-md-6">
               <label for="note">Nota</label>
               <textarea class="form-control" id="note" name="note">{{$factura->note}}</textarea>
             </div>
             <div class="modal-footer">
-            <button type="submit" class="btn btn-danger" formaction="{{route('cargados.rechazar', ['id' => $factura->id])}}">Rechazar</button>
+              <a href="{{route('cargados.rechazar', ['id' => $factura->id])}}" class="btn btn-danger">Rechazar</a>
              
               <button type="button" id="cargarBtn{{$factura->id}}" class="btn btn-primary"
           onclick="confirmarCarga('causarFacturaForm{{$factura->id}}', '{{$factura->id}}')">Causar</button>

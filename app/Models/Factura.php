@@ -56,4 +56,15 @@ class Factura extends Model
 {
     return $this->belongsTo(Reembolso::class);
 }
+public function scopeFilter($query, $search)
+{
+    if ($search){
+        $query->where(function ($query) use ($search) {
+            foreach ($this->fillable as $field) {
+                $query->orWhere($field, 'like', '%' . $search . '%');
+            }
+        });
+    }
+    return $query;
+}
 }

@@ -19,7 +19,7 @@
 
 body {
   min-height: 100vh;
-  overflow-x: hidden;
+  overflow: auto;
   background-image: url('imagenes/logo2.jpeg' );
 }
 
@@ -36,7 +36,7 @@ body {
   background: var(--blue);
   border-left: 10px solid var(--blue);
   transition: 0.5s;
-  overflow: hidden;
+  overflow: auto;
 }
 .navigation.active {
   width: 80px;
@@ -459,7 +459,7 @@ body {
 
 .status.loaded {
   padding: 2px 4px;
-  background: #fc8200;
+  background: rgb(119, 47, 191);
   color: var(--white);
   border-radius: 4px;
   font-size: 14px;
@@ -752,7 +752,10 @@ body {
   .form-group2 {
     margin-top: 20px;
     margin-bottom: 20px;
+    gap: 60px;
     display: flex;
+    justify-content: space-between;
+    width: 100%;;
   }
   
   label {
@@ -766,13 +769,15 @@ body {
     width: 100%;
     padding: 10px;
     border: 1px solid #cccccc;
-    border-radius: 10px;
-    -webkit-border-radius: 10px;
-    -moz-border-radius: 10px;
-    -ms-border-radius: 10px;
-    -o-border-radius: 10px;
-    box-shadow: 0 0 5px #8f8c8c;
+    border-radius: 7px;
+    -webkit-border-radius: 7px;
+    -moz-border-radius: 7px;
+    -ms-border-radius: 7px;
+    -o-border-radius: 7px;
+    box-shadow: 0 0 3px #8f8c8c;
 }
+
+
 
   textarea{
     width: 100%;
@@ -867,15 +872,16 @@ body {
 
   /* Estilo para la tarjeta de reembolso */
 .reembolso-card {
-  border: 1px solid #ccc;
+  border: 1px solid #e0e0e0;
   border-radius: 5px;
   margin-bottom: 20px;
   overflow: hidden;
+  box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.2);
 }
 
 /* Estilo para el encabezado de la tarjeta */
 .reembolso-header {
-  background-color: #f2f2f2;
+  background-color: #dbdbdb;
   padding: 10px;
 }
 
@@ -933,3 +939,29 @@ body {
 .reembolso-button:hover {
   background-color: #8a0000;
 }
+
+/* Estilos para el texto flotante */
+.tooltip {
+  visibility: hidden;
+  width: 120px;
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  margin-left: -60px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+/* Estilos para mostrar el texto flotante cuando se pasa el cursor */
+.icon:hover + .title + .tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+
+

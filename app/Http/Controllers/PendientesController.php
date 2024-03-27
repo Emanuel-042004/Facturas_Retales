@@ -28,6 +28,19 @@ public function index(Request $request)
         $query->where('area', $area);
     }
 
+    $search = $request->input('q');
+
+    if ($search) {
+        $query->where(function ($subquery) use ($search) {
+            $factura = new Factura();
+            $fillableFields = $factura->getFillable();
+            foreach ($fillableFields as $field) {
+                $subquery->orWhere($field, 'like', "%{$search}%");
+            }
+        });
+    }
+
+
     $perPage = 15; // Número de elementos por página
     $page = $request->input('page', 1); // Página actual, por defecto es 1
     $query->orderBy('id', 'desc');
@@ -51,15 +64,26 @@ public function cargarFactura(Request $request, $id)
 
     // Valida y guarda los archivos PDF
     $request->validate([
+        'area' => 'required', // El campo de área es requerido
         'anexos.*' => 'required|mimes:pdf,doc,docx|max:2048', // Ajusta los tipos de archivo según tus necesidades
     ], [
-            'area.required' => 'Debes seleccionar un área antes de cargar el archivo.',
-        
+        'area.required' => 'Debes seleccionar un área antes de cargar el archivo.', // Mensaje de error personalizado para el campo de área
     ]);
 
     // Encuentra la factura por ID
     $factura = Factura::findOrFail($id);
+    
+    // Obtén el usuario actual autenticado
+$user = Auth::user();
 
+// Obtiene el nombre del área del usuario
+$userArea = $user->area;
+
+// Obtén las tres primeras letras del nombre del área
+$areaInitials = substr($userArea, 0, 3);
+
+// Combina el nombre del usuario con las tres primeras letras del área
+$deliveredBy = $user->name . ' - ' . $areaInitials;
     // Actualiza los datos de la factura con los valores del formulario
     $factura->update([
         'type' => $request->input('type'),
@@ -73,7 +97,7 @@ public function cargarFactura(Request $request, $id)
         'costo3' => $request->input('costo3'),
         'costo4' => $request->input('costo4'),
         'delivery_date' => now(),
-        'delivered_by' => Auth::user()->name,
+        'delivered_by' => $deliveredBy,
         'subtype' => 'Adjuntada', 
     ]);
     $factura->subtype = 'Adjuntada';
@@ -209,7 +233,7 @@ private function generarConsecutivo()
     $nuevoNumero = $ultimoNumero + 1;
 
     // Formatear el nuevo consecutivo con ceros a la izquierda si es necesario
-    $nuevoConsecutivo = 'R' . str_pad($nuevoNumero, 6, '0', STR_PAD_LEFT);
+    $nuevoConsecutivo = str_pad($nuevoNumero, 6, '0', STR_PAD_LEFT);
 
     return $nuevoConsecutivo;
 }

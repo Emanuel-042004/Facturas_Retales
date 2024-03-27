@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Models\User; 
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\FacturasImport;
-
+use Illuminate\Support\Facades\Auth;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
@@ -56,7 +56,8 @@ class FacturasController extends Controller
             'prefix' => $request->input('prefix'),
             'area' => $request->input('area'),
             'note' => $request->input('note'),
-            
+            'delivery_date' => now(),
+            'delivered_by' => Auth::user()->name,
             'status' => 'Pendiente',
 
         ]);
@@ -122,7 +123,7 @@ public function importExcel(Request $request)
     // Eliminar el archivo temporal después de la importación
     unlink($tempPath);
 
-    return back()->with('message', 'Importación completada');
+    return redirect()->route('pendientes.index')->with('success', 'Factura creada con éxito.');
 }
 
 

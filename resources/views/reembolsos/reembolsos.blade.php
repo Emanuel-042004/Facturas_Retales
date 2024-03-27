@@ -4,6 +4,20 @@
 
 <div class="tablas">
     <h1>Reembolsos</h1><br>
+    <form action="{{ route('reembolsos.index') }}" method="GET">
+    
+
+      <div class="search">
+    <label>  
+      <input type="text" name="q" placeholder="Buscar" id="searchInput">
+      <ion-icon name="search-outline"></ion-icon>
+      <button type="submit">
+       
+       </button>
+
+    </label>
+  </div>
+    </form>
 
     @if ($reembolsos->isEmpty())
     <p>No hay reembolsos registrados.</p>
@@ -41,6 +55,8 @@
                                         <span class="status loaded">{{ $factura->status }}</span>
                                     @elseif ($factura->status == 'Causada')
                                         <span class="status delivered">{{ $factura->status }}</span>
+                                        @elseif ($factura->status == 'Pagada')
+                                        <span class="status loaded">{{ $factura->status }}</span>
                                     @endif
                                 @endif
                             </td>
@@ -65,10 +81,13 @@
                             <td>
                                 @if ($factura->subtype == 'Adjuntada' && $factura->status == 'Cargada')
                                     <ion-icon name="ellipsis-vertical-outline" onclick="openPopup('facturaCargadaPopup{{$factura->id}}')"></ion-icon>
-                                @elseif ($factura->subtype == 'Adjuntada')
+                               @elseif($factura->subtype == 'Adjuntada' && $factura->status == 'Causada')
+                                <ion-icon name="ellipsis-vertical-outline" onclick="openPopup('facturaCausadaPopup{{$factura->id}}')"></ion-icon>
+                                    @elseif ($factura->subtype == 'Adjuntada')
                                     <ion-icon name="ellipsis-vertical-outline" onclick="openPopup('facturaAdjuntadaPopup{{$factura->id}}')"></ion-icon>
                                 @elseif($factura->subtype == 'Aprobada')
                                     <ion-icon name="ellipsis-vertical-outline" onclick="openPopup('facturaAprobadaPopup{{$factura->id}}')"></ion-icon>
+                               
                                 @else
                                     <ion-icon name="ellipsis-vertical-outline" onclick="openPopup('facturaPopup{{$factura->id}}')"></ion-icon>
                                 @endif
@@ -160,14 +179,12 @@
                   <ul class="no-bullet">
                     @if($factura->anexo1)
                     <li>
-                    <input type="checkbox" name="documentos_malos[]">
                       <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo1) }}')">
                         <i class="fas fa-file"></i> Anexo 1 - {{ $factura->anexo1 }}</button>
                     </li>
                     @endif
                     @if($factura->anexo2)
                     <li>
-                      <input type="checkbox" name="documentos_malos[]">
                       <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo2) }}')">
                         <i class="fas fa-file"></i>
                         Anexo 2 - {{ $factura->anexo2 }}</button>
@@ -175,7 +192,6 @@
                     @endif
                     @if($factura->anexo3)
                     <li>
-                      <input type="checkbox" name="documentos_malos[]">
                       <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo3) }}')">
                         <i class="fas fa-file"></i>
                         Anexo 3 - {{ $factura->anexo3 }}</button>
@@ -183,7 +199,6 @@
                     @endif
                     @if($factura->anexo4)
                     <li>
-                      <input type="checkbox" name="documentos_malos[]">
                       <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo4) }}')">
                         <i class="fas fa-file"></i>
                         Anexo 4 - {{ $factura->anexo4 }}</button>
@@ -191,7 +206,6 @@
                     @endif
                     @if($factura->anexo5)
                     <li>
-                      <input type="checkbox" name="documentos_malos[]">
                       <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo5) }}')">
                         <i class="fas fa-file"></i>
                         Anexo 5 - {{ $factura->anexo5 }}</button>
@@ -199,7 +213,6 @@
                     @endif
                     @if($factura->anexo6)
                     <li>
-                      <input type="checkbox" name="documentos_malos[]">
                       <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo6) }}')">
                         <i class="fas fa-file"></i>
                         Anexo 6 - {{ $factura->anexo6 }}</button>
@@ -222,7 +235,480 @@
         </div>
       </div>
       @endforeach
-<!-- ================ ACCIONES ================= -->
+
+
+  <!-- ================ ADJUNTADAS ================= -->
+  <div class="popup-background" id="popupBackground"></div>
+      @foreach ($reembolso->facturas as $factura)
+      <div class="popup" id="facturaCargadaPopup{{$factura->id}}">
+        <div class="popup-content">
+          <div class="header">
+            <h2 class="modal-title">Datos de Factura</h2>
+            <span class="close-icon" onclick="closePopup('facturaCargadaPopup{{$factura->id}}')">&times;</span>
+          </div>
+          <form id="causarFacturaForm{{$factura->id}}" action="{{ route('causar_factura', ['id' => $factura->id]) }}"
+            method="POST" enctype="multipart/form-data">
+            @csrf
+
+            <div class="form-group col-md-6">
+              <label for="type">Tipo</label>
+              <select class="form-control" id="type" name="type">
+                <option value="">Selecciona</option>
+                <option value="Factura electrónica" @selected( "Factura electrónica"==$factura -> type)>Factura electrónica
+                </option>
+                <option value="Nota de crédito electrónica" @selected( "Nota de crédito electrónica"==$factura ->
+                  type)>Financiera</option>
+                <option value="Reembolso" @selected( "Reembolso"==$factura -> type)>Reembolso</option>
+                <option value="Legalizacion" @selected("Legalizacion" == $factura->type) >Legalizacion</option>
+
+              </select>
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="nombre">Nombre</label>
+                <input type="text" class="form-control" id="name" name="name" value="{{$factura->name}}" placeholder="Nombre">
+              </div>
+              <div class="form-group col-md-6">
+                <label for="folio">Folio</label>
+                <input type="text" class="form-control" id="folio" name="folio" value="{{$factura->folio}}"
+                  placeholder="Contrato">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="issuer_name">Nombre Emisor</label>
+                <input type="text" class="form-control" id="issuer_name" name="issuer_name" value="{{$factura->issuer_name}}">
+              </div>
+              <div class="form-group col-md-6">
+                <label for="issuer_nit">Nit Emisor</label>
+                <input type="text" class="form-control" id="issuer_nit" name="issuer_nit" value="{{$factura->issuer_nit}}">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="prefix">Prefijo</label>
+                <input type="text" class="form-control" id="prefix" name="prefix" value="{{$factura->prefix}}">
+              </div>
+              <div class="form-group col-md-6">
+                <label for="area">Área</label>
+                <select class="form-control" id="area" name="area">
+                  <option value="">Selecciona</option>
+                  <option value="Compras" @selected( "Compras"==$factura -> area)>Compras</option>
+                  <option value="Financiera" @selected( "Financiera"==$factura -> area)>Financiera</option>
+                  <option value="Logistica" @selected( "Logistica"==$factura -> area)>Logística</option>
+                  <option value="Mantenimiento" @selected("Mantenimiento" == $factura->area) >Mantenimiento</option>
+                  <option value="Tecnologia" @selected( "Tecnologia"==$factura -> area)>Tecnología</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="anexos">Archivos Adjuntos</label>
+                <div class="attachment-box">
+                  <ul class="no-bullet">
+                    @if($factura->anexo1)
+                    <li>
+                      <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo1) }}')">
+                        <i class="fas fa-file"></i> Anexo 1 - {{ $factura->anexo1 }}</button>
+                    </li>
+                    @endif
+                    @if($factura->anexo2)
+                    <li>
+                      <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo2) }}')">
+                        <i class="fas fa-file"></i>
+                        Anexo 2 - {{ $factura->anexo2 }}</button>
+                    </li>
+                    @endif
+                    @if($factura->anexo3)
+                    <li>
+                      <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo3) }}')">
+                        <i class="fas fa-file"></i>
+                        Anexo 3 - {{ $factura->anexo3 }}</button>
+                    </li>
+                    @endif
+                    @if($factura->anexo4)
+                    <li>
+                      <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo4) }}')">
+                        <i class="fas fa-file"></i>
+                        Anexo 4 - {{ $factura->anexo4 }}</button>
+                    </li>
+                    @endif
+                    @if($factura->anexo5)
+                    <li>
+                      <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo5) }}')">
+                        <i class="fas fa-file"></i>
+                        Anexo 5 - {{ $factura->anexo5 }}</button>
+                    </li>
+                    @endif
+                    @if($factura->anexo6)
+                    <li>
+                      <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo6) }}')">
+                        <i class="fas fa-file"></i>
+                        Anexo 6 - {{ $factura->anexo6 }}</button>
+                    </li>
+                    @endif
+
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <hr>
+            <h1>Causaciones</h1>
+          <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="causacion1">Causación 1</label>
+                <input type="file" class="form-control-file" id="causacion{{$factura->id}}_1" name="causaciones[]" placeholder="cargue aquí">
+                <!-- Lista de archivos seleccionados -->
+              </div>
+          </div>
+          <div id="causacionesContainer{{$factura->id}}"></div>
+          <button type="button" class="btn btn-secondary" onclick="agregarCausacion({{$factura->id}})">Agregar Causación</button>
+
+            <div class="form-group col-md-6">
+              <label for="note">Nota</label>
+              <textarea class="form-control" id="note" name="note">{{$factura->note}}</textarea>
+            </div>
+            <div class="modal-footer">
+              
+              <button type="submit" class="btn btn-danger" formaction="{{route('cargados.rechazar', ['id' => $factura->id])}}">Rechazar</button>
+             
+              <button type="button" id="cargarBtn{{$factura->id}}" class="btn btn-primary"
+          onclick="confirmarCarga('causarFacturaForm{{$factura->id}}', '{{$factura->id}}')">Causar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+      @endforeach
+
+      <script>
+     function agregarCausacion(facturaId) {
+    var contadorCausaciones = document.querySelectorAll('#facturaCargadaPopup' + facturaId + ' input[type="file"]').length + 1;
+    if (contadorCausaciones <= 6) { // Solo agregar hasta 6 causaciones
+        var nuevaCausacion = '<div class="form-group col-md-6">' +
+            '<label for="causacion' + facturaId + '_' + contadorCausaciones + '">Causación ' + contadorCausaciones + '</label>' +
+            '<input type="file" class="form-control-file" id="causacion' + facturaId + '_' + contadorCausaciones + '" name="causaciones[]" placeholder="cargue aquí">' +
+            '</div>';
+        document.getElementById('causacionesContainer' + facturaId).innerHTML += nuevaCausacion;
+    } else {
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'No se pueden agregar más de 6 causaciones.',
+            customClass: {
+                container: 'swal-overlay' // Agrega una clase personalizada para que SweetAlert use el estilo personalizado
+            }
+        });
+    }
+}
+
+function confirmarCarga(formId, facturaId) {
+    // Verificar si al menos un archivo ha sido seleccionado
+    var files = document.querySelectorAll(' input[type="file"]');
+    var archivosAdjuntos = false;
+
+    files.forEach(function (fileInput) {
+        if (fileInput.files.length > 0) {
+            archivosAdjuntos = true;
+        }
+    });
+
+    if (!archivosAdjuntos) {
+        // Mostrar una alerta de SweetAlert si no se han adjuntado archivos
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Debes adjuntar al menos una causación.',
+            customClass: {
+                container: 'swal-overlay',
+                popup: 'swal-popup',
+                header: 'swal-header',
+                title: 'swal-title',
+                closeButton: 'swal-close-button',
+                icon: 'swal-icon',
+                image: 'swal-image',
+                content: 'swal-content',
+                input: 'swal-input',
+                actions: 'swal-actions',
+                confirmButton: 'swal-confirm-button',
+                cancelButton: 'swal-cancel-button',
+                footer: 'swal-footer'
+            }
+        });
+        return false; // Evita enviar el formulario si no se han adjuntado archivos
+    }
+
+    // Mostrar una confirmación de SweetAlert en lugar de la confirmación del navegador
+    Swal.fire({
+        title: '¿Estás seguro de que deseas causar la factura?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Sí',
+        cancelButtonText: 'Cancelar',
+        customClass: {
+            container: 'swal-overlay',
+            popup: 'swal-popup',
+            header: 'swal-header',
+            title: 'swal-title',
+            closeButton: 'swal-close-button',
+            icon: 'swal-icon',
+            image: 'swal-image',
+            content: 'swal-content',
+            input: 'swal-input',
+            actions: 'swal-actions',
+            confirmButton: 'swal-confirm-button',
+            cancelButton: 'swal-cancel-button',
+            footer: 'swal-footer'
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Si el usuario confirma, enviar el formulario y mostrar la animación de carga
+            document.getElementById(formId).submit();
+            document.getElementById('cargarBtn' + facturaId).style.display = "none"; // Ocultar el botón de "cargar"
+            document.getElementById('loading' + facturaId).style.display = "block"; // Mostrar la animación de carga
+        }
+    });
+}
+</script>
+
+   
+<!-- ================ APROBADAS ================= -->
+<div class="popup-background" id="popupBackground"></div>
+      @foreach ($reembolso->facturas as $factura)
+      <div class="popup" id="facturaCausadaPopup{{$factura->id}}">
+        <div class="popup-content">
+          <div class="header">
+            <h2 class="modal-title">Datos de Factura</h2>
+            <span class="close-icon" onclick="closePopup('facturaCausadaPopup{{$factura->id}}')">&times;</span>
+          </div>
+          <form id="causarFacturaForm{{$factura->id}}" action="{{ route('comprobar_factura', ['id' => $factura->id]) }}"
+            method="POST" enctype="multipart/form-data">
+            @csrf
+
+            <div class="form-group col-md-6">
+              <label for="type">Tipo</label>
+              <select class="form-control" id="type" name="type">
+                <option value="">Selecciona</option>
+                <option value="Factura electrónica" @selected( "Factura electrónica"==$factura -> type)>Factura electrónica
+                </option>
+                <option value="Nota de crédito electrónica" @selected( "Nota de crédito electrónica"==$factura ->
+                  type)>Financiera</option>
+                <option value="Reembolso" @selected( "Reembolso"==$factura -> type)>Reembolso</option>
+                <option value="Legalizacion" @selected("Legalizacion" == $factura->type) >Legalizacion</option>
+
+              </select>
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="nombre">Nombre</label>
+                <input type="text" class="form-control" id="name" name="name" value="{{$factura->name}}" placeholder="Nombre">
+              </div>
+              <div class="form-group col-md-6">
+                <label for="folio">Folio</label>
+                <input type="text" class="form-control" id="folio" name="folio" value="{{$factura->folio}}"
+                  placeholder="Contrato">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="issuer_name">Nombre Emisor</label>
+                <input type="text" class="form-control" id="issuer_name" name="issuer_name" value="{{$factura->issuer_name}}">
+              </div>
+              <div class="form-group col-md-6">
+                <label for="issuer_nit">Nit Emisor</label>
+                <input type="text" class="form-control" id="issuer_nit" name="issuer_nit" value="{{$factura->issuer_nit}}">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="prefix">Prefijo</label>
+                <input type="text" class="form-control" id="prefix" name="prefix" value="{{$factura->prefix}}">
+              </div>
+
+              <div class="form-group col-md-6">
+                <label for="cude">CUFE</label>
+                <div class="input-group">
+                  <textarea class="form-control" id="cude" name="cude">{{$factura->cude}}</textarea>
+                  <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" type="button" onclick="buscarCUFE()">
+                      <ion-icon name="search-outline"></ion-icon>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group col-md-6">
+                <label for="area">Área</label>
+                <select class="form-control" id="area" name="area">
+                  <option value="">Selecciona</option>
+                  <option value="Compras" @selected( "Compras"==$factura -> area)>Compras</option>
+                  <option value="Financiera" @selected( "Financiera"==$factura -> area)>Financiera</option>
+                  <option value="Logistica" @selected( "Logistica"==$factura -> area)>Logística</option>
+                  <option value="Mantenimiento" @selected("Mantenimiento" == $factura->area) >Mantenimiento</option>
+                  <option value="Tecnologia" @selected( "Tecnologia"==$factura -> area)>Tecnología</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-6">
+              <hr>
+            <h1>Factura</h1>
+                <label for="anexos">Archivos Adjuntos</label>
+                <div class="attachment-box">
+                  <ul class="no-bullet">
+                    @if($factura->anexo1)
+                    <li>
+                    
+                      <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo1) }}')">
+                        <i class="fas fa-file"></i> Anexo 1 - {{ $factura->anexo1 }}</button>
+                    </li>
+                    @endif
+                    @if($factura->anexo2)
+                    <li>
+                      <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo2) }}')">
+                        <i class="fas fa-file"></i>
+                        Anexo 2 - {{ $factura->anexo2 }}</button>
+                    </li>
+                    @endif
+                    @if($factura->anexo3)
+                    <li>
+                      <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo3) }}')">
+                        <i class="fas fa-file"></i>
+                        Anexo 3 - {{ $factura->anexo3 }}</button>
+                    </li>
+                    @endif
+                    @if($factura->anexo4)
+                    <li>
+                      <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo4) }}')">
+                        <i class="fas fa-file"></i>
+                        Anexo 4 - {{ $factura->anexo4 }}</button>
+                    </li>
+                    @endif
+                    @if($factura->anexo5)
+                    <li>
+                      <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo5) }}')">
+                        <i class="fas fa-file"></i>
+                        Anexo 5 - {{ $factura->anexo5 }}</button>
+                    </li>
+                    @endif
+                    @if($factura->anexo6)
+                    <li>
+                      <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo6) }}')">
+                        <i class="fas fa-file"></i>
+                        Anexo 6 - {{ $factura->anexo6 }}</button>
+                    </li>
+                    @endif
+
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <hr>
+            <h1>Causaciones</h1>
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                
+                <div class="attachment-box">
+                  <ul class="no-bullet">
+                    @if($factura->causacion1)
+                    <li>
+                      <button class="btn " onclick="openDocument('{{ asset('causaciones/' . $factura->causacion1) }}')">
+                        <i class="fas fa-file"></i> causacion 1 - {{ $factura->causacion1 }}</button>
+                    </li>
+                    @endif
+                    @if($factura->causacion2)
+                    <li>
+                      <button class="btn " onclick="openDocument('{{ asset('causaciones/' . $factura->causacion2) }}')">
+                        <i class="fas fa-file"></i>
+                        causacion 2 - {{ $factura->causacion2 }}</button>
+                    </li>
+                    @endif
+                    @if($factura->causacion3)
+                    <li>
+                      <button class="btn " onclick="openDocument('{{ asset('causaciones/' . $factura->causacion3) }}')">
+                        <i class="fas fa-file"></i>
+                        causacion 3 - {{ $factura->causacion3 }}</button>
+                    </li>
+                    @endif
+                    @if($factura->causacion4)
+                    <li>
+                      <button class="btn " onclick="openDocument('{{ asset('causaciones/' . $factura->causacion4) }}')">
+                        <i class="fas fa-file"></i>
+                        causacion 4 - {{ $factura->causacion4 }}</button>
+                    </li>
+                    @endif
+                    @if($factura->causacion5)
+                    <li>
+                      <button class="btn " onclick="openDocument('{{ asset('causaciones/' . $factura->causacion5) }}')">
+                        <i class="fas fa-file"></i>
+                        causacion 5 - {{ $factura->causacion5 }}</button>
+                    </li>
+                    @endif
+                    @if($factura->causacion6)
+                    <li>
+                      <button class="btn " onclick="openDocument('{{ asset('causaciones/' . $factura->causacion6) }}')">
+                        <i class="fas fa-file"></i>
+                        causacion 6 - {{ $factura->causacion6 }}</button>
+                    </li>
+                    @endif
+
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <h1>Comprobantes</h1>
+          <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="comprobante1">Comprobante 1</label>
+                <input type="file" class="form-control-file" id="comprobante{{$factura->id}}_1" name="comprobantes[]" placeholder="cargue aquí">
+                <!-- Lista de archivos seleccionados -->
+              </div>
+          </div>
+          <div id="comprobantesContainer{{$factura->id}}"></div>
+          <button type="button" class="btn btn-secondary" onclick="agregarComprobante({{$factura->id}})">Agregar Causación</button>
+
+            <div class="form-group col-md-6">
+              <label for="note">Nota</label>
+              <textarea class="form-control" id="note" name="note">{{$factura->note}}</textarea>
+            </div>
+            <div class="modal-footer">
+              <button type="submit" id="cargar2Btn{{$factura->id}}" class="btn btn-primary">Pago</button>
+            </div>
+          </form>
+        </div>
+      </div>
+      @endforeach
+  <script>
+    function buscarCUFE() {
+      window.open("https://catalogo-vpfe.dian.gov.co/User/SearchDocument", "_blank");
+    }
+  </script>
+
+<script>
+     function agregarComprobante(facturaId) {
+    var contadorComprobantes = document.querySelectorAll('#facturaCausadaPopup' + facturaId + ' input[type="file"]').length + 1;
+    if (contadorComprobantes <= 3) { // Solo agregar hasta 6 comprobantes
+        var nuevaComprobante = '<div class="form-group col-md-6">' +
+            '<label for="comprobante' + facturaId + '_' + contadorComprobantes + '">Comprobante ' + contadorComprobantes + '</label>' +
+            '<input type="file" class="form-control-file" id="comprobante' + facturaId + '_' + contadorComprobantes + '" name="comprobantes[]" placeholder="cargue aquí">' +
+            '</div>';
+        document.getElementById('comprobantesContainer' + facturaId).innerHTML += nuevaComprobante;
+    } else {
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'No se pueden agregar más de 3 comprobantes.',
+            customClass: {
+                container: 'swal-overlay' // Agrega una clase personalizada para que SweetAlert use el estilo personalizado
+            }
+        });
+    }
+}
+
+</script>
+
+
+<!-- ================ PENDIENTES - CARGAR FACTURA ================= -->
 <div class="popup-background" id="popupBackground"></div>
 @foreach ($reembolso->facturas as $factura)
 <div class="popup" id="facturaPopup{{$factura->id}}">
@@ -298,15 +784,73 @@
           </select>
         </div>
       </div>
+      @if($factura->subtype == 'Rechazada' || $factura->subtype == 'FIN/Rechazada')
+      <div class="form-group col-md-6">
+          <label for="anexos">Archivos Adjuntos</label>
+          <div class="attachment-box">
+            <ul class="no-bullet">
+            @if($factura->anexo1)
+              <li>
+                <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo1) }}')">
+                  <i class="fas fa-file"></i>
+                  Anexo 2 - {{ $factura->anexo1 }}</button>
+              </li>
+              @endif
+              @if($factura->anexo2)
+              <li>
+                
+                <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo2) }}')">
+                  <i class="fas fa-file"></i>
+                  Anexo 2 - {{ $factura->anexo2 }}</button>
+              </li>
+              @endif
+              @if($factura->anexo3)
+              <li>
+                
+                <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo3) }}')">
+                  <i class="fas fa-file"></i>
+                  Anexo 3 - {{ $factura->anexo3 }}</button>
+              </li>
+              @endif
+              @if($factura->anexo4)
+              <li>
+                
+                <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo4) }}')">
+                  <i class="fas fa-file"></i>
+                  Anexo 4 - {{ $factura->anexo4 }}</button>
+              </li>
+              @endif
+              @if($factura->anexo5)
+              <li>
+                
+                <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo5) }}')">
+                  <i class="fas fa-file"></i>
+                  Anexo 5 - {{ $factura->anexo5 }}</button>
+              </li>
+              @endif
+              @if($factura->anexo6)
+              <li>
+                
+                <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo6) }}')">
+                  <i class="fas fa-file"></i>
+                  Anexo 6 - {{ $factura->anexo6 }}</button>
+              </li>
+              @endif
+
+            </ul>
+          </div>
+        </div>
+      @endif
       <div class="form-row">
         <div class="form-group col-md-6">
           <label for="anexo1">Anexo 1</label>
           <input type="file" class="form-control-file" id="anexo{{$factura->id}}_1" name="anexos[]" placeholder="cargue aquí">
           <!-- Lista de archivos seleccionados -->
         </div>
-      </div>  
+      </div>
       <div id="anexosContainer{{$factura->id}}"></div>
       <button type="button" class="btn btn-secondary" onclick="agregarAnexo({{$factura->id}})">Agregar Anexo</button>
+     
       <div class="form-group col-md-6">
         <label for="note">Nota</label>
         <textarea class="form-control" id="note" name="note" >{{$factura->note}}</textarea>
@@ -397,10 +941,10 @@
 
     // Mostrar una confirmación de SweetAlert en lugar de la confirmación del navegador
     Swal.fire({
-      title: '¿Estás seguro de que deseas cargar la factura?',
+      title: '¿Estás seguro de que deseas cargar el anexo?',
       icon: 'question',
       showCancelButton: true,
-      confirmButtonText: 'Sí, cargar factura',
+      confirmButtonText: 'Sí',
       cancelButtonText: 'Cancelar',
       // Establecer z-index
       customClass: {
@@ -526,255 +1070,10 @@
   }
 </script>
 
-<!-- ================ APROBADAS ================= -->
-<div class="popup-background" id="popupBackground"></div>
-      @foreach ($reembolso->facturas as $factura)
-      <div class="popup" id="facturaCargadaPopup{{$factura->id}}">
-        <div class="popup-content">
-          <div class="header">
-            <h2 class="modal-title">Datos de Factura</h2>
-            <span class="close-icon" onclick="closePopup('facturaCargadaPopup{{$factura->id}}')">&times;</span>
-          </div>
-          <form id="causarFacturaForm{{$factura->id}}" action="{{ route('causar_factura', ['id' => $factura->id]) }}"
-            method="POST" enctype="multipart/form-data">
-            @csrf
 
-            <div class="form-group col-md-6">
-              <label for="type">Tipo</label>
-              <select class="form-control" id="type" name="type">
-                <option value="">Selecciona</option>
-                <option value="Factura electrónica" @selected( "Factura electrónica"==$factura -> type)>Factura electrónica
-                </option>
-                <option value="Nota de crédito electrónica" @selected( "Nota de crédito electrónica"==$factura ->
-                  type)>Financiera</option>
-                <option value="Reembolso" @selected( "Reembolso"==$factura -> type)>Reembolso</option>
-                <option value="Legalizacion" @selected("Legalizacion" == $factura->type) >Legalizacion</option>
 
-              </select>
-            </div>
-            <div class="form-row">
-              <div class="form-group col-md-6">
-                <label for="nombre">Nombre</label>
-                <input type="text" class="form-control" id="name" name="name" value="{{$factura->name}}" placeholder="Nombre">
-              </div>
-              <div class="form-group col-md-6">
-                <label for="folio">Folio</label>
-                <input type="text" class="form-control" id="folio" name="folio" value="{{$factura->folio}}"
-                  placeholder="Contrato">
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group col-md-6">
-                <label for="issuer_name">Nombre Emisor</label>
-                <input type="text" class="form-control" id="issuer_name" name="issuer_name" value="{{$factura->issuer_name}}">
-              </div>
-              <div class="form-group col-md-6">
-                <label for="issuer_nit">Nit Emisor</label>
-                <input type="text" class="form-control" id="issuer_nit" name="issuer_nit" value="{{$factura->issuer_nit}}">
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group col-md-6">
-                <label for="prefix">Prefijo</label>
-                <input type="text" class="form-control" id="prefix" name="prefix" value="{{$factura->prefix}}">
-              </div>
 
-              <div class="form-group col-md-6">
-                <label for="cude">CUFE</label>
-                <div class="input-group">
-                  <textarea class="form-control" id="cude" name="cude">{{$factura->cude}}</textarea>
-                  <div class="input-group-append">
-                    <button class="btn btn-outline-secondary" type="button" onclick="buscarCUFE()">
-                      <ion-icon name="search-outline"></ion-icon>
-                    </button>
-                  </div>
-                </div>
-              </div>
-              <div class="form-group col-md-6">
-                <label for="area">Área</label>
-                <select class="form-control" id="area" name="area">
-                  <option value="">Selecciona</option>
-                  <option value="Compras" @selected( "Compras"==$factura -> area)>Compras</option>
-                  <option value="Financiera" @selected( "Financiera"==$factura -> area)>Financiera</option>
-                  <option value="Logistica" @selected( "Logistica"==$factura -> area)>Logística</option>
-                  <option value="Mantenimiento" @selected("Mantenimiento" == $factura->area) >Mantenimiento</option>
-                  <option value="Tecnologia" @selected( "Tecnologia"==$factura -> area)>Tecnología</option>
-                </select>
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group col-md-6">
-                <label for="anexos">Archivos Adjuntos</label>
-                <div class="attachment-box">
-                  <ul class="no-bullet">
-                    @if($factura->anexo1)
-                    <li>
-                    
-                      <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo1) }}')">
-                        <i class="fas fa-file"></i> Anexo 1 - {{ $factura->anexo1 }}</button>
-                    </li>
-                    @endif
-                    @if($factura->anexo2)
-                    <li>
-                      <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo2) }}')">
-                        <i class="fas fa-file"></i>
-                        Anexo 2 - {{ $factura->anexo2 }}</button>
-                    </li>
-                    @endif
-                    @if($factura->anexo3)
-                    <li>
-                      <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo3) }}')">
-                        <i class="fas fa-file"></i>
-                        Anexo 3 - {{ $factura->anexo3 }}</button>
-                    </li>
-                    @endif
-                    @if($factura->anexo4)
-                    <li>
-                      <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo4) }}')">
-                        <i class="fas fa-file"></i>
-                        Anexo 4 - {{ $factura->anexo4 }}</button>
-                    </li>
-                    @endif
-                    @if($factura->anexo5)
-                    <li>
-                      <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo5) }}')">
-                        <i class="fas fa-file"></i>
-                        Anexo 5 - {{ $factura->anexo5 }}</button>
-                    </li>
-                    @endif
-                    @if($factura->anexo6)
-                    <li>
-                      <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo6) }}')">
-                        <i class="fas fa-file"></i>
-                        Anexo 6 - {{ $factura->anexo6 }}</button>
-                    </li>
-                    @endif
 
-                  </ul>
-                </div>
-              </div>
-            </div>
-            <hr>
-            <h1>Causaciones</h1>
-          <div class="form-row">
-              <div class="form-group col-md-6">
-                <label for="causacion1">Causación 1</label>
-                <input type="file" class="form-control-file" id="causacion{{$factura->id}}_1" name="causaciones[]" placeholder="cargue aquí">
-                <!-- Lista de archivos seleccionados -->
-              </div>
-          </div>
-          <div id="causacionesContainer{{$factura->id}}"></div>
-          <button type="button" class="btn btn-secondary" onclick="agregarCausacion({{$factura->id}})">Agregar Causación</button>
-
-            <div class="form-group col-md-6">
-              <label for="note">Nota</label>
-              <textarea class="form-control" id="note" name="note">{{$factura->note}}</textarea>
-            </div>
-            <div class="modal-footer">
-              <a href="{{route('cargados.rechazar', ['id' => $factura->id])}}" class="btn btn-danger">Rechazar</a>
-             
-              <button type="button" id="cargarBtn{{$factura->id}}" class="btn btn-primary"
-          onclick="confirmarCarga('causarFacturaForm{{$factura->id}}', '{{$factura->id}}')">Causar</button>
-            </div>
-          </form>
-        </div>
-      </div>
-      @endforeach
-  <script>
-    function buscarCUFE() {
-      window.open("https://catalogo-vpfe.dian.gov.co/User/SearchDocument", "_blank");
-    }
-  </script>
-
-          <script>
-     function agregarCausacion(facturaId) {
-    var contadorCausaciones = document.querySelectorAll('#facturaCargadaPopup' + facturaId + ' input[type="file"]').length + 1;
-    if (contadorCausaciones <= 6) { // Solo agregar hasta 6 causaciones
-        var nuevaCausacion = '<div class="form-group col-md-6">' +
-            '<label for="causacion' + facturaId + '_' + contadorCausaciones + '">Causación ' + contadorCausaciones + '</label>' +
-            '<input type="file" class="form-control-file" id="causacion' + facturaId + '_' + contadorCausaciones + '" name="causaciones[]" placeholder="cargue aquí">' +
-            '</div>';
-        document.getElementById('causacionesContainer' + facturaId).innerHTML += nuevaCausacion;
-    } else {
-        Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: 'No se pueden agregar más de 6 causaciones.',
-            customClass: {
-                container: 'swal-overlay' // Agrega una clase personalizada para que SweetAlert use el estilo personalizado
-            }
-        });
-    }
-}
-
-function confirmarCarga(formId, facturaId) {
-    // Verificar si al menos un archivo ha sido seleccionado
-    var files = document.querySelectorAll(' input[type="file"]');
-    var archivosAdjuntos = false;
-
-    files.forEach(function (fileInput) {
-        if (fileInput.files.length > 0) {
-            archivosAdjuntos = true;
-        }
-    });
-
-    if (!archivosAdjuntos) {
-        // Mostrar una alerta de SweetAlert si no se han adjuntado archivos
-        Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: 'Debes adjuntar al menos una causación.',
-            customClass: {
-                container: 'swal-overlay',
-                popup: 'swal-popup',
-                header: 'swal-header',
-                title: 'swal-title',
-                closeButton: 'swal-close-button',
-                icon: 'swal-icon',
-                image: 'swal-image',
-                content: 'swal-content',
-                input: 'swal-input',
-                actions: 'swal-actions',
-                confirmButton: 'swal-confirm-button',
-                cancelButton: 'swal-cancel-button',
-                footer: 'swal-footer'
-            }
-        });
-        return false; // Evita enviar el formulario si no se han adjuntado archivos
-    }
-
-    // Mostrar una confirmación de SweetAlert en lugar de la confirmación del navegador
-    Swal.fire({
-        title: '¿Estás seguro de que deseas causar la factura?',
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonText: 'Sí',
-        cancelButtonText: 'Cancelar',
-        customClass: {
-            container: 'swal-overlay',
-            popup: 'swal-popup',
-            header: 'swal-header',
-            title: 'swal-title',
-            closeButton: 'swal-close-button',
-            icon: 'swal-icon',
-            image: 'swal-image',
-            content: 'swal-content',
-            input: 'swal-input',
-            actions: 'swal-actions',
-            confirmButton: 'swal-confirm-button',
-            cancelButton: 'swal-cancel-button',
-            footer: 'swal-footer'
-        }
-    }).then((result) => {
-        if (result.isConfirmed) {
-            // Si el usuario confirma, enviar el formulario y mostrar la animación de carga
-            document.getElementById(formId).submit();
-            document.getElementById('cargarBtn' + facturaId).style.display = "none"; // Ocultar el botón de "cargar"
-            document.getElementById('loading' + facturaId).style.display = "block"; // Mostrar la animación de carga
-        }
-    });
-}
-</script>
 
    
 <!-- ================ Abrir PopUp ================= -->

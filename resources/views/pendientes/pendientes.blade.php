@@ -7,23 +7,30 @@
   <div class="cardHeader">
     <h2>Facturas DIAN</h2>
     <!-- Botones ocultos al principio -->
-    <div id="botonesContainer" style="display: none;">
+    <div id="botonesContainer" style="display: none; "">
     <form id="reembolsoForm" action="{{ route('crear_reembolso') }}" method="POST">
     @csrf
     <input type="hidden" name="ids[]" id="idsInput">
     <button type="button" class="btn" onclick="cambiarTipo('Reembolso')">Reembolso</button>
    </form>
-
-      <button id="Legalizacion" class="btn" onclick="cambiarTipo('Legalizacion')">Legalizacion</button>
+      <!-- <button id="Legalizacion" class="btn" onclick="cambiarTipo('Legalizacion')">Legalizacion</button>-->
     </div>
-    <a href="#" class="btn" onclick="openPopup('facturaPopup')">Factura Manual</a>
+   <a href="#" class="btn" onclick="openPopup('facturaPopup')">Factura Manual</a>
   </div><br>
-  <div class="search">
-    <label>  
-      <input type="text" placeholder="Buscar" id="searchInput">
-      <ion-icon name="search-outline"></ion-icon>
-    </label>
-  </div>
+
+      <div class="search">
+        <form action="{{ route('pendientes.index') }}" method="GET">
+          <div class="search">
+        <label>  
+          <input type="text" name="q" placeholder="Buscar" id="searchInput">
+          <ion-icon name="search-outline"></ion-icon>
+          <button type="submit">
+          </button>
+        </label>
+      </div>
+        </form>
+      </div>
+      
   <table>
     <thead>
       <td></td>
@@ -185,7 +192,7 @@ function cambiarTipo(tipo) {
         Swal.fire({
             icon: 'error',
             title: 'Opps',
-            text: 'Solo se pueden crear reembolsos cuando todas las facturas seleccionadas tienen el subtype "Adjuntada".',
+            text: 'Solo se pueden crear reembolsos cuando todas las facturas seleccionadas esten "Adjuntadas".',
         });
     }
 }
@@ -213,6 +220,7 @@ function cambiarTipo(tipo) {
             <option value="">Selecciona</option>
             <option value="Factura electrónica">Factura electrónica</option>
             <option value="Nota de crédito electrónica">Nota de crédito electrónica</option>
+            <option value="Legalizacion">Legalizacion</option>
           </select>
         </div>
 
@@ -246,6 +254,11 @@ function cambiarTipo(tipo) {
         <div class="form-group col-md-6">
           <label for="issuer_nit">Nit Emisor</label>
           <input type="text" class="form-control" id="issuer_nit" name="issuer_nit">
+        </div>
+
+        <div class="form-group col-md-6">
+        <label for="cude">CUFE</label>
+          <textarea class="form-control" id="cude" name="cude" ></textarea>
         </div>
         
       </div>
@@ -316,6 +329,18 @@ function cambiarTipo(tipo) {
             <option value="Mantenimiento" @selected( "Mantenimiento"==$factura -> area) >Mantenimiento</option>
             <option value="Tecnologia" @selected( "Tecnologia"==$factura -> area)>Tecnología</option>
           </select>
+        </div>
+
+        
+        <div class="form-group col-md-6">
+        <label for="cude">CUFE</label>
+        <div class="input-group">
+          <textarea class="form-control" id="cude" name="cude" readonly>{{$factura->cude}}</textarea>
+          <div class="input-group-append">
+          <button class="btn btn-outline-secondary" type="button" onclick="buscarCUFE()">
+              <ion-icon name="search-outline"></ion-icon>
+            </button>
+          </div>
         </div>
       </div>
       <div class="form-row">
@@ -524,9 +549,9 @@ function cambiarTipo(tipo) {
         <div class="form-group col-md-6">
         <label for="cude">CUFE</label>
         <div class="input-group">
-          <textarea class="form-control" id="cude" name="cude">{{$factura->cude}}</textarea>
+          <textarea class="form-control" id="cude" name="cude" readonly>{{$factura->cude}}</textarea>
           <div class="input-group-append">
-            <button class="btn btn-outline-secondary" type="button" onclick="buscarCUFE()">
+          <button class="btn btn-outline-secondary" type="button" onclick="buscarCUFE()">
               <ion-icon name="search-outline"></ion-icon>
             </button>
           </div>
@@ -534,7 +559,7 @@ function cambiarTipo(tipo) {
       </div>
         <div class="form-group col-md-6">
           <label for="area">Área</label>
-          <select class="form-control" id="area" name="area" required>
+          <select class="form-control @error('area') is-invalid @enderror" id="area" name="area" required>
             <option value="">Selecciona</option>
             <option value="Compras" @selected( "Compras"==$factura -> area)>Compras</option>
             <option value="Financiera" @selected( "Financiera"==$factura -> area)>Financiera</option>
@@ -542,6 +567,9 @@ function cambiarTipo(tipo) {
             <option value="Mantenimiento" @selected( "Mantenimiento"==$factura -> area) >Mantenimiento</option>
             <option value="Tecnologia" @selected( "Tecnologia"==$factura -> area)>Tecnología</option>
           </select>
+          @error('area')
+        <div class="invalid-feedback">{{ $message }}</div>
+    @enderror
         </div>
       </div>
       @if($factura->subtype == 'Rechazada' || $factura->subtype == 'FIN/Rechazada')
@@ -651,9 +679,9 @@ function cambiarTipo(tipo) {
 </div>
 @endforeach
 <script>
-  function buscarCUFE() {
-    window.open("https://catalogo-vpfe.dian.gov.co/User/SearchDocument", "_blank");
-  }
+ function buscarCUFE() {
+      window.open("https://catalogo-vpfe.dian.gov.co/User/SearchDocument", "_blank");
+    }
 </script>
 
 <script>
@@ -682,8 +710,11 @@ function cambiarTipo(tipo) {
 
 <script>
   function confirmarCarga(formId, facturaId) {
-    // Verificar si al menos un archivo ha sido seleccionado
-    var files = document.querySelectorAll('input[type="file"]');
+    // Obtener el formulario actual
+    var form = document.getElementById(formId);
+
+    // Verificar si al menos un archivo ha sido seleccionado en este formulario
+    var files = form.querySelectorAll('input[type="file"]');
     var archivosAdjuntos = false;
 
     files.forEach(function (fileInput) {
@@ -700,22 +731,28 @@ function cambiarTipo(tipo) {
         text: 'Debes adjuntar al menos un anexo.',
         // Establecer z-index
         customClass: {
-          container: 'swal-overlay',
-          popup: 'swal-popup',
-          header: 'swal-header',
-          title: 'swal-title',
-          closeButton: 'swal-close-button',
-          icon: 'swal-icon',
-          image: 'swal-image',
-          content: 'swal-content',
-          input: 'swal-input',
-          actions: 'swal-actions',
-          confirmButton: 'swal-confirm-button',
-          cancelButton: 'swal-cancel-button',
-          footer: 'swal-footer'
+          container: 'swal-overlay' // Agrega una clase personalizada para que SweetAlert use el estilo personalizado
         }
       });
       return false; // Evita enviar el formulario si no se han adjuntado archivos
+    }
+
+    // Obtener el valor del área seleccionada en este formulario
+    var areaValue = form.querySelector('#area').value;
+
+    // Verificar si se ha seleccionado un área válida
+    if (!areaValue) {
+      // Mostrar una alerta de SweetAlert si no se ha seleccionado un área
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Debes seleccionar un área antes de cargar la factura.',
+        // Establecer z-index
+        customClass: {
+          container: 'swal-overlay' // Agrega una clase personalizada para que SweetAlert use el estilo personalizado
+        }
+      });
+      return false; // Evita enviar el formulario si no se ha seleccionado un área
     }
 
     // Mostrar una confirmación de SweetAlert en lugar de la confirmación del navegador
@@ -725,6 +762,8 @@ function cambiarTipo(tipo) {
       showCancelButton: true,
       confirmButtonText: 'Sí, cargar factura',
       cancelButtonText: 'Cancelar',
+      confirmButtonClass: 'btn btn-primary', // Clase personalizada para el botón de confirmación
+      cancelButtonClass: 'btn btn-secondary',
       // Establecer z-index
       customClass: {
         container: 'swal-overlay',
@@ -744,13 +783,15 @@ function cambiarTipo(tipo) {
     }).then((result) => {
       if (result.isConfirmed) {
         // Si el usuario confirma, enviar el formulario y mostrar la animación de carga
-        document.getElementById(formId).submit();
+        form.submit();
         document.getElementById('cargarBtn' + facturaId).style.display = "none"; // Ocultar el botón de "cargar"
         document.getElementById('loading' + facturaId).style.display = "block"; // Mostrar la animación de carga
       }
     });
   }
 </script>
+
+
 
 
 <!-- ================ Abrir PopUp ================= -->
@@ -767,3 +808,4 @@ function cambiarTipo(tipo) {
 </script>
 
 @endsection
+

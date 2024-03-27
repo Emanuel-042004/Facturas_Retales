@@ -57,6 +57,35 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 function asignarArea(id, area) {
   Swal.fire({
       title: '¿Deseas asignar esta factura a tu área?',

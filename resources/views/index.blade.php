@@ -45,6 +45,7 @@
     min-height: 350px;
     background: var(--white);
     padding: 20px;
+    margin-top:90px;
     margin-left: auto;
     margin-right: auto;
     box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08);
@@ -85,7 +86,7 @@
     cursor: pointer;
     display: inline-block;
     padding: 10px 20px;
-    background-color: #007bff;
+    background-color:  #c90606;
     color: #fff;
     border: none;
     border-radius: 5px;
@@ -93,7 +94,7 @@
 }
 
 .custom-file-upload:hover {
-    background-color: #0056b3;
+    background-color: #6a0606;
 }
 
 

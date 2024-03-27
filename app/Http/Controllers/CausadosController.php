@@ -20,7 +20,19 @@ class CausadosController extends Controller
         if ($area) {
             $query->where('area', $area);
         }
+        
+        
+    $search = $request->input('q');
 
+    if ($search) {
+        $query->where(function ($subquery) use ($search) {
+            $factura = new Factura();
+            $fillableFields = $factura->getFillable();
+            foreach ($fillableFields as $field) {
+                $subquery->orWhere($field, 'like', "%{$search}%");
+            }
+        });
+    }
         $perPage = 10; // Número de elementos por página
         $page = $request->input('page', 1); // Página actual, por defecto es 1
     
