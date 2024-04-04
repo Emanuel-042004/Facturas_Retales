@@ -20,7 +20,7 @@
     <div class="container">
         <div class="navigation">
             <ul>
-                <li >
+                <li>
                     <a id="user" href="#">
                         <span class="icon">
                             <ion-icon id="icon1" name="person-circle-outline"></ion-icon>
@@ -31,17 +31,16 @@
                 </li>
 
 
-                <li class="active" data-menu="home">
-
+              <!--  <li>
                     <a href="{{route ('home')}}">
                         <span class="icon">
                             <ion-icon name="home-outline"></ion-icon>
                         </span>
                         <span class="title">Home</span>
                     </a>
-                </li>
+                </li>-->
 
-                <li class="active">
+                <li>
                     <a href="{{route ('home')}}">
                         <span class="icon">
                             <ion-icon name="cloud-upload-outline"></ion-icon>
@@ -50,8 +49,8 @@
                     </a>
                 </li>
 
-                <li class="active">
-                    <a href=" {{route('pendientes.index') }}">
+                <li>
+                    <a href="{{route('pendientes.index') }}">
                         <span class="icon">
                             <ion-icon name="document-text-outline"></ion-icon>
                         </span>
@@ -61,7 +60,7 @@
                     </a>
                 </li>
 
-                <li class="active">
+                <li>
                     <a href="{{route('reembolsos.index') }}">
                         <span class="icon">
                         <ion-icon name="refresh-circle-outline"></ion-icon>
@@ -72,7 +71,7 @@
                     </a>
                 </li>
 
-                <li class="active">
+                <li>
                     <a href="{{route('reembolsos_causados.index') }}">
                         <span class="icon">
                         <ion-icon name="bag-check-outline"></ion-icon>
@@ -83,7 +82,7 @@
                     </a>
                 </li>
 
-                <li class="active">
+                <li>
                     <a href="{{ route('cargados.index') }}">
                         <span class="icon" id="save-icon">
                             <ion-icon name="save-outline"></ion-icon>
@@ -94,7 +93,7 @@
                     </a>
                 </li>
 
-                <li class="active">
+                <li>
                     <a href="{{route('causados.index') }}">
                         <span class="icon">
                         <ion-icon name="calculator-outline"></ion-icon>
@@ -105,7 +104,7 @@
                     </a>
                 </li>
 
-                <li class="active">
+                <li>
                     <a href="{{route('pagos.index')}}">
                         <span class="icon">
                         <ion-icon name="wallet-outline"></ion-icon>
@@ -118,7 +117,7 @@
 
                 
 
-                <li class="active">
+                <li>
                     <a href="#">
                         <span class="icon">
                             <ion-icon name="checkmark-circle-outline"></ion-icon>
@@ -129,7 +128,7 @@
                     </a>
                 </li>
 
-                <li class="active">
+                <li>
                     <a  href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                         <span class="icon">
                             <ion-icon name="log-out-outline"></ion-icon>
@@ -144,45 +143,29 @@
 
             </ul>
         </div>
-<script>
-// Ejemplo de JavaScript
-document.addEventListener('DOMContentLoaded', function() {
-    // Obtener todos los elementos <li>
-    var listItems = document.querySelectorAll('.navigation ul li');
+        <script>
+            // Obtén todos los elementos de navegación
+            let navItems = document.querySelectorAll('.navigation ul li a');
 
-    // Eliminar la clase "active" de todos los elementos <li>
-    listItems.forEach(item => {
-        item.classList.remove('active');
-    });
+            // Añade un evento de click a cada elemento de navegación
+            navItems.forEach((navItem) => {
+            // Obtén la ruta del elemento de navegación
+            let navItemPath = navItem.getAttribute('href');
 
-    // Agregar el evento click a cada elemento <li>
-    listItems.forEach(item => {
-        item.addEventListener('click', function() {
-            // Eliminar la clase "active" de todos los elementos <li>
-            listItems.forEach(li => {
-                li.classList.remove('active');
+            // Compara la ruta del elemento de navegación con la ruta actual
+            if (window.location.href.indexOf(navItemPath) !== -1) {
+                // Añade la clase 'active' al elemento de navegación si las rutas coinciden
+                navItem.parentElement.classList.add('active');
+            }
             });
-            // Agregar la clase "active" al elemento seleccionado
-            this.classList.add('active');
-        });
-    });
-});
 
-
-</script>
+        </script>
         <!-- ========================= Main ==================== -->
         <div class="main">
             <div class="topbar">
                 <div class="toggle">
                     <ion-icon name="menu-outline"></ion-icon>
                 </div>
-
-                <!--<div class="search">
-                    <label>
-                        <input type="text" placeholder="Buscar">
-                        <ion-icon name="search-outline"></ion-icon>
-                    </label>
-                </div>-->
 
                 <div class="user">
                     <img src="{{asset('imagenes/logo2.jpeg')}}" alt="">

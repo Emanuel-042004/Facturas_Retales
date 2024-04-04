@@ -295,7 +295,7 @@ function closeDocumentPopup() {
               </div>
             </div>
             <hr>
-            <h1>Causaciones</h1>
+            <h2>Causaciones</h2>
             <div class="form-row">
               <div class="form-group col-md-6">
                 
@@ -348,7 +348,7 @@ function closeDocumentPopup() {
               </div>
             </div>
 
-            <h1>Comprobante</h1>
+            <h2>Comprobante de Pago</h2>
             <div class="form-row">
               <div class="form-group col-md-6">
                 
@@ -378,16 +378,25 @@ function closeDocumentPopup() {
                 </div>
               </div>
             </div>
+            <h2>Comprobante de Egreso</h2>
+          <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="comprobante1">Comprobante 1</label>
+                <input type="file" class="form-control-file" id="comprobante{{$factura->id}}_1" name="comprobantes[]" placeholder="cargue aquí">
+                <!-- Lista de archivos seleccionados -->
+              </div>
+          </div>
+          <div id="comprobantesContainer{{$factura->id}}"></div>
 
             <div class="form-group col-md-6">
               <label for="note">Nota</label>
               <textarea class="form-control" id="note" name="note">{{$factura->note}}</textarea>
             </div>
             <div class="modal-footer">
-              <a href="{{route('cargados.rechazar', ['id' => $factura->id])}}" class="btn btn-danger">Rechazar</a>
-             
+              
+              <button type="submit" class="btn btn-danger" formaction="{{route('cargados.rechazar', ['id' => $factura->id])}}">Rechazar</button>
               <button type="button" id="cargarBtn{{$factura->id}}" class="btn btn-primary"
-          onclick="confirmarCarga('causarFacturaForm{{$factura->id}}', '{{$factura->id}}')">Causar</button>
+          onclick="confirmarCarga('causarFacturaForm{{$factura->id}}', '{{$factura->id}}')">Finalizar</button>
             </div>
           </form>
         </div>

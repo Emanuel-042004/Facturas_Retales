@@ -178,11 +178,6 @@ public function pagosindex(Request $request)
     if ($area) {
         $query->where('area', $area);
     }
-
-
-
-
-
     $search = $request->input('q');
 
     if ($search) {
@@ -196,7 +191,7 @@ public function pagosindex(Request $request)
     }
 
     $perPage = 10; // Número de elementos por página
-    $page = $request->input('page', 1); // Página actual, por defecto es 1
+    $page = $request->input('page', 1); // Página actual, por v defecto es 1
 
     $total = $query->count();
     $results = $query->skip(($page - 1) * $perPage)->take($perPage)->get();
