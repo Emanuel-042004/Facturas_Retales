@@ -294,6 +294,27 @@ function closeDocumentPopup() {
                 </div>
               </div>
             </div>
+            <div class="form-group2 col-md-6">
+          <div>
+          <label for="costo1">Costo 1 </label>
+          <input type="text" class="form-control" id="costo1" name="costo1" value="{{$factura->costo1}}">
+          </div>
+
+          <div>
+          <label for="costo2">Costo 2 </label>
+          <input type="text" class="form-control" id="costo2" name="costo2" value="{{$factura->costo2}}">
+          </div>
+          
+          <div>
+          <label for="costo3">Costo 3 </label>
+          <input type="text" class="form-control" id="costo3" name="costo3" value="{{$factura->costo3}}">
+          </div>
+
+          <div>
+          <label for="costo4">Costo 4 </label>
+          <input type="text" class="form-control" id="costo4" name="costo4" value="{{$factura->costo4}}">
+          </div>
+      </div>
             <hr>
             <h1>Causaciones</h1>
           <div class="form-row">
@@ -305,7 +326,8 @@ function closeDocumentPopup() {
           </div>
           <div id="causacionesContainer{{$factura->id}}"></div>
           <button type="button" class="btn btn-secondary" onclick="agregarCausacion({{$factura->id}})">Agregar Causación</button>
-
+            
+          
             <div class="form-group col-md-6">
               <label for="note">Nota</label>
               <textarea class="form-control" id="note" name="note">{{$factura->note}}</textarea>

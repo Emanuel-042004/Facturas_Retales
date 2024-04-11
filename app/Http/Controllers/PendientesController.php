@@ -65,7 +65,7 @@ public function cargarFactura(Request $request, $id)
     // Valida y guarda los archivos PDF
     $request->validate([
         'area' => 'required', // El campo de área es requerido
-        'anexos.*' => 'required|mimes:pdf,doc,docx|max:2048', // Ajusta los tipos de archivo según tus necesidades
+        'anexos.*' => 'required|mimes:pdf,doc,docx|max:51200', // Ajusta los tipos de archivo según tus necesidades
     ], [
         'area.required' => 'Debes seleccionar un área antes de cargar el archivo.', // Mensaje de error personalizado para el campo de área
     ]);
@@ -132,6 +132,10 @@ public function aprobar(Request $request, $id)
         'issuer_nit' => $request->input('issuer_nit'),
         'area' => $request->input('area'),
         'note' => $request->input('note'),
+        'costo1' => $request->input('costo1'),
+        'costo2' => $request->input('costo2'),
+        'costo3' => $request->input('costo3'),
+        'costo4' => $request->input('costo4'),
         'delivery_date' => now(),
         'delivered_by' => Auth::user()->name,
         'status' => 'Cargada', // Cambia el estado de la factura a 'Cargada'

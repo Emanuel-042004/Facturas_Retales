@@ -26,8 +26,8 @@
   <table>
     <thead>
       <td>Estado</td>
+      <td>Proceso</td>
       <td>Area</td>
-      <td>Nombre</td>
       <td>Folio</td>
       <td>Nombre de Emisor</td>
       <td>NIT de Emisor</td>
@@ -38,8 +38,8 @@
       @foreach ($causados as $factura)
       @if (!$area || $factura->area === $area)
       <td><span class="status delivered">{{ $factura->status}}</span></td>
+      <td>{{ $factura->subtype }}</td>
       <td>{{ $factura->area }}</td>
-      <td>{{ $factura->name }}</td>
       <td>{{ $factura->folio}}</td>
       <td>{{ $factura->issuer_name}}</td>
       <td>{{ $factura->issuer_nit }}</td>
@@ -200,7 +200,27 @@
                 </div>
               </div>
             </div>
+            <div class="form-group2 col-md-6">
+          <div>
+          <label for="costo1">Costo 1 </label>
+          <input type="text" class="form-control" id="costo1" name="costo1" value="{{$factura->costo1}}">
+          </div>
 
+          <div>
+          <label for="costo2">Costo 2 </label>
+          <input type="text" class="form-control" id="costo2" name="costo2" value="{{$factura->costo2}}">
+          </div>
+          
+          <div>
+          <label for="costo3">Costo 3 </label>
+          <input type="text" class="form-control" id="costo3" name="costo3" value="{{$factura->costo3}}">
+          </div>
+
+          <div>
+          <label for="costo4">Costo 4 </label>
+          <input type="text" class="form-control" id="costo4" name="costo4" value="{{$factura->costo4}}">
+          </div>
+      </div>
             <hr>
             <h1>Causaciones</h1>
             <div class="form-row">
@@ -249,7 +269,6 @@
                         causacion 6 - {{ $factura->causacion6 }}</button>
                     </li>
                     @endif
-
                   </ul>
                 </div>
               </div>

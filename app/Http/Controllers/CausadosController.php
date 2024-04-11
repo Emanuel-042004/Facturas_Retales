@@ -57,7 +57,7 @@ class CausadosController extends Controller
         }
         // Valida y guarda los archivos PDF
         $request->validate([
-            'comprobantes.*' => 'required|mimes:pdf,doc,docx|max:2048', // Ajusta los tipos de archivo según tus necesidades
+            'comprobantes.*' => 'required|mimes:pdf,doc,docx|max:51200', // Ajusta los tipos de archivo según tus necesidades
         ]);
         // Encuentra la factura por ID
         $factura = Factura::findOrFail($id);
@@ -74,7 +74,8 @@ class CausadosController extends Controller
             'costo3' => $request->input('costo3'),
             'costo4' => $request->input('costo4'),
             
-            'status' => 'Pagada', 
+            'status' => 'Pagada',
+            'subtype' => 'Adjuntada', 
         ]);
         
         // Procesa los archivos de causación
@@ -142,7 +143,7 @@ class CausadosController extends Controller
 } //
 
 
-public function rechazar(Request $request, $id){
+public function rechazar_pago(Request $request, $id){
      
     $factura = Factura::findOrFail($id);
     $factura->type = $request->input('type');
@@ -156,14 +157,58 @@ public function rechazar(Request $request, $id){
     $factura->costo3 = $request->input('costo3');
     $factura->costo4 = $request->input('costo4');
     $factura->note = $request->input('note');
-
     $factura->status = 'Causada';
-    $factura->subtype = 'Pag/ No Aprobado';
+    $factura->subtype = 'Pag/No Aprobado';
     $factura->save();
 
     return redirect()->back()->with('success', 'Factura rechazada');
 
 }
+
+public function finalizar(Request $request, $id)
+    {
+        if (!$request->hasFile('egreso')) {
+            return redirect()->back()->with('error', 'Debes adjuntar al menos una causación.');
+        }
+        // Valida y guarda los archivos PDF
+        $request->validate([
+            'egreso.*' => 'required|mimes:pdf,doc,docx|max:51200', // Ajusta los tipos de archivo según tus necesidades
+        ]);
+        // Encuentra la factura por ID
+        $factura = Factura::findOrFail($id);
+        // Actualiza los datos de la factura con los valores del formulario
+        $factura->update([
+            'type' => $request->input('type'),
+            'folio' => $request->input('folio'),
+            'issuer_name' => $request->input('issuer_name'),
+            'issuer_nit' => $request->input('issuer_nit'),
+            'area' => $request->input('area'),
+            'note' => $request->input('note'),
+            'costo1' => $request->input('costo1'),
+            'costo2' => $request->input('costo2'),
+            'costo3' => $request->input('costo3'),
+            'costo4' => $request->input('costo4'),
+            
+            'status' => 'Finalizada',
+            'subtype' => 'Adjuntada', 
+        ]);
+        
+        
+         // Procesa el archivo de egreso
+    if ($request->hasFile('egreso')) {
+        $egreso = $request->file('egreso');
+        $nombreArchivo = time() . '_' . $egreso->getClientOriginalName();
+        $egreso->move(public_path('egresos'), $nombreArchivo);
+
+        $factura->egreso = $nombreArchivo;
+    }
+            // Guarda los cambios en la base de datos
+            $factura->save();
+        
+        // Redirecciona de vuelta con un mensaje de éxito
+        return redirect()->back()->with('success', 'Factura cargada con éxito.');
+    }
+    
 
  //
 }

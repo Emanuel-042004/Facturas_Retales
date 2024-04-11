@@ -30,7 +30,7 @@ Route::get('/index', [FacturasController::class, 'index'])->name('facturas.index
 
 
 Route::post('/facturas', [FacturasController::class, 'store'])->name('facturas.store');
-
+Route::middleware(['auth'])->group(function () {
 
 Route::get('/pendientes', [PendientesController::class, 'index'])->name('pendientes.index');
 
@@ -62,6 +62,8 @@ Route::get('/causados', [CausadosController::class, 'index'])->name('causados.in
 
 Route::post('/comprobar-factura/{id}', [CausadosController::class, 'comprobarFactura'])->name('comprobar_factura');
 Route::get('/pagados', [CausadosController::class, 'pagosindex'])->name('pagos.index');
+Route::post('/pagados/finalizar/{id}', [CausadosController::class, 'finalizar'])->name('finalizar');
+Route::post('/causados/rechazar_p/{id}', [CausadosController::class, 'rechazar_pago'])->name('rechazar_p');
 
 
 Route::get('/entregados', [EntregadosController::class, 'index'])->name('entregados.index');
@@ -72,7 +74,7 @@ Route::get('/eliminar-factura/{id}', [EntregadosController::class, 'eliminarFact
 
 Route::view('/facturas', 'facturas.index');
 
-Route::middleware(['auth'])->group(function () {
+
     Route::get('/index', [FacturasController::class, 'index'])->name('facturas.index');
     Route::post('/facturas', [FacturasController::class, 'store'])->name('facturas.store');
     
@@ -85,12 +87,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/eliminar-factura/{id}', [EntregadosController::class, 'eliminarFactura'])->name('eliminar_factura');
     
     Route::get('/causados', [CausadosController::class, 'index'])->name('causados.index');
-});
+
 
 Route::post('import-list-excel', [FacturasController::class, 'importExcel'])->name('invoices.import.excel');
 
-Auth::routes();
+
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
+});
 
+Auth::routes();

@@ -25,7 +25,7 @@
                         <span class="icon">
                             <ion-icon id="icon1" name="person-circle-outline"></ion-icon>
                         </span>
-                        <h1 class="title">{{Auth::user()->name}}</h1><br>
+                        <h2 class="title">{{Auth::user()->name}}</h2><br>
                     </a>
                     <h3 class="title">{{Auth::user()->area}}</h3>
                 </li>
