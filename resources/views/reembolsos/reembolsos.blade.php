@@ -56,9 +56,9 @@
                                     @elseif ($factura->status == 'Causada')
                                         <span class="status delivered">{{ $factura->status }}</span>
                                         @elseif ($factura->status == 'Pagada')
-                                        <span class="status loaded">{{ $factura->status }}</span>
+                                        <span class="status fefused">{{ $factura->status }}</span>
                                         @elseif ($factura->status == 'Finalizada')
-                                        <span class="status loaded">{{ $factura->status }}</span>
+                                        <span class="status approved">{{ $factura->status }}</span>
                                     @endif
                                 @endif
                             </td>

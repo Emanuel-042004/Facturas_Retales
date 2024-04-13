@@ -40,8 +40,9 @@
       <td>Area</td>
       <td>Folio</td>
       <td>Prefijo</td>
-      <td>Nombre de Emisor</td>
       <td>NIT de Emisor</td>
+      <td>Nombre de Emisor</td>
+      
       <td>Fecha de Emision</td>
       <td>Entregado por</td>
       <td>Acciones</td>
@@ -68,8 +69,9 @@
       <td>{{ $factura->area }}</td>
       <td>{{ $factura->folio}}</td>
       <td>{{ $factura->prefix}}</td>
-      <td>{{ $factura->issuer_name}}</td>
       <td>{{ $factura->issuer_nit }}</td>
+      <td>{{ $factura->issuer_name}}</td>
+      
       <td>{{ $factura->issue_date }}</td>
       <td>{{ $factura->delivered_by }}</td>
       <td>
@@ -258,7 +260,7 @@ function cambiarTipo(tipo) {
         </div>
       </div>
         <div class="form-group col-md-6">
-          <label for="area">Área</label>
+          <label for="area">Área encargada</label>
           <select class="form-control @error('area') is-invalid @enderror" id="area" name="area" required>
             <option value="">Selecciona</option>
             <option value="Compras" @selected( "Compras"==$factura -> area)>Compras</option>
@@ -273,6 +275,7 @@ function cambiarTipo(tipo) {
         </div>
       </div>
       @if($factura->subtype == 'Rechazada' || $factura->subtype == 'FIN/Rechazada')
+      <h2>Factura</h2>
       <div class="form-group col-md-6">
           <label for="anexos">Archivos Adjuntos</label>
           <div class="attachment-box">
@@ -338,25 +341,27 @@ function cambiarTipo(tipo) {
       </div>
       <div id="anexosContainer{{$factura->id}}"></div>
       <button type="button" class="btn btn-secondary" onclick="agregarAnexo({{$factura->id}})">Agregar Anexo</button>
-
+     
+   
+    
       <div class="form-group2 col-md-6">
           <div>
-          <label for="costo1">Costo 1 </label>
+          <label for="costo1">Centro de Costo 1 </label>
           <input type="text" class="form-control" id="costo1" name="costo1" value="{{$factura->costo1}}">
           </div>
 
           <div>
-          <label for="costo2">Costo 2 </label>
+          <label for="costo2">Centro de Costo 2 </label>
           <input type="text" class="form-control" id="costo2" name="costo2" value="{{$factura->costo2}}">
           </div>
           
           <div>
-          <label for="costo3">Costo 3 </label>
+          <label for="costo3">Centro de Costo 3 </label>
           <input type="text" class="form-control" id="costo3" name="costo3" value="{{$factura->costo3}}">
           </div>
 
           <div>
-          <label for="costo4">Costo 4 </label>
+          <label for="costo4">Centro de Costo 4 </label>
           <input type="text" class="form-control" id="costo4" name="costo4" value="{{$factura->costo4}}">
           </div>
       </div>
@@ -378,6 +383,7 @@ function cambiarTipo(tipo) {
   </div>
 </div>
 @endforeach
+
 <script>
  function buscarCUFE() {
       window.open("https://catalogo-vpfe.dian.gov.co/User/SearchDocument", "_blank");
@@ -562,68 +568,60 @@ function cambiarTipo(tipo) {
   </div>
 </div>
 
-<!-- ================ ADJUNTADAS ================= -->
-<div class="popup-background" id="popupBackground"></div>
-@foreach ($pendientes as $factura)
-<div class="popup" id="facturaAdjuntadaPopup{{$factura->id}}">
-  <div class="popup-content">
-    <div class="header">
-      <h2 class="modal-title">Datos de Factura</h2>
-      <span class="close-icon" onclick="closePopup('facturaAdjuntadaPopup{{$factura->id}}')">&times;</span>
-    </div>
-    <form id="aprobarFacturaForm{{$factura->id}}" action="{{ route('pendientes.aprobar', ['id' => $factura->id]) }}"
-      method="POST" enctype="multipart/form-data">
-      @csrf
+        <!-- ================ ADJUNTADAS ================= -->
+        <div class="popup-background" id="popupBackground"></div>
+      @foreach ($pendientes as $factura)
+      <div class="popup" id="facturaAdjuntadaPopup{{$factura->id}}">
+        <div class="popup-content">
+          <div class="header">
+            <h2 class="modal-title">Datos de Factura</h2>
+            <span class="close-icon" onclick="closePopup('facturaAdjuntadaPopup{{$factura->id}}')">&times;</span>
+          </div>
+          <form id="aprobarFacturaForm{{$factura->id}}" action="{{ route('pendientes.aprobar', ['id' => $factura->id]) }}"
+            method="POST" enctype="multipart/form-data">
+            @csrf
 
-      <div class="form-group col-md-6">
-        <label for="type">Tipo</label>
-        <select class="form-control" id="type" name="type">
-          <option value="">Selecciona</option>
-          <option value="Factura electrónica" @selected( "Factura electrónica"==$factura -> type)>Factura electrónica
-          </option>
-          <option value="Nota de crédito electrónica" @selected( "Nota de crédito electrónica"==$factura ->
-            type)>Financiera</option>
-          <option value="Reembolso" @selected( "Reembolso"==$factura -> type)>Reembolso</option>
-          <option value="Legalizacion" @selected( "Legalizacion"==$factura -> type) >Legalizacion</option>
+            <div class="form-group col-md-6">
+              <label for="type">Tipo</label>
+              <select class="form-control" id="type" name="type">
+                <option value="">Selecciona</option>
+                <option value="Factura electrónica" @selected( "Factura electrónica"==$factura -> type)>Factura electrónica
+                </option>
+                <option value="Nota de crédito electrónica" @selected( "Nota de crédito electrónica"==$factura ->
+                  type)>Financiera</option>
+                <option value="Reembolso" @selected( "Reembolso"==$factura -> type)>Reembolso</option>
+                <option value="Legalizacion" @selected("Legalizacion" == $factura->type) >Legalizacion</option>
 
-        </select>
-      </div>
-      <div class="form-row">
-        <div class="form-group col-md-6">
-          <label for="folio">Folio</label>
-          <input type="text" class="form-control" id="folio" name="folio" value="{{$factura->folio}}"
-            placeholder="Contrato">
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group col-md-6">
-          <label for="issuer_name">Nombre Emisor</label>
-          <input type="text" class="form-control" id="issuer_name" name="issuer_name" value="{{$factura->issuer_name}}">
-        </div>
-        <div class="form-group col-md-6">
-          <label for="issuer_nit">Nit Emisor</label>
-          <input type="text" class="form-control" id="issuer_nit" name="issuer_nit" value="{{$factura->issuer_nit}}">
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group col-md-6">
-          <label for="prefix">Prefijo</label>
-          <input type="text" class="form-control" id="prefix" name="prefix" value="{{$factura->prefix}}">
-        </div>
-        <div class="form-group col-md-6">
-          <label for="area">Área</label>
-          <select class="form-control" id="area" name="area">
-            <option value="">Selecciona</option>
-            <option value="Compras" @selected( "Compras"==$factura -> area)>Compras</option>
-            <option value="Financiera" @selected( "Financiera"==$factura -> area)>Financiera</option>
-            <option value="Logistica" @selected( "Logistica"==$factura -> area)>Logística</option>
-            <option value="Mantenimiento" @selected( "Mantenimiento"==$factura -> area) >Mantenimiento</option>
-            <option value="Tecnologia" @selected( "Tecnologia"==$factura -> area)>Tecnología</option>
-          </select>
-        </div>
+              </select>
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="nombre">Nombre</label>
+                <input type="text" class="form-control" id="name" name="name" value="{{$factura->name}}" placeholder="Nombre">
+              </div>
+              <div class="form-group col-md-6">
+                <label for="folio">Folio</label>
+                <input type="text" class="form-control" id="folio" name="folio" value="{{$factura->folio}}"
+                  placeholder="Contrato">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="issuer_name">Nombre Emisor</label>
+                <input type="text" class="form-control" id="issuer_name" name="issuer_name" value="{{$factura->issuer_name}}">
+              </div>
+              <div class="form-group col-md-6">
+                <label for="issuer_nit">Nit Emisor</label>
+                <input type="text" class="form-control" id="issuer_nit" name="issuer_nit" value="{{$factura->issuer_nit}}">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="prefix">Prefijo</label>
+                <input type="text" class="form-control" id="prefix" name="prefix" value="{{$factura->prefix}}">
+              </div>
 
-        
-        <div class="form-group col-md-6">
+              <div class="form-group col-md-6">
         <label for="cude">CUFE</label>
         <div class="input-group">
           <textarea class="form-control" id="cude" name="cude" readonly>{{$factura->cude}}</textarea>
@@ -633,97 +631,82 @@ function cambiarTipo(tipo) {
             </button>
           </div>
         </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group col-md-6">
-          <label for="anexos">Archivos Adjuntos</label>
-          <div class="attachment-box">
-            <ul class="no-bullet">
-              @if($factura->anexo1)
-              <li>
-              
-                <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo1) }}')">
-                  <i class="fas fa-file"></i> Anexo 1 - {{ $factura->anexo1 }}</button>
-              </li>
-              @endif
-              @if($factura->anexo2)
-              <li>
-                
-                <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo2) }}')">
-                  <i class="fas fa-file"></i>
-                  Anexo 2 - {{ $factura->anexo2 }}</button>
-              </li>
-              @endif
-              @if($factura->anexo3)
-              <li>
-                
-                <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo3) }}')">
-                  <i class="fas fa-file"></i>
-                  Anexo 3 - {{ $factura->anexo3 }}</button>
-              </li>
-              @endif
-              @if($factura->anexo4)
-              <li>
-                
-                <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo4) }}')">
-                  <i class="fas fa-file"></i>
-                  Anexo 4 - {{ $factura->anexo4 }}</button>
-              </li>
-              @endif
-              @if($factura->anexo5)
-              <li>
-                
-                <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo5) }}')">
-                  <i class="fas fa-file"></i>
-                  Anexo 5 - {{ $factura->anexo5 }}</button>
-              </li>
-              @endif
-              @if($factura->anexo6)
-              <li>
-                
-                <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo6) }}')">
-                  <i class="fas fa-file"></i>
-                  Anexo 6 - {{ $factura->anexo6 }}</button>
-              </li>
-              @endif
-
-            </ul>
-          </div>
         </div>
-      </div>
-      <div class="form-group2 col-md-6">
-          <div>
-          <label for="costo1">Costo 1 </label>
-          <input type="text" class="form-control" id="costo1" name="costo1" value="{{$factura->costo1}}">
-          </div>
+              <div class="form-group col-md-6">
+                <label for="area">Área</label>
+                <select class="form-control" id="area" name="area">
+                  <option value="">Selecciona</option>
+                  <option value="Compras" @selected( "Compras"==$factura -> area)>Compras</option>
+                  <option value="Financiera" @selected( "Financiera"==$factura -> area)>Financiera</option>
+                  <option value="Logistica" @selected( "Logistica"==$factura -> area)>Logística</option>
+                  <option value="Mantenimiento" @selected("Mantenimiento" == $factura->area) >Mantenimiento</option>
+                  <option value="Tecnologia" @selected( "Tecnologia"==$factura -> area)>Tecnología</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="anexos">Archivos Adjuntos</label>
+                <div class="attachment-box">
+                  <ul class="no-bullet">
+                    @if($factura->anexo1)
+                    <li>
+                      <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo1) }}')">
+                        <i class="fas fa-file"></i> Anexo 1 - {{ $factura->anexo1 }}</button>
+                    </li>
+                    @endif
+                    @if($factura->anexo2)
+                    <li>
+                      <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo2) }}')">
+                        <i class="fas fa-file"></i>
+                        Anexo 2 - {{ $factura->anexo2 }}</button>
+                    </li>
+                    @endif
+                    @if($factura->anexo3)
+                    <li>
+                      <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo3) }}')">
+                        <i class="fas fa-file"></i>
+                        Anexo 3 - {{ $factura->anexo3 }}</button>
+                    </li>
+                    @endif
+                    @if($factura->anexo4)
+                    <li>
+                      <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo4) }}')">
+                        <i class="fas fa-file"></i>
+                        Anexo 4 - {{ $factura->anexo4 }}</button>
+                    </li>
+                    @endif
+                    @if($factura->anexo5)
+                    <li>
+                      <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo5) }}')">
+                        <i class="fas fa-file"></i>
+                        Anexo 5 - {{ $factura->anexo5 }}</button>
+                    </li>
+                    @endif
+                    @if($factura->anexo6)
+                    <li>
+                      <button class="btn " onclick="openDocument('{{ asset('anexos/' . $factura->anexo6) }}')">
+                        <i class="fas fa-file"></i>
+                        Anexo 6 - {{ $factura->anexo6 }}</button>
+                    </li>
+                    @endif
 
-          <div>
-          <label for="costo2">Costo 2 </label>
-          <input type="text" class="form-control" id="costo2" name="costo2" value="{{$factura->costo2}}">
-          </div>
-          
-          <div>
-          <label for="costo3">Costo 3 </label>
-          <input type="text" class="form-control" id="costo3" name="costo3" value="{{$factura->costo3}}">
-          </div>
-
-          <div>
-          <label for="costo4">Costo 4 </label>
-          <input type="text" class="form-control" id="costo4" name="costo4" value="{{$factura->costo4}}">
-          </div>
-      </div>
-      <div class="form-group col-md-6">
-    <label for="note">Nota</label>
-    <textarea class="form-control" id="note" name="note">{{$factura->note}}</textarea>
-</div>
-<div class="modal-footer">
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="form-group col-md-6">
+              <label for="note">Nota</label>
+              <textarea class="form-control" id="note" name="note">{{$factura->note}}</textarea>
+            </div>
+            <div class="modal-footer">
     <button type="submit" class="btn btn-danger" formaction="{{route('pendientes.rechazar', ['id' => $factura->id])}}">Rechazar</button>
     <button type="submit" class="btn btn-primary">Aprobar</button>
 </div>
-    </form>
-  </div>
-</div>
-@endforeach
+          </form>
+        </div>
+      </div>
+      @endforeach
 
 <script>
   function openDocument(url) {

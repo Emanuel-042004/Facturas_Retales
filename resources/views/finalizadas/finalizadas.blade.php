@@ -2,13 +2,12 @@
 
 @section('content')
 
-
 <div class="tablas">
   <div class="cardHeader">
     <h2>Facturas Pagadas</h2>
     <!-- Botones ocultos al principio -->
     <div class="search">
-    <form action="{{ route('pagos.index') }}" method="GET">
+    <form action="{{ route('finalizadas.index') }}" method="GET">
     
 
       <div class="search">
@@ -26,7 +25,7 @@
   </div>
   <table>
     <thead>
-      <td></td>
+      
       <td>Estado</td>
       <td>Proceso</td>
       <td>Area</td>
@@ -38,12 +37,10 @@
       </tr>
     </thead>
     <tbody>
-      @foreach ($pagados as $factura)
+      @foreach ($finalizadas as $factura)
       @if (!$area || $factura->area === $area)
-      <td>
-        <input type="checkbox" class="form-check-input" name="selectedFacturas[]" value="{{ $factura->id }}" onchange ="agregarBotones()">
-      </td>
-      <td><span class="status refused">{{ $factura->status}}</span></td>
+     
+      <td><span class="status approved">{{ $factura->status}}</span></td>
       <td><span class="status inProgress">{{ $factura->subtype }}</span></td>
       <td>{{ $factura->area }}</td>
       <td>{{ $factura->prefix }}</td>
@@ -51,16 +48,7 @@
       <td>{{ $factura->issuer_name}}</td>
       <td>{{ $factura->issuer_nit }}</td>
       <td>
-      
-          @if ($factura->subtype == 'Adjuntada')
-         <ion-icon name="ellipsis-vertical-outline"
-           onclick="openPopup('facturaAdjuntadaPopup{{$factura->id}}')"></ion-icon>
-         @elseif($factura->subtype == 'Aprobada')
-         <ion-icon name="ellipsis-vertical-outline" onclick="openPopup('facturaAprobadaPopup{{$factura->id}}')"></ion-icon>
-         @else
-         <ion-icon name="ellipsis-vertical-outline" onclick="openPopup('facturaPopup{{$factura->id}}')"></ion-icon>
-         @endif
-                           
+      <ion-icon name="ellipsis-vertical-outline" onclick="openPopup('facturaAdjuntadaPopup{{$factura->id}}')"></ion-icon>
         
       </td>
       
@@ -72,35 +60,20 @@
   <!-- Estilos Bootstrap para la paginación -->
   <div>
     <ul class="pagination">
-      <li class="{{ $pagados->onFirstPage() ? 'disabled' : '' }}">
-        <a href="{{ $pagados->previousPageUrl() }}" aria-label="Anterior">
+      <li class="{{ $finalizadas->onFirstPage() ? 'disabled' : '' }}">
+        <a href="{{ $finalizadas->previousPageUrl() }}" aria-label="Anterior">
           <span aria-hidden="true">« Anterior</span>
         </a>
       </li>
 
-      <li class="{{ $pagados->hasMorePages() ? '' : 'disabled' }}">
-        <a href="{{ $pagados->nextPageUrl() }}" class="page-link" aria-label="Siguiente">
+      <li class="{{ $finalizadas->hasMorePages() ? '' : 'disabled' }}">
+        <a href="{{ $finalizadas->nextPageUrl() }}" class="page-link" aria-label="Siguiente">
           <span aria-hidden="true">Siguiente »</span>
         </a>
       </li>
     </ul>
   </div>
 </div>
-<script>
-      function agregarBotones() {
-        var checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
-        var botonesContainer = document.getElementById('botonesContainer');
-
-        // Mostrar o ocultar los botones dependiendo de si hay checkboxes seleccionados
-        if (checkboxes.length > 0) {
-            botonesContainer.style.display = 'block';
-        } else {
-            botonesContainer.style.display = 'none';
-        }
-    }
-</script>
-
-
 
 <script>
    function openDocument(url) {
@@ -167,8 +140,8 @@ function closeDocumentPopup() {
 </script>
 
 <!-- ================ APROBADAS ================= -->
-<div class="popup-background" id="popupBackground"></div>
-      @foreach ($pagados as $factura)
+ <div class="popup-background" id="popupBackground"></div>
+    @foreach ($finalizadas as $factura)
       <div class="popup" id="facturaAdjuntadaPopup{{$factura->id}}">
         <div class="popup-content">
           <div class="header">
@@ -379,81 +352,26 @@ function closeDocumentPopup() {
               </div>
             </div>
             <h2>Comprobante de Egreso</h2>
-          <div class="form-row">
-              <div class="form-group col-md-6">
-                <label for="egreso">Comprobante 1</label>
-                <input type="file" class="form-control-file" id="egreso" name="egreso" placeholder="cargue aquí">
-                <!-- Lista de archivos seleccionados -->
-              </div>
-          </div>
-          
-
-            <div class="form-group col-md-6">
-              <label for="note">Nota</label>
-              <textarea class="form-control" id="note" name="note">{{$factura->note}}</textarea>
-            </div>
-            <div class="modal-footer">
-        <button type="submit" class="btn btn-danger" formaction="{{route('rechazar_p', ['id' => $factura->id])}}">Rechazar</button>
+            <div class="attachment-box">
+                  <ul class="no-bullet">
+                    @if($factura->egreso)
+                    <li>
+                      <button class="btn " onclick="openDocument('{{ asset('egresos/' . $factura->egreso) }}')">
+                        <i class="fas fa-file"></i> Egreso {{ $factura->egreso }}</button>
+                    </li>
+                    @endif
+                  </ul>
+                </div>
+        
+            <!-- Botones ocultos al principio <div class="modal-footer">
+       <button type="submit" class="btn btn-danger" formaction="{{route('rechazar_p', ['id' => $factura->id])}}">Rechazar</button>
         <button type="button" id="cargarBtn{{$factura->id}}" class="btn btn-primary" onclick="confirmarCarga('{{$factura->id}}')">Finalizar</button>
-      </div>
+      </div>-->
     </form>
   </div>
 </div>
 @endforeach
 
-<script>
-  function confirmarCarga(facturaId) {
-    var egresoInput = document.getElementById('egreso');
-    
-    // Verifica si se ha adjuntado un archivo para el campo egreso
-    if (!egresoInput.files || egresoInput.files.length === 0) {
-      // Muestra una alerta si no se ha adjuntado un archivo para el campo egreso
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: 'Debes adjuntar un archivo para el campo egreso.',
-        showCloseButton: false, // Evita que se muestre el botón de cierre
-        customClass: {
-          container: 'swal-overlay',
-          popup: 'swal-popup',
-          header: 'swal-header',
-          title: 'swal-title',
-          icon: 'swal-icon',
-          content: 'swal-content',
-          confirmButton: 'swal-confirm-button'
-        }
-      });
-      return false; // Evita enviar el formulario si no se ha adjuntado un archivo para el campo egreso
-    }
-
-    // Mostrar una confirmación de SweetAlert en lugar de la confirmación del navegador
-    Swal.fire({
-      title: '¿Estás seguro de que deseas causar la factura?',
-      icon: 'question',
-      showCancelButton: true,
-      confirmButtonText: 'Sí, cargar factura',
-      cancelButtonText: 'Cancelar',
-      showCloseButton: false, // Evita que se muestre el botón de cierre
-      customClass: {
-        container: 'swal-overlay',
-        popup: 'swal-popup',
-        header: 'swal-header',
-        title: 'swal-title',
-        icon: 'swal-icon',
-        content: 'swal-content',
-        confirmButton: 'swal-confirm-button',
-        cancelButton: 'swal-cancel-button'
-      }
-    }).then((result) => {
-      if (result.isConfirmed) {
-        // Si el usuario confirma, enviar el formulario y mostrar la animación de carga
-        document.getElementById('causarFacturaForm' + facturaId).submit();
-        document.getElementById('cargarBtn' + facturaId).style.display = "none"; // Ocultar el botón de "cargar"
-        document.getElementById('loading' + facturaId).style.display = "block"; // Mostrar la animación de carga
-      }
-    });
-  }
-</script>
 
 <!-- ================ Abrir PopUp ================= -->
 <script>

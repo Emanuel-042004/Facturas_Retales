@@ -7,6 +7,7 @@ use App\Http\Controllers\EntregadosController;
 use App\Http\Controllers\CausadosController;
 use App\Http\Controllers\CargadosController;
 use App\Http\Controllers\ReembolsosController;
+use App\Http\Controllers\FinalizadasController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -65,6 +66,7 @@ Route::get('/pagados', [CausadosController::class, 'pagosindex'])->name('pagos.i
 Route::post('/pagados/finalizar/{id}', [CausadosController::class, 'finalizar'])->name('finalizar');
 Route::post('/causados/rechazar_p/{id}', [CausadosController::class, 'rechazar_pago'])->name('rechazar_p');
 
+Route::get('/finalizadas', [FinalizadasController::class, 'index'])->name('finalizadas.index');
 
 Route::get('/entregados', [EntregadosController::class, 'index'])->name('entregados.index');
 Route::post('/recibir-factura/{id}', [EntregadosController::class, 'recibirFactura']);
