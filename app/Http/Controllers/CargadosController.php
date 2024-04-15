@@ -18,7 +18,7 @@ class CargadosController extends Controller
     public function index(Request $request)
     {
         // Obtener todas las facturas con estado 'pending'
-        $query = Factura::where('status', 'Cargada')->where('type', '!=', 'Reembolso');
+        $query = Factura::where('status', 'Cargada')->where('type', '!=', 'Reembolso')->where('subtype', '!=', 'Aprobada');
     
         // Obtener el área de la solicitud, si está presente
         $area = $request->input('area');
@@ -80,6 +80,76 @@ class CargadosController extends Controller
         return redirect()->back()->with('success', 'Factura rechazada');
 
     }
+
+    public function aprobar(Request $request, $id){
+     
+        $factura = Factura::findOrFail($id);
+        $factura->type = $request->input('type');
+        $factura->folio = $request->input('folio');
+        $factura->issuer_name = $request->input('issuer_name');
+        $factura->issuer_nit = $request->input('issuer_nit');
+        $factura->prefix = $request->input('prefix');
+        $factura->area = $request->input('area');
+        $factura->costo1 = $request->input('costo1');
+        $factura->costo2 = $request->input('costo2');
+        $factura->costo3 = $request->input('costo3');
+        $factura->costo4 = $request->input('costo4');
+        $factura->note = $request->input('note');
+
+        $factura->status = 'Cargada';
+        $factura->subtype = 'Aprobada';
+        $factura->save();
+
+        return redirect()->back()->with('success', 'Factura Aprobada');
+
+    }
+
+
+    public function aprobadas_index(Request $request)
+    {
+        // Obtener todas las facturas con estado 'pending'
+        $query = Factura::where('status', 'Cargada')->where('type', '!=', 'Reembolso')->where('subtype','Aprobada');
+    
+        // Obtener el área de la solicitud, si está presente
+        $area = $request->input('area');
+    
+        // Filtrar por área si se proporciona
+        if ($area) {
+            $query->where('area', $area);
+        }
+
+        
+    $search = $request->input('q');
+
+    if ($search) {
+        $query->where(function ($subquery) use ($search) {
+            $factura = new Factura();
+            $fillableFields = $factura->getFillable();
+            foreach ($fillableFields as $field) {
+                $subquery->orWhere($field, 'like', "%{$search}%");
+            }
+        });
+    }
+        $perPage = 10; // Número de elementos por página
+        $page = $request->input('page', 1); // Página actual, por defecto es 1
+    
+        $total = $query->count();
+        $results = $query->skip(($page - 1) * $perPage)->take($perPage)->get();
+    
+        $cargados = new LengthAwarePaginator($results, $total, $perPage, $page, [
+            'path' => LengthAwarePaginator::resolveCurrentPath(),
+        ]);
+    
+        
+        
+    
+        // Retornar la vista 'entregados' con las facturas entregados y el área seleccionada
+        return view('cargados.aprobadas', compact('cargados', 'area'));
+    } //
+
+
+
+
     public function causarFactura(Request $request, $id)
 {
     if (!$request->hasFile('causaciones')) {

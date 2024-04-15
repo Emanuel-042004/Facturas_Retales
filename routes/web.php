@@ -53,6 +53,8 @@ Route::post('/pendientes/{id}/aprobar', [PendientesController::class, 'aprobar']
 Route::post('/facturas/{id}/editar-anexo/{numero_anexo}', [PendientesController::class, 'editarAnexo'])->name('editar_anexo');
 
 Route::get('/cargados', [CargadosController::class, 'index'])->name('cargados.index');
+Route::post('/cargados/{id}/aprobar', [CargadosController::class, 'aprobar'])->name('cargados_aprobar');
+Route::get('/aprobadas', [CargadosController::class, 'aprobadas_index'])->name('aprobadas.index');
 
 Route::post('/cargados/{id}/rechazar', [CargadosController::class, 'rechazar'])->name('cargados.rechazar');
 Route::get('/cargados/{id}/entregar', [CargadosController::class, 'entregar'])->name('cargados.entregar');
@@ -60,6 +62,7 @@ Route::get('/cargados/{id}/entregar', [CargadosController::class, 'entregar'])->
 Route::post('/causar-factura/{id}', [CargadosController::class, 'causarFactura'])->name('causar_factura');
 
 Route::get('/causados', [CausadosController::class, 'index'])->name('causados.index');
+
 
 Route::post('/comprobar-factura/{id}', [CausadosController::class, 'comprobarFactura'])->name('comprobar_factura');
 Route::get('/pagados', [CausadosController::class, 'pagosindex'])->name('pagos.index');

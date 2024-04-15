@@ -50,7 +50,7 @@ class CausadosController extends Controller
         return view('causados.causados', compact('causados', 'area'));
     } //
 
-    public function comprobarFactura(Request $request, $id)
+    public function finalizar(Request $request, $id)
     {
         if (!$request->hasFile('comprobantes')) {
             return redirect()->back()->with('error', 'Debes adjuntar al menos una causación.');
@@ -73,9 +73,9 @@ class CausadosController extends Controller
             'costo2' => $request->input('costo2'),
             'costo3' => $request->input('costo3'),
             'costo4' => $request->input('costo4'),
-            
-            'status' => 'Pagada',
+            'status' => 'Finalizada',
             'subtype' => 'Adjuntada', 
+             
         ]);
         
         // Procesa los archivos de causación
@@ -165,7 +165,7 @@ public function rechazar_pago(Request $request, $id){
 
 }
 
-public function finalizar(Request $request, $id)
+public function comprobarFactura(Request $request, $id)
     {
         if (!$request->hasFile('egreso')) {
             return redirect()->back()->with('error', 'Debes adjuntar al menos una causación.');
@@ -188,9 +188,9 @@ public function finalizar(Request $request, $id)
             'costo2' => $request->input('costo2'),
             'costo3' => $request->input('costo3'),
             'costo4' => $request->input('costo4'),
+            'status' => 'Pagada',
+            'subtype' => 'Adjuntada',
             
-            'status' => 'Finalizada',
-            'subtype' => 'Adjuntada', 
         ]);
         
         

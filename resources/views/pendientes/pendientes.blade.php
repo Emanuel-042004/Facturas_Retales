@@ -342,7 +342,35 @@ function cambiarTipo(tipo) {
       <div id="anexosContainer{{$factura->id}}"></div>
       <button type="button" class="btn btn-secondary" onclick="agregarAnexo({{$factura->id}})">Agregar Anexo</button>
      
-   
+      <div class="form-group col-md-6">
+          <label for="area">Área de costo </label>
+          <select class="form-control area_costo" name="area_costo" required>
+            <option value="">Selecciona</option>
+            <option value="AREA DE SERVICIOS">AREA DE SERVICIOS</option>
+            <option value="ARRENDAMIENTOS">ARRENDAMIENTOS</option>
+            <option value="CONTRIBUCIONES SERVICIOS PUBLICOS">CONTRIBUCIONES SERVICIOS PUBLICOS</option>
+            <option value="COORDINACION DE INVENTARIO">COORDINACION DE INVENTARIO</option>
+            <option value="DIRCOMERCIAL">DIRCOMERCIAL</option>
+            <option value="DIRCOMPRAS NACIONALES">DIRCOMPRAS NACIONALES</option>
+            <option value="DIRFINANCIERO">DIRFINANCIERO</option>
+            <option value="DIRGESTION HUMANA">DIRGESTION HUMANA</option>
+            <option value="DIRLOGISTICA SERVICIOS">DIRLOGISTICA  SERVICIOS</option>
+            <option value="DIRMERCADEO">DIRMERCADEO</option>
+            <option value="GERENCIA GENERAL">GERENCIA GENERAL</option>
+            <option value="IMPORTACIONES">IMPORTACIONES</option>
+            <option value="IMPUESTOS">IMPUESTOS</option>
+            <option value="INFORMATICA Y MANTENIMIENTO">INFORMATICA Y MANTENIMIENTO</option>
+            <option value="NOMINA DE GASTOS NO ASIGNADOS">NOMINA DE GASTOS NO ASIGNADOS</option>
+            <option value="PUNTOS DE VENTA">PUNTOS DE VENTA</option>
+            <option value="TRAMITES LEGALES">TRAMITES LEGALES</option>
+          </select>
+      </div>
+      <div class="form-group col-md-6" id="centro_costo_div">
+    <label for="centro_costo">Subárea de costo</label>
+    <select class="form-control centro_costo" name="centro_costo" required>>
+        <!-- Las opciones se cargarán dinámicamente aquí --> 
+    </select>
+   </div>
     
       <div class="form-group2 col-md-6">
           <div>
@@ -383,12 +411,12 @@ function cambiarTipo(tipo) {
   </div>
 </div>
 @endforeach
-
 <script>
  function buscarCUFE() {
       window.open("https://catalogo-vpfe.dian.gov.co/User/SearchDocument", "_blank");
     }
 </script>
+<script src="{{ asset('js/costos.js') }}"></script>
 
 <script>
   function agregarAnexo(facturaId) {
@@ -707,88 +735,6 @@ function cambiarTipo(tipo) {
         </div>
       </div>
       @endforeach
-
-<script>
-  function openDocument(url) {
-    event.preventDefault(); // Evitar que el formulario se envíe
-
-    const popup = document.createElement('div');
-    popup.id = 'documentoPopup'; // Asignar un ID al popup del documento
-    popup.classList.add('popup');
-    popup.style.display = 'block';
-
-    const popupContent = document.createElement('div');
-    popupContent.classList.add('popup-content');
-
-    const header = document.createElement('div');
-    header.classList.add('header');
-    header.style.position = 'fixed'; // Fijar el encabezado
-    header.style.top = '0'; // Fijar en la parte superior
-    header.style.left = '50%'; // Centrar horizontalmente
-    header.style.transform = 'translateX(-50%)'; // Centrar horizontalmente
-    header.style.width = '100%'; // Ancho del 90%
-    header.style.backgroundColor = '#ffffff'; // Fondo blanco
-    header.style.padding = '10px'; // Agregar relleno
-    header.style.boxShadow = '0 2px 5px rgba(0, 0, 0, 0.2)'; // Sombra
-    header.style.zIndex = '9998'; // Asegurar que esté por encima de otros elementos
-
-    const title = document.createElement('h2');
-    title.classList.add('modal-title');
-    title.textContent = 'Anexos';
-    title.style.margin = '0'; // Eliminar el margen superior del título
-
-    const closeButton = document.createElement('span');
-    closeButton.classList.add('close-icon');
-    closeButton.textContent = '×'; // Usar el carácter de multiplicación como icono de cierre
-    closeButton.style.cursor = 'pointer'; // Cambiar el cursor al pasar sobre el botón
-    closeButton.style.position = 'absolute'; // Posición absoluta
-    closeButton.style.top = '5px'; // Ajustar distancia desde la parte superior
-    closeButton.style.right = '5px'; // Ajustar distancia desde la derecha
-    closeButton.onclick = closeDocumentPopup; // Asignar la función de cierre al hacer clic
-
-    header.appendChild(title);
-    header.appendChild(closeButton);
-
-    const iframe = document.createElement('iframe');
-    iframe.src = url;
-    iframe.width = '1000px'; // Ancho completo
-    iframe.height = '1020px'; // Altura menos la altura del encabezado y un poco de margen
-    iframe.frameBorder = '0';
-
-    popupContent.appendChild(header);
-    popupContent.appendChild(iframe);
-    popup.appendChild(popupContent);
-
-    document.body.appendChild(popup);
-
-    document.getElementById('popupBackground').style.display = 'block'; // Mostrar el fondo gris
-  }
-  function closeDocumentPopup() {
-    const popup = document.querySelector('#documentoPopup');
-    if (popup) {
-      popup.remove(); // Eliminar el popup del DOM
-    }
-    // No ocultar el fondo gris aquí, ya que el popupBackground debe mantenerse visible
-  }
-</script>
-
-
-
-
-
-
-<!-- ================ Abrir PopUp ================= -->
-<script>
-  function openPopup(popupId) {
-    document.getElementById(popupId).style.display = "block";
-    document.getElementById('popupBackground').style.display = "block"; // Mostrar el fondo gris
-  }
-
-  function closePopup(popupId) {
-    document.getElementById(popupId).style.display = "none";
-    document.getElementById('popupBackground').style.display = "none"; // Ocultar el fondo gris
-  }
-</script>
 
 @endsection
 

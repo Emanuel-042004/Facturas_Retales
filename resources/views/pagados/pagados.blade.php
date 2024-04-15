@@ -244,6 +244,7 @@ function closeDocumentPopup() {
             </div>
             <div class="form-row">
               <div class="form-group col-md-6">
+              <h3>FACTURA</h3>
                 <label for="anexos">Archivos Adjuntos</label>
                 <div class="attachment-box">
                   <ul class="no-bullet">
@@ -295,7 +296,7 @@ function closeDocumentPopup() {
               </div>
             </div>
             <hr>
-            <h2>Causaciones</h2>
+            <h3>CAUSACIONES</h3>
             <div class="form-row">
               <div class="form-group col-md-6">
                 
@@ -348,45 +349,29 @@ function closeDocumentPopup() {
               </div>
             </div>
 
-            <h2>Comprobante de Pago</h2>
-            <div class="form-row">
-              <div class="form-group col-md-6">
-                
-                <div class="attachment-box">
+            <h3>COMPROBANTE DE EGRESO</h3>
+            <div class="attachment-box">
                   <ul class="no-bullet">
-                    @if($factura->comprobante1)
+                    @if($factura->egreso)
                     <li>
-                      <button class="btn " onclick="openDocument('{{ asset('comprobantes/' . $factura->comprobante1) }}')">
-                        <i class="fas fa-file"></i> comprobante 1 - {{ $factura->comprobante1 }}</button>
-                    </li>
-                    @endif
-                    @if($factura->comprobante2)
-                    <li>
-                      <button class="btn " onclick="openDocument('{{ asset('comprobantes/' . $factura->comprobante2) }}')">
-                        <i class="fas fa-file"></i>
-                        comprobante 2 - {{ $factura->comprobante2 }}</button>
-                    </li>
-                    @endif
-                    @if($factura->comprobante3)
-                    <li>
-                      <button class="btn " onclick="openDocument('{{ asset('comprobantes/' . $factura->comprobante3) }}')">
-                        <i class="fas fa-file"></i>
-                        comprobante 3 - {{ $factura->comprobante3 }}</button>
+                      <button class="btn " onclick="openDocument('{{ asset('egresos/' . $factura->egreso) }}')">
+                        <i class="fas fa-file"></i> Egreso {{ $factura->egreso }}</button>
                     </li>
                     @endif
                   </ul>
                 </div>
-              </div>
-            </div>
-            <h2>Comprobante de Egreso</h2>
+           
+          
+          <h3>COMPROBANTE DE PAGO</h3>
           <div class="form-row">
               <div class="form-group col-md-6">
-                <label for="egreso">Comprobante 1</label>
-                <input type="file" class="form-control-file" id="egreso" name="egreso" placeholder="cargue aquí">
+                <label for="comprobante1">Comprobante 1</label>
+                <input type="file" class="form-control-file" id="comprobante{{$factura->id}}_1" name="comprobantes[]" placeholder="cargue aquí">
                 <!-- Lista de archivos seleccionados -->
               </div>
           </div>
-          
+          <div id="comprobantesContainer{{$factura->id}}"></div>
+          <button type="button" class="btn btn-secondary" onclick="agregarComprobante({{$factura->id}})">Agregar Causación</button>
 
             <div class="form-group col-md-6">
               <label for="note">Nota</label>
@@ -394,65 +379,101 @@ function closeDocumentPopup() {
             </div>
             <div class="modal-footer">
         <button type="submit" class="btn btn-danger" formaction="{{route('rechazar_p', ['id' => $factura->id])}}">Rechazar</button>
-        <button type="button" id="cargarBtn{{$factura->id}}" class="btn btn-primary" onclick="confirmarCarga('{{$factura->id}}')">Finalizar</button>
+        <button type="button" id="cargarBtn{{$factura->id}}" class="btn btn-primary"
+          onclick="confirmarCarga('causarFacturaForm{{$factura->id}}', '{{$factura->id}}')">FINALIZAR</button>
       </div>
     </form>
   </div>
 </div>
 @endforeach
-
 <script>
-  function confirmarCarga(facturaId) {
-    var egresoInput = document.getElementById('egreso');
-    
-    // Verifica si se ha adjuntado un archivo para el campo egreso
-    if (!egresoInput.files || egresoInput.files.length === 0) {
-      // Muestra una alerta si no se ha adjuntado un archivo para el campo egreso
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: 'Debes adjuntar un archivo para el campo egreso.',
-        showCloseButton: false, // Evita que se muestre el botón de cierre
-        customClass: {
-          container: 'swal-overlay',
-          popup: 'swal-popup',
-          header: 'swal-header',
-          title: 'swal-title',
-          icon: 'swal-icon',
-          content: 'swal-content',
-          confirmButton: 'swal-confirm-button'
+     function agregarComprobante(facturaId) {
+    var contadorComprobantes = document.querySelectorAll('#facturaCausadaPopup' + facturaId + ' input[type="file"]').length + 1;
+    if (contadorComprobantes <= 3) { // Solo agregar hasta 6 comprobantes
+        var nuevaComprobante = '<div class="form-group col-md-6">' +
+            '<label for="comprobante' + facturaId + '_' + contadorComprobantes + '">Comprobante ' + contadorComprobantes + '</label>' +
+            '<input type="file" class="form-control-file" id="comprobante' + facturaId + '_' + contadorComprobantes + '" name="comprobantes[]" placeholder="cargue aquí">' +
+            '</div>';
+        document.getElementById('comprobantesContainer' + facturaId).innerHTML += nuevaComprobante;
+    } else {
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'No se pueden agregar más de 6 comprobantes.',
+            customClass: {
+                container: 'swal-overlay' // Agrega una clase personalizada para que SweetAlert use el estilo personalizado
+            }
+        });
+    }
+}
+
+function confirmarCarga(formId, facturaId) {
+    // Verificar si al menos un archivo ha sido seleccionado
+    var files = document.querySelectorAll(' input[type="file"]');
+    var archivosAdjuntos = false;
+
+    files.forEach(function (fileInput) {
+        if (fileInput.files.length > 0) {
+            archivosAdjuntos = true;
         }
-      });
-      return false; // Evita enviar el formulario si no se ha adjuntado un archivo para el campo egreso
+    });
+
+    if (!archivosAdjuntos) {
+        // Mostrar una alerta de SweetAlert si no se han adjuntado archivos
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Debes adjuntar al menos una causación.',
+            customClass: {
+                container: 'swal-overlay',
+                popup: 'swal-popup',
+                header: 'swal-header',
+                title: 'swal-title',
+                closeButton: 'swal-close-button',
+                icon: 'swal-icon',
+                image: 'swal-image',
+                content: 'swal-content',
+                input: 'swal-input',
+                actions: 'swal-actions',
+                confirmButton: 'swal-confirm-button',
+                cancelButton: 'swal-cancel-button',
+                footer: 'swal-footer'
+            }
+        });
+        return false; // Evita enviar el formulario si no se han adjuntado archivos
     }
 
     // Mostrar una confirmación de SweetAlert en lugar de la confirmación del navegador
     Swal.fire({
-      title: '¿Estás seguro de que deseas causar la factura?',
-      icon: 'question',
-      showCancelButton: true,
-      confirmButtonText: 'Sí, cargar factura',
-      cancelButtonText: 'Cancelar',
-      showCloseButton: false, // Evita que se muestre el botón de cierre
-      customClass: {
-        container: 'swal-overlay',
-        popup: 'swal-popup',
-        header: 'swal-header',
-        title: 'swal-title',
-        icon: 'swal-icon',
-        content: 'swal-content',
-        confirmButton: 'swal-confirm-button',
-        cancelButton: 'swal-cancel-button'
-      }
+        title: '¿Estás seguro de que deseas marcar como pagada la factura?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Sí',
+        cancelButtonText: 'Cancelar',
+        customClass: {
+            container: 'swal-overlay',
+            popup: 'swal-popup',
+            header: 'swal-header',
+            title: 'swal-title',
+            closeButton: 'swal-close-button',
+            icon: 'swal-icon',
+            image: 'swal-image',
+            content: 'swal-content',
+            input: 'swal-input',
+            actions: 'swal-actions',
+            confirmButton: 'swal-confirm-button',
+            cancelButton: 'swal-cancel-button',
+            footer: 'swal-footer'
+        }
     }).then((result) => {
-      if (result.isConfirmed) {
-        // Si el usuario confirma, enviar el formulario y mostrar la animación de carga
-        document.getElementById('causarFacturaForm' + facturaId).submit();
-        document.getElementById('cargarBtn' + facturaId).style.display = "none"; // Ocultar el botón de "cargar"
-        document.getElementById('loading' + facturaId).style.display = "block"; // Mostrar la animación de carga
-      }
+        if (result.isConfirmed) {
+            // Si el usuario confirma, enviar el formulario y mostrar la animación de carga
+            document.getElementById(formId).submit();
+            document.getElementById('cargarBtn' + facturaId).style.display = "none"; // Ocultar el botón de "cargar"
+            document.getElementById('loading' + facturaId).style.display = "block"; // Mostrar la animación de carga
+        }
     });
-  }
+}
 </script>
 
 <!-- ================ Abrir PopUp ================= -->

@@ -320,7 +320,18 @@ function closeDocumentPopup() {
                 </div>
               </div>
             </div>
-
+            <h2>Comprobante de Egreso</h2>
+            <div class="attachment-box">
+                  <ul class="no-bullet">
+                    @if($factura->egreso)
+                    <li>
+                      <button class="btn " onclick="openDocument('{{ asset('egresos/' . $factura->egreso) }}')">
+                        <i class="fas fa-file"></i> Egreso {{ $factura->egreso }}</button>
+                    </li>
+                    @endif
+                  </ul>
+                </div>
+                
             <h2>Comprobante de Pago</h2>
             <div class="form-row">
               <div class="form-group col-md-6">
@@ -351,17 +362,7 @@ function closeDocumentPopup() {
                 </div>
               </div>
             </div>
-            <h2>Comprobante de Egreso</h2>
-            <div class="attachment-box">
-                  <ul class="no-bullet">
-                    @if($factura->egreso)
-                    <li>
-                      <button class="btn " onclick="openDocument('{{ asset('egresos/' . $factura->egreso) }}')">
-                        <i class="fas fa-file"></i> Egreso {{ $factura->egreso }}</button>
-                    </li>
-                    @endif
-                  </ul>
-                </div>
+           
         
             <!-- Botones ocultos al principio <div class="modal-footer">
        <button type="submit" class="btn btn-danger" formaction="{{route('rechazar_p', ['id' => $factura->id])}}">Rechazar</button>

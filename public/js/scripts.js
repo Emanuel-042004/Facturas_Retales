@@ -1,4 +1,4 @@
-function confirmarEliminacion(id) {
+/*function confirmarEliminacion(id) {
   Swal.fire({
     title: '¿Estás seguro?',
     text: 'Esta acción no se puede deshacer',
@@ -54,7 +54,7 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
   });
-});
+});*/
 
 
 

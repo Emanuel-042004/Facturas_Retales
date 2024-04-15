@@ -9,7 +9,7 @@
     <!-- ======= Styles ====== -->
     <link rel="stylesheet" href="{{ asset('css/sidebar.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
@@ -90,6 +90,17 @@
                         <span class="title">Cargadas</span>
                         <!-- Texto flotante -->
                         <span class="tooltip">Cargadas</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{{route('aprobadas.index') }}">
+                        <span class="icon" id="save-icon">
+                        <ion-icon name="checkmark-outline"></ion-icon>
+                        </span>
+                        <span class="title">Aprobadas</span>
+                        <!-- Texto flotante -->
+                        <span class="tooltip">Aprobadas</span>
                     </a>
                 </li>
 
@@ -260,8 +271,8 @@
     <!-- ====== ionicons ======= -->
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
+   
+    <script src="{{ asset('js/costos.js') }}"></script>
 </body>
 
-</html>
+</html> 

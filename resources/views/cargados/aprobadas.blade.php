@@ -56,7 +56,7 @@
          <ion-icon name="ellipsis-vertical-outline"
            onclick="openPopup('facturaAdjuntadaPopup{{$factura->id}}')"></ion-icon>
          @elseif($factura->subtype == 'Aprobada')
-         <ion-icon name="ellipsis-vertical-outline" onclick="openPopup('facturaAprobadaPopup{{$factura->id}}')"></ion-icon>
+         <ion-icon name="ellipsis-vertical-outline" onclick="openPopup('facturaAdjuntadaPopup{{$factura->id}}')"></ion-icon>
          @else
          <ion-icon name="ellipsis-vertical-outline" onclick="openPopup('facturaPopup{{$factura->id}}')"></ion-icon>
          @endif
@@ -175,7 +175,7 @@ function closeDocumentPopup() {
             <h2 class="modal-title">Datos de Factura</h2>
             <span class="close-icon" onclick="closePopup('facturaAdjuntadaPopup{{$factura->id}}')">&times;</span>
           </div>
-          <form id="causarFacturaForm{{$factura->id}}" action="{{ route('cargados_aprobar', ['id' => $factura->id]) }}"
+          <form id="causarFacturaForm{{$factura->id}}" action="{{ route('causar_factura', ['id' => $factura->id]) }}"
             method="POST" enctype="multipart/form-data">
             @csrf
 
@@ -315,6 +315,19 @@ function closeDocumentPopup() {
           <input type="text" class="form-control" id="costo4" name="costo4" value="{{$factura->costo4}}">
           </div>
       </div>
+            <hr>
+            <h1>Causaciones</h1>
+          <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="causacion1">Causación 1</label>
+                <input type="file" class="form-control-file" id="causacion{{$factura->id}}_1" name="causaciones[]" placeholder="cargue aquí">
+                <!-- Lista de archivos seleccionados -->
+              </div>
+          </div>
+          <div id="causacionesContainer{{$factura->id}}"></div>
+          <button type="button" class="btn btn-secondary" onclick="agregarCausacion({{$factura->id}})">Agregar Causación</button>
+            
+          
             <div class="form-group col-md-6">
               <label for="note">Nota</label>
               <textarea class="form-control" id="note" name="note">{{$factura->note}}</textarea>
@@ -322,7 +335,8 @@ function closeDocumentPopup() {
             <div class="modal-footer">
             <button type="submit" class="btn btn-danger" formaction="{{route('cargados.rechazar', ['id' => $factura->id])}}">Rechazar</button>
              
-              <button type="submit" class="btn btn-primary">Aprobar</button>
+              <button type="button" id="cargarBtn{{$factura->id}}" class="btn btn-primary"
+          onclick="confirmarCarga('causarFacturaForm{{$factura->id}}', '{{$factura->id}}')">Causar</button>
             </div>
           </form>
         </div>
@@ -334,6 +348,97 @@ function closeDocumentPopup() {
     }
   </script>
 
+          <script>
+     function agregarCausacion(facturaId) {
+    var contadorCausaciones = document.querySelectorAll('#facturaAdjuntadaPopup' + facturaId + ' input[type="file"]').length + 1;
+    if (contadorCausaciones <= 6) { // Solo agregar hasta 6 causaciones
+        var nuevaCausacion = '<div class="form-group col-md-6">' +
+            '<label for="causacion' + facturaId + '_' + contadorCausaciones + '">Causación ' + contadorCausaciones + '</label>' +
+            '<input type="file" class="form-control-file" id="causacion' + facturaId + '_' + contadorCausaciones + '" name="causaciones[]" placeholder="cargue aquí">' +
+            '</div>';
+        document.getElementById('causacionesContainer' + facturaId).innerHTML += nuevaCausacion;
+    } else {
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'No se pueden agregar más de 6 causaciones.',
+            customClass: {
+                container: 'swal-overlay' // Agrega una clase personalizada para que SweetAlert use el estilo personalizado
+            }
+        });
+    }
+}
+
+function confirmarCarga(formId, facturaId) {
+    // Verificar si al menos un archivo ha sido seleccionado
+    var files = document.querySelectorAll(' input[type="file"]');
+    var archivosAdjuntos = false;
+
+    files.forEach(function (fileInput) {
+        if (fileInput.files.length > 0) {
+            archivosAdjuntos = true;
+        }
+    });
+
+    if (!archivosAdjuntos) {
+        // Mostrar una alerta de SweetAlert si no se han adjuntado archivos
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Debes adjuntar al menos una causación.',
+            customClass: {
+                container: 'swal-overlay',
+                popup: 'swal-popup',
+                header: 'swal-header',
+                title: 'swal-title',
+                closeButton: 'swal-close-button',
+                icon: 'swal-icon',
+                image: 'swal-image',
+                content: 'swal-content',
+                input: 'swal-input',
+                actions: 'swal-actions',
+                confirmButton: 'swal-confirm-button',
+                cancelButton: 'swal-cancel-button',
+                footer: 'swal-footer'
+            }
+        });
+        return false; // Evita enviar el formulario si no se han adjuntado archivos
+    }
+
+    // Mostrar una confirmación de SweetAlert en lugar de la confirmación del navegador
+    Swal.fire({
+        title: '¿Estás seguro de que deseas causar la factura?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, cargar factura',
+        cancelButtonText: 'Cancelar',
+        customClass: {
+            container: 'swal-overlay',
+            popup: 'swal-popup',
+            header: 'swal-header',
+            title: 'swal-title',
+            closeButton: 'swal-close-button',
+            icon: 'swal-icon',
+            image: 'swal-image',
+            content: 'swal-content',
+            input: 'swal-input',
+            actions: 'swal-actions',
+            confirmButton: 'swal-confirm-button',
+            cancelButton: 'swal-cancel-button',
+            footer: 'swal-footer'
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Si el usuario confirma, enviar el formulario y mostrar la animación de carga
+            document.getElementById(formId).submit();
+            document.getElementById('cargarBtn' + facturaId).style.display = "none"; // Ocultar el botón de "cargar"
+            document.getElementById('loading' + facturaId).style.display = "block"; // Mostrar la animación de carga
+        }
+    });
+}
+</script>
+
+    </script>
 
 
 
