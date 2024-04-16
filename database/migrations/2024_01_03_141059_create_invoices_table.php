@@ -24,6 +24,8 @@ return new class extends Migration
             $table->date('arrival_date')->nullable();
             $table->enum('location',['Centro','Octava','Lopez','Alameda','Acopi','Jamundi','Pondaje'])->nullable();
             $table->enum('area',['Compras','Financiera','Logistica','Mantenimiento','Tecnologia'])->nullable();
+            $table->text('area_costo')->nullable();
+            $table->text('centro_costo')->nullable();
             $table->text('note',)->nullable();
             $table->enum('status',['Pendiente', 'Cargada', 'Entregada', 'Recibida', 'Aprobada','Causada', 'Pagada','Finalizada']);
             $table->date('delivery_date')->nullable();

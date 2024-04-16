@@ -274,5 +274,7 @@
    
     <script src="{{ asset('js/costos.js') }}"></script>
 </body>
-
+<footer>
+    <p>Los Retales Todos los derechos reservados - Desarrollado por Emanuel Chara Gomez</p>
+</footer>
 </html> 

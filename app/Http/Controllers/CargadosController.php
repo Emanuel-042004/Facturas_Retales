@@ -72,6 +72,8 @@ class CargadosController extends Controller
         $factura->costo3 = $request->input('costo3');
         $factura->costo4 = $request->input('costo4');
         $factura->note = $request->input('note');
+        $factura->area_costo = $request->input('area_costo');
+    $factura->centro_costo = $request->input('centro_costo');
 
         $factura->status = 'Pendiente';
         $factura->subtype = 'FIN/Rechazada';
@@ -95,7 +97,8 @@ class CargadosController extends Controller
         $factura->costo3 = $request->input('costo3');
         $factura->costo4 = $request->input('costo4');
         $factura->note = $request->input('note');
-
+        $factura->area_costo = $request->input('area_costo');
+        $factura->centro_costo = $request->input('centro_costo');
         $factura->status = 'Cargada';
         $factura->subtype = 'Aprobada';
         $factura->save();
@@ -173,6 +176,8 @@ class CargadosController extends Controller
         'costo2' => $request->input('costo2'),
         'costo3' => $request->input('costo3'),
         'costo4' => $request->input('costo4'),
+        'area_costo' => $request->input('area_costo'),
+        'centro_costo' => $request->input('centro_costo'),
         'status' => 'Causada',
         'subtype' => 'Adjuntada', 
     ]);

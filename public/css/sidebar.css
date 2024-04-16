@@ -723,6 +723,11 @@ body {
 
 }
 
+.popup h2 {
+  text-transform: uppercase;
+}
+
+
 
  .btn-secondary{
   margin-bottom: 20px;
@@ -967,4 +972,15 @@ body {
   opacity: 1;
 }
 
+footer {
+  bottom: 0px;
+  width: 100%;
+  position:fixed;
+  text-align: right;
+  color: #000000;
+  margin-bottom: 10px;
+  margin-left: -20px;
+
+
+}
 

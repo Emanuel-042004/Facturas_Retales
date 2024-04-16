@@ -132,7 +132,7 @@
             <div class="form-row">
               <div class="form-group col-md-6">
               <hr>
-            <h1>Factura</h1>
+            <h2>Factura</h2>
                 <label for="anexos">Archivos Adjuntos</label>
                 <div class="attachment-box">
                   <ul class="no-bullet">
@@ -183,79 +183,66 @@
                 </div>
               </div>
             </div>
+            <div class="form-group col-md-6">
+          <label for="area">Área de costo </label>
+          <select class="form-control area_costo" id="area_costo" name="area_costo" required>
+            <option value="">Selecciona</option>
+            <option value="AREA DE SERVICIOS" @selected( "AREA DE SERVICIOS"==$factura -> area_costo)>AREA DE SERVICIOS</option>
+            <option value="ARRENDAMIENTOS" @selected( "ARRENDAMIENTOS"==$factura -> area_costo)>ARRENDAMIENTOS</option>
+            <option value="CONTRIBUCIONES SERVICIOS PUBLICOS" @selected( "CONTRIBUCIONES SERVICIOS PUBLICOS"==$factura -> area_costo)>CONTRIBUCIONES SERVICIOS PUBLICOS</option>
+            <option value="COORDINACION DE INVENTARIO" @selected( "COORDINACION DE INVENTARIO"==$factura -> area_costo)>COORDINACION DE INVENTARIO</option>
+            <option value="DIRCOMERCIAL" @selected( "DIRCOMERCIAL"==$factura -> area_costo)>DIRCOMERCIAL</option>
+            <option value="DIRCOMPRAS NACIONALES" @selected( "DIRCOMPRAS NACIONALES"==$factura -> area_costo)>DIRCOMPRAS NACIONALES</option>
+            <option value="DIRFINANCIERO" @selected( "DIRCOMPRAS NACIONALES"==$factura -> area_costo)>DIRFINANCIERO</option>
+            <option value="DIRGESTION HUMANA" @selected( "DIRGESTION HUMANA"==$factura -> area_costo)>DIRGESTION HUMANA</option>
+            <option value="DIRLOGISTICA SERVICIOS" @selected( "DIRGESTION HUMANA"==$factura -> area_costo)>DIRLOGISTICA  SERVICIOS</option>
+            <option value="DIRMERCADEO" @selected( "DIRMERCADEO"==$factura -> area_costo)>DIRMERCADEO</option>
+            <option value="GERENCIA GENERAL" @selected( "GERENCIA GENERAL"==$factura -> area_costo)>GERENCIA GENERAL</option>
+            <option value="IMPORTACIONES" @selected( "IMPORTACIONES"==$factura -> area_costo)>IMPORTACIONES</option>
+            <option value="IMPUESTOS" @selected( "IMPUESTOS"==$factura -> area_costo)>IMPUESTOS</option>
+            <option value="INFORMATICA Y MANTENIMIENTO" @selected( "INFORMATICA Y MANTENIMIENTO"==$factura -> area_costo)>INFORMATICA Y MANTENIMIENTO</option>
+            <option value="NOMINA DE GASTOS NO ASIGNADOS" @selected( "NOMINA DE GASTOS NO ASIGNADOS"==$factura -> area_costo)>NOMINA DE GASTOS NO ASIGNADOS</option>
+            <option value="PUNTOS DE VENTA" @selected( "PUNTOS DE VENTA"==$factura -> area_costo)>PUNTOS DE VENTA</option>
+            <option value="TRAMITES LEGALES" @selected( "TRAMITES LEGALES"==$factura -> area_costo)>TRAMITES LEGALES</option>
+          </select>
+      </div>
+      <div class="form-group col-md-6" id="centro_costo_div">
+    <label for="centro_costo">Centro de costo</label>
+    <select class="form-control centro_costo" id="centro_costo" name="centro_costo" >>
+        <!-- Las opciones se cargarán dinámicamente aquí --> 
+        <option value="{{$factura->centro_costo}}">{{$factura->centro_costo}}</option>
+    </select>
+   </div>
 
-            <hr>
-            <h1>Causaciones</h1>
-            <div class="form-row">
-              <div class="form-group col-md-6">
-                
-                <div class="attachment-box">
-                  <ul class="no-bullet">
-                    @if($factura->causacion1)
-                    <li>
-                      <button class="btn " onclick="openDocument('{{ asset('causaciones/' . $factura->causacion1) }}')">
-                        <i class="fas fa-file"></i> causacion 1 - {{ $factura->causacion1 }}</button>
-                    </li>
-                    @endif
-                    @if($factura->causacion2)
-                    <li>
-                      <button class="btn " onclick="openDocument('{{ asset('causaciones/' . $factura->causacion2) }}')">
-                        <i class="fas fa-file"></i>
-                        causacion 2 - {{ $factura->causacion2 }}</button>
-                    </li>
-                    @endif
-                    @if($factura->causacion3)
-                    <li>
-                      <button class="btn " onclick="openDocument('{{ asset('causaciones/' . $factura->causacion3) }}')">
-                        <i class="fas fa-file"></i>
-                        causacion 3 - {{ $factura->causacion3 }}</button>
-                    </li>
-                    @endif
-                    @if($factura->causacion4)
-                    <li>
-                      <button class="btn " onclick="openDocument('{{ asset('causaciones/' . $factura->causacion4) }}')">
-                        <i class="fas fa-file"></i>
-                        causacion 4 - {{ $factura->causacion4 }}</button>
-                    </li>
-                    @endif
-                    @if($factura->causacion5)
-                    <li>
-                      <button class="btn " onclick="openDocument('{{ asset('causaciones/' . $factura->causacion5) }}')">
-                        <i class="fas fa-file"></i>
-                        causacion 5 - {{ $factura->causacion5 }}</button>
-                    </li>
-                    @endif
-                    @if($factura->causacion6)
-                    <li>
-                      <button class="btn " onclick="openDocument('{{ asset('causaciones/' . $factura->causacion6) }}')">
-                        <i class="fas fa-file"></i>
-                        causacion 6 - {{ $factura->causacion6 }}</button>
-                    </li>
-                    @endif
+        <hr>
+        <h2>Comprobante de Egreso</h2>
+        <div class="attachment-box">
+          <ul class="no-bullet">
+            @if($factura->egreso)
+            <li>
+              <button class="btn " onclick="openDocument('{{ asset('egresos/' . $factura->egreso) }}')">
+              <i class="fas fa-file"></i>
+              Com/Egreso - {{ $factura->egreso }}</button>
+            </li>
+            @endif
+         </ul>
+        </div>
 
-                  </ul>
-                </div>
-              </div>
-            </div>
 
-            <h1>Comprobantes</h1>
-          <div class="form-row">
-              <div class="form-group col-md-6">
-                <label for="comprobante1">Comprobante 1</label>
-                <input type="file" class="form-control-file" id="comprobante{{$factura->id}}_1" name="comprobantes[]" placeholder="cargue aquí">
-                <!-- Lista de archivos seleccionados -->
-              </div>
-          </div>
-          <div id="comprobantesContainer{{$factura->id}}"></div>
-          <button type="button" class="btn btn-secondary" onclick="agregarComprobante({{$factura->id}})">Agregar Causación</button>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="egreso">Comprobante</label>
+          <input type="file" class="form-control-file" id="egreso" name="egreso" placeholder="cargue aquí">
+          <!-- Lista de archivos seleccionados -->
+        </div>
+    </div>
 
             <div class="form-group col-md-6">
               <label for="note">Nota</label>
               <textarea class="form-control" id="note" name="note">{{$factura->note}}</textarea>
             </div>
             <div class="modal-footer">
-              <button type="button" id="cargarBtn{{$factura->id}}" class="btn btn-primary"
-          onclick="confirmarCarga('causarFacturaForm{{$factura->id}}', '{{$factura->id}}')">Pago</button>
+            <button type="button" id="cargarBtn{{$factura->id}}" class="btn btn-primary" onclick="confirmarCarga('{{$factura->id}}')">PAGO</button>
             </div>
           </form>
         </div>
@@ -268,93 +255,58 @@
   </script>
 
 <script>
-     function agregarComprobante(facturaId) {
-    var contadorComprobantes = document.querySelectorAll('#facturaCausadaPopup' + facturaId + ' input[type="file"]').length + 1;
-    if (contadorComprobantes <= 3) { // Solo agregar hasta 6 comprobantes
-        var nuevaComprobante = '<div class="form-group col-md-6">' +
-            '<label for="comprobante' + facturaId + '_' + contadorComprobantes + '">Comprobante ' + contadorComprobantes + '</label>' +
-            '<input type="file" class="form-control-file" id="comprobante' + facturaId + '_' + contadorComprobantes + '" name="comprobantes[]" placeholder="cargue aquí">' +
-            '</div>';
-        document.getElementById('comprobantesContainer' + facturaId).innerHTML += nuevaComprobante;
-    } else {
-        Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: 'No se pueden agregar más de 6 comprobantes.',
-            customClass: {
-                container: 'swal-overlay' // Agrega una clase personalizada para que SweetAlert use el estilo personalizado
-            }
-        });
-    }
-}
-
-function confirmarCarga(formId, facturaId) {
-    // Verificar si al menos un archivo ha sido seleccionado
-    var files = document.querySelectorAll(' input[type="file"]');
-    var archivosAdjuntos = false;
-
-    files.forEach(function (fileInput) {
-        if (fileInput.files.length > 0) {
-            archivosAdjuntos = true;
+    function confirmarCarga(facturaId) {
+    var egresoInput = document.getElementById('egreso');
+    
+    // Verifica si se ha adjuntado un archivo para el campo egreso
+    if (!egresoInput.files || egresoInput.files.length === 0) {
+      // Muestra una alerta si no se ha adjuntado un archivo para el campo egreso
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Debes adjuntar un archivo para el campo egreso.',
+        showCloseButton: false, // Evita que se muestre el botón de cierre
+        customClass: {
+          container: 'swal-overlay',
+          popup: 'swal-popup',
+          header: 'swal-header',
+          title: 'swal-title',
+          icon: 'swal-icon',
+          content: 'swal-content',
+          confirmButton: 'swal-confirm-button'
         }
-    });
-
-    if (!archivosAdjuntos) {
-        // Mostrar una alerta de SweetAlert si no se han adjuntado archivos
-        Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: 'Debes adjuntar al menos una causación.',
-            customClass: {
-                container: 'swal-overlay',
-                popup: 'swal-popup',
-                header: 'swal-header',
-                title: 'swal-title',
-                closeButton: 'swal-close-button',
-                icon: 'swal-icon',
-                image: 'swal-image',
-                content: 'swal-content',
-                input: 'swal-input',
-                actions: 'swal-actions',
-                confirmButton: 'swal-confirm-button',
-                cancelButton: 'swal-cancel-button',
-                footer: 'swal-footer'
-            }
-        });
-        return false; // Evita enviar el formulario si no se han adjuntado archivos
+      });
+      return false; // Evita enviar el formulario si no se ha adjuntado un archivo para el campo egreso
     }
 
     // Mostrar una confirmación de SweetAlert en lugar de la confirmación del navegador
     Swal.fire({
-        title: '¿Estás seguro de que deseas marcar como pagada la factura?',
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonText: 'Sí',
-        cancelButtonText: 'Cancelar',
-        customClass: {
-            container: 'swal-overlay',
-            popup: 'swal-popup',
-            header: 'swal-header',
-            title: 'swal-title',
-            closeButton: 'swal-close-button',
-            icon: 'swal-icon',
-            image: 'swal-image',
-            content: 'swal-content',
-            input: 'swal-input',
-            actions: 'swal-actions',
-            confirmButton: 'swal-confirm-button',
-            cancelButton: 'swal-cancel-button',
-            footer: 'swal-footer'
-        }
+      title: '¿Deseas pasar la factura a la seccion de Pagados?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Sí',
+      cancelButtonText: 'Cancelar',
+      showCloseButton: false, // Evita que se muestre el botón de cierre
+      customClass: {
+        container: 'swal-overlay',
+        popup: 'swal-popup',
+        header: 'swal-header',
+        title: 'swal-title',
+        icon: 'swal-icon',
+        content: 'swal-content',
+        confirmButton: 'swal-confirm-button',
+        cancelButton: 'swal-cancel-button'
+      }
     }).then((result) => {
-        if (result.isConfirmed) {
-            // Si el usuario confirma, enviar el formulario y mostrar la animación de carga
-            document.getElementById(formId).submit();
-            document.getElementById('cargarBtn' + facturaId).style.display = "none"; // Ocultar el botón de "cargar"
-            document.getElementById('loading' + facturaId).style.display = "block"; // Mostrar la animación de carga
-        }
+      if (result.isConfirmed) {
+        // Si el usuario confirma, enviar el formulario y mostrar la animación de carga
+        document.getElementById('causarFacturaForm' + facturaId).submit();
+        document.getElementById('cargarBtn' + facturaId).style.display = "none"; // Ocultar el botón de "cargar"
+        document.getElementById('loading' + facturaId).style.display = "block"; // Mostrar la animación de carga
+      }
     });
-}
+  }
+
 </script>
 
 <script>

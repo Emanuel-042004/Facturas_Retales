@@ -50,6 +50,8 @@ class Factura extends Model
       'comprobante3',
       'reembolso_id',
       'egreso',
+      'centro_costo',
+      'area_costo',
 
     ];
 

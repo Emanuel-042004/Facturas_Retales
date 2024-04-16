@@ -73,6 +73,8 @@ class CausadosController extends Controller
             'costo2' => $request->input('costo2'),
             'costo3' => $request->input('costo3'),
             'costo4' => $request->input('costo4'),
+            'area_costo' => $request->input('area_costo'),
+            'centro_costo' => $request->input('centro_costo'),
             'status' => 'Finalizada',
             'subtype' => 'Adjuntada', 
              
@@ -157,6 +159,8 @@ public function rechazar_pago(Request $request, $id){
     $factura->costo3 = $request->input('costo3');
     $factura->costo4 = $request->input('costo4');
     $factura->note = $request->input('note');
+    $factura->area_costo = $request->input('area_costo');
+    $factura->centro_costo = $request->input('centro_costo');
     $factura->status = 'Causada';
     $factura->subtype = 'Pag/No Aprobado';
     $factura->save();
@@ -188,6 +192,8 @@ public function comprobarFactura(Request $request, $id)
             'costo2' => $request->input('costo2'),
             'costo3' => $request->input('costo3'),
             'costo4' => $request->input('costo4'),
+            'area_costo' => $request->input('area_costo'),
+            'centro_costo' => $request->input('centro_costo'),
             'status' => 'Pagada',
             'subtype' => 'Adjuntada',
             

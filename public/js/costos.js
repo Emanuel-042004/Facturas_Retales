@@ -128,7 +128,7 @@ document.addEventListener("DOMContentLoaded", function() {
             'VIAJES Y CORRERIAS'];
 
         } else if (selectedArea === 'GERENCIA GENERAL') {
-            return [  'ADECUACIONES PUNTO DE VENTA',
+            return ['ADECUACIONES PUNTO DE VENTA',
             'ADMINISTRATIVOS',
             'EVENTO COMERCIAL ANIVERSARIO 2023',
             'GERENCIA GENERAL NOMINA',

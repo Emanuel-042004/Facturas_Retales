@@ -96,6 +96,8 @@ $deliveredBy = $user->name . ' - ' . $areaInitials;
         'costo2' => $request->input('costo2'),
         'costo3' => $request->input('costo3'),
         'costo4' => $request->input('costo4'),
+        'area_costo' => $request->input('area_costo'),
+        'centro_costo' => $request->input('centro_costo'),
         'delivery_date' => now(),
         'delivered_by' => $deliveredBy,
         'subtype' => 'Adjuntada', 
@@ -136,6 +138,8 @@ public function aprobar(Request $request, $id)
         'costo2' => $request->input('costo2'),
         'costo3' => $request->input('costo3'),
         'costo4' => $request->input('costo4'),
+        'area_costo' => $request->input('area_costo'),
+        'centro_costo' => $request->input('centro_costo'),
         'delivery_date' => now(),
         'delivered_by' => Auth::user()->name,
         'status' => 'Cargada', // Cambia el estado de la factura a 'Cargada'
@@ -166,6 +170,9 @@ public function rechazar(Request $request, $id)
     $factura->costo2 = $request->input('costo2');
     $factura->costo3 = $request->input('costo3');
     $factura->costo4 = $request->input('costo4');
+    $factura->area_costo = $request->input('area_costo');
+    $factura->centro_costo = $request->input('centro_costo');
+    
     $factura->note = $request->input('note');
     
 
