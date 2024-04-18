@@ -50,14 +50,14 @@ class CausadosController extends Controller
         return view('causados.causados', compact('causados', 'area'));
     } //
 
-    public function finalizar(Request $request, $id)
+   /* public function finalizar(Request $request, $id)
     {
         if (!$request->hasFile('comprobantes')) {
             return redirect()->back()->with('error', 'Debes adjuntar al menos una causación.');
         }
         // Valida y guarda los archivos PDF
         $request->validate([
-            'comprobantes.*' => 'required|mimes:pdf,doc,docx|max:51200', // Ajusta los tipos de archivo según tus necesidades
+            'comprobantes.*' => 'nullable|mimes:pdf,doc,docx|max:51200', // Ajusta los tipos de archivo según tus necesidades
         ]);
         // Encuentra la factura por ID
         $factura = Factura::findOrFail($id);
@@ -75,6 +75,7 @@ class CausadosController extends Controller
             'costo4' => $request->input('costo4'),
             'area_costo' => $request->input('area_costo'),
             'centro_costo' => $request->input('centro_costo'),
+            'con_comprobante' => $request->input('con_comprobante'),
             'status' => 'Finalizada',
             'subtype' => 'Adjuntada', 
              
@@ -86,7 +87,7 @@ class CausadosController extends Controller
             foreach ($request->file('comprobantes') as $comprobante) {
                 $nombreArchivo = time() . '_' . $contadorComprobantes . '_' . $comprobante->getClientOriginalName();
                 $comprobante->move(public_path('comprobantes'), $nombreArchivo);
-                // Guarda el nombre del archivo en el campo correspondiente (causacion1, causacion2, etc.)
+                // Guarda el nombre del archivo en el campo correspondiente (comprobante1, comprobante2, comprobante3 )
                 $factura->{'comprobante' . $contadorComprobantes} = $nombreArchivo;
                 $contadorComprobantes++;
             }
@@ -95,8 +96,56 @@ class CausadosController extends Controller
         }
         // Redirecciona de vuelta con un mensaje de éxito
         return redirect()->back()->with('success', 'Factura cargada con éxito.');
+    }*/
+    
+
+    public function finalizar(Request $request, $id)
+{
+    // Valida y guarda los archivos PDF
+    $request->validate([
+        'comprobantes.*' => 'nullable|mimes:pdf,doc,docx|max:51200', // Ajusta los tipos de archivo según tus necesidades
+    ]);
+
+    // Encuentra la factura por ID
+    $factura = Factura::findOrFail($id);
+
+    // Actualiza los datos de la factura con los valores del formulario
+    $factura->update([
+        'type' => $request->input('type'),
+        'folio' => $request->input('folio'),
+        'issuer_name' => $request->input('issuer_name'),
+        'issuer_nit' => $request->input('issuer_nit'),
+        'area' => $request->input('area'),
+        'note' => $request->input('note'),
+        'costo1' => $request->input('costo1'),
+        'costo2' => $request->input('costo2'),
+        'costo3' => $request->input('costo3'),
+        'costo4' => $request->input('costo4'),
+        'area_costo' => $request->input('area_costo'),
+        'centro_costo' => $request->input('centro_costo'),
+        'con_comprobante' => $request->input('con_comprobante'),
+        'status' => 'Finalizada',
+        'subtype' => 'Adjuntada', 
+    ]);
+    
+    // Procesa los archivos de causación si existen
+    if ($request->hasFile('comprobantes')) {
+        $contadorComprobantes = 1; // Inicializa el contador de comprobantes
+        foreach ($request->file('comprobantes') as $comprobante) {
+            $nombreArchivo = time() . '_' . $contadorComprobantes . '_' . $comprobante->getClientOriginalName();
+            $comprobante->move(public_path('comprobantes'), $nombreArchivo);
+            // Guarda el nombre del archivo en el campo correspondiente (comprobante1, comprobante2, comprobante3 )
+            $factura->{'comprobante' . $contadorComprobantes} = $nombreArchivo;
+            $contadorComprobantes++;
+        }
+        // Guarda los cambios en la base de datos
+        $factura->save();
     }
     
+    // Redirecciona de vuelta con un mensaje de éxito
+    return redirect()->back()->with('success', 'Factura cargada con éxito.');
+}
+
 
     public function pagosindex(Request $request)
 {
@@ -171,12 +220,12 @@ public function rechazar_pago(Request $request, $id){
 
 public function comprobarFactura(Request $request, $id)
     {
-        if (!$request->hasFile('egreso')) {
+       /* if (!$request->hasFile('egreso')) {
             return redirect()->back()->with('error', 'Debes adjuntar al menos una causación.');
-        }
+        }*/
         // Valida y guarda los archivos PDF
         $request->validate([
-            'egreso.*' => 'required|mimes:pdf,doc,docx|max:51200', // Ajusta los tipos de archivo según tus necesidades
+            'egreso.*' => 'nullable|mimes:pdf,doc,docx|max:51200', // Ajusta los tipos de archivo según tus necesidades
         ]);
         // Encuentra la factura por ID
         $factura = Factura::findOrFail($id);

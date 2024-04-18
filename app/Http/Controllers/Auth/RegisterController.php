@@ -8,6 +8,8 @@ use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 class RegisterController extends Controller
 {
@@ -53,7 +55,8 @@ class RegisterController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'area' => ['required', 'string', Rule::in(['Compras', 'Financiera', 'Logistica', 'Mantenimiento', 'Tecnologia'])],
+            'area' => ['required', 'string', 'max:255' ],
+            'rol' => ['required', 'string', 'max:255'],
         ]);
     }
 
@@ -63,13 +66,41 @@ class RegisterController extends Controller
      * @param  array  $data
      * @return \App\Models\User
      */
-    protected function create(array $data)
+    /*protected function create(array $data)
     {
         return User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
             'area' => $data['area'],
+            'rol' => $data['rol'],
         ]);
+    }*/
+
+    protected function create(array $data)
+{
+    // Crear el usuario
+    $user = User::create([
+        'name' => $data['name'],
+        'email' => $data['email'],
+        'password' => Hash::make($data['password']),
+        'area' => $data['area'],
+        'rol' => $data['rol'],
+    ]);
+
+    // Obtener el rol del usuario
+    $rol = Role::where('name', $data['rol'])->first();
+
+    // Si el rol existe, asignar los permisos asociados a ese rol al usuario
+    if ($rol) {
+        $permissions = $rol->permissions;
+
+        // Asignar permisos al usuario
+        foreach ($permissions as $permission) {
+            $user->givePermissionTo($permission);
+        }
     }
+
+    return $user;
+}
 }

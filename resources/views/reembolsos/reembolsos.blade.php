@@ -24,7 +24,7 @@
     @else
     <div class="reembolsos-container">
         @foreach ($reembolsos as $reembolso)
-        <div class="reembolso-card">
+          <div class="reembolso-card">
             <div class="reembolso-header">
                 <h2 class="reembolso-title">Reembolso {{ $reembolso->consecutivo }}</h2>
             </div>
@@ -41,6 +41,12 @@
                             <th>Nombre de Emisor</th>
                             <th>NIT de Emisor</th>
                             <th>Fecha de Emision</th>
+                            @foreach ($reembolso->facturas as $factura)
+                        @if ($factura->status == 'Finalizada')
+                            <th>Cons/Comprobante</th>
+                            @break
+                        @endif
+                    @endforeach
                             <th>Acciones</th>
                         </tr>
                     </thead>
@@ -82,6 +88,11 @@
                             <td>{{ $factura->issuer_name }}</td>
                             <td>{{ $factura->issuer_nit }}</td>
                             <td>{{ $factura->issue_date }}</td> 
+                            @if (!empty($factura->subtype))
+                            @if ($factura->status == 'Finalizada')
+                            <td>{{ $factura->con_comprobante }}</td> 
+                            @endif
+                            @endif
                             <td>
                                 @if ($factura->subtype == 'Adjuntada' && $factura->status == 'Cargada')
                                     <ion-icon name="ellipsis-vertical-outline" onclick="openPopup('facturaCargadaPopup{{$factura->id}}')"></ion-icon>
@@ -118,7 +129,6 @@
                 <button class="reembolso-button" onclick="toggleFacturas({{ $reembolso->id }})">Ver Facturas</button>
             </div>
         </div>
-
 
         <!-- ================ ADJUNTADAS ================= -->
       <div class="popup-background" id="popupBackground"></div>
@@ -241,7 +251,6 @@
           <select class="form-control area_costo" id="area_costo" name="area_costo" required>
             <option value="">Selecciona</option>
             <option value="AREA DE SERVICIOS" @selected( "AREA DE SERVICIOS"==$factura -> area_costo)>AREA DE SERVICIOS</option>
-            <option value="ARRENDAMIENTOS" @selected( "ARRENDAMIENTOS"==$factura -> area_costo)>ARRENDAMIENTOS</option>
             <option value="CONTRIBUCIONES SERVICIOS PUBLICOS" @selected( "CONTRIBUCIONES SERVICIOS PUBLICOS"==$factura -> area_costo)>CONTRIBUCIONES SERVICIOS PUBLICOS</option>
             <option value="COORDINACION DE INVENTARIO" @selected( "COORDINACION DE INVENTARIO"==$factura -> area_costo)>COORDINACION DE INVENTARIO</option>
             <option value="DIRCOMERCIAL" @selected( "DIRCOMERCIAL"==$factura -> area_costo)>DIRCOMERCIAL</option>
@@ -252,11 +261,8 @@
             <option value="DIRMERCADEO" @selected( "DIRMERCADEO"==$factura -> area_costo)>DIRMERCADEO</option>
             <option value="GERENCIA GENERAL" @selected( "GERENCIA GENERAL"==$factura -> area_costo)>GERENCIA GENERAL</option>
             <option value="IMPORTACIONES" @selected( "IMPORTACIONES"==$factura -> area_costo)>IMPORTACIONES</option>
-            <option value="IMPUESTOS" @selected( "IMPUESTOS"==$factura -> area_costo)>IMPUESTOS</option>
             <option value="INFORMATICA Y MANTENIMIENTO" @selected( "INFORMATICA Y MANTENIMIENTO"==$factura -> area_costo)>INFORMATICA Y MANTENIMIENTO</option>
-            <option value="NOMINA DE GASTOS NO ASIGNADOS" @selected( "NOMINA DE GASTOS NO ASIGNADOS"==$factura -> area_costo)>NOMINA DE GASTOS NO ASIGNADOS</option>
-            <option value="PUNTOS DE VENTA" @selected( "PUNTOS DE VENTA"==$factura -> area_costo)>PUNTOS DE VENTA</option>
-            <option value="TRAMITES LEGALES" @selected( "TRAMITES LEGALES"==$factura -> area_costo)>TRAMITES LEGALES</option>
+           
           </select>
       </div>
       <div class="form-group col-md-6" id="centro_costo_div">
@@ -401,7 +407,6 @@
           <select class="form-control area_costo" id="area_costo" name="area_costo" required>
             <option value="">Selecciona</option>
             <option value="AREA DE SERVICIOS" @selected( "AREA DE SERVICIOS"==$factura -> area_costo)>AREA DE SERVICIOS</option>
-            <option value="ARRENDAMIENTOS" @selected( "ARRENDAMIENTOS"==$factura -> area_costo)>ARRENDAMIENTOS</option>
             <option value="CONTRIBUCIONES SERVICIOS PUBLICOS" @selected( "CONTRIBUCIONES SERVICIOS PUBLICOS"==$factura -> area_costo)>CONTRIBUCIONES SERVICIOS PUBLICOS</option>
             <option value="COORDINACION DE INVENTARIO" @selected( "COORDINACION DE INVENTARIO"==$factura -> area_costo)>COORDINACION DE INVENTARIO</option>
             <option value="DIRCOMERCIAL" @selected( "DIRCOMERCIAL"==$factura -> area_costo)>DIRCOMERCIAL</option>
@@ -412,11 +417,8 @@
             <option value="DIRMERCADEO" @selected( "DIRMERCADEO"==$factura -> area_costo)>DIRMERCADEO</option>
             <option value="GERENCIA GENERAL" @selected( "GERENCIA GENERAL"==$factura -> area_costo)>GERENCIA GENERAL</option>
             <option value="IMPORTACIONES" @selected( "IMPORTACIONES"==$factura -> area_costo)>IMPORTACIONES</option>
-            <option value="IMPUESTOS" @selected( "IMPUESTOS"==$factura -> area_costo)>IMPUESTOS</option>
             <option value="INFORMATICA Y MANTENIMIENTO" @selected( "INFORMATICA Y MANTENIMIENTO"==$factura -> area_costo)>INFORMATICA Y MANTENIMIENTO</option>
-            <option value="NOMINA DE GASTOS NO ASIGNADOS" @selected( "NOMINA DE GASTOS NO ASIGNADOS"==$factura -> area_costo)>NOMINA DE GASTOS NO ASIGNADOS</option>
-            <option value="PUNTOS DE VENTA" @selected( "PUNTOS DE VENTA"==$factura -> area_costo)>PUNTOS DE VENTA</option>
-            <option value="TRAMITES LEGALES" @selected( "TRAMITES LEGALES"==$factura -> area_costo)>TRAMITES LEGALES</option>
+           
           </select>
       </div>
       <div class="form-group col-md-6" id="centro_costo_div">
@@ -596,7 +598,6 @@
           <select class="form-control area_costo" id="area_costo" name="area_costo" required>
             <option value="">Selecciona</option>
             <option value="AREA DE SERVICIOS" @selected( "AREA DE SERVICIOS"==$factura -> area_costo)>AREA DE SERVICIOS</option>
-            <option value="ARRENDAMIENTOS" @selected( "ARRENDAMIENTOS"==$factura -> area_costo)>ARRENDAMIENTOS</option>
             <option value="CONTRIBUCIONES SERVICIOS PUBLICOS" @selected( "CONTRIBUCIONES SERVICIOS PUBLICOS"==$factura -> area_costo)>CONTRIBUCIONES SERVICIOS PUBLICOS</option>
             <option value="COORDINACION DE INVENTARIO" @selected( "COORDINACION DE INVENTARIO"==$factura -> area_costo)>COORDINACION DE INVENTARIO</option>
             <option value="DIRCOMERCIAL" @selected( "DIRCOMERCIAL"==$factura -> area_costo)>DIRCOMERCIAL</option>
@@ -607,11 +608,8 @@
             <option value="DIRMERCADEO" @selected( "DIRMERCADEO"==$factura -> area_costo)>DIRMERCADEO</option>
             <option value="GERENCIA GENERAL" @selected( "GERENCIA GENERAL"==$factura -> area_costo)>GERENCIA GENERAL</option>
             <option value="IMPORTACIONES" @selected( "IMPORTACIONES"==$factura -> area_costo)>IMPORTACIONES</option>
-            <option value="IMPUESTOS" @selected( "IMPUESTOS"==$factura -> area_costo)>IMPUESTOS</option>
             <option value="INFORMATICA Y MANTENIMIENTO" @selected( "INFORMATICA Y MANTENIMIENTO"==$factura -> area_costo)>INFORMATICA Y MANTENIMIENTO</option>
-            <option value="NOMINA DE GASTOS NO ASIGNADOS" @selected( "NOMINA DE GASTOS NO ASIGNADOS"==$factura -> area_costo)>NOMINA DE GASTOS NO ASIGNADOS</option>
-            <option value="PUNTOS DE VENTA" @selected( "PUNTOS DE VENTA"==$factura -> area_costo)>PUNTOS DE VENTA</option>
-            <option value="TRAMITES LEGALES" @selected( "TRAMITES LEGALES"==$factura -> area_costo)>TRAMITES LEGALES</option>
+           
           </select>
       </div>
       <div class="form-group col-md-6" id="centro_costo_div">
@@ -901,25 +899,21 @@ function confirmarCarga(formId, facturaId) {
       <div class="form-group col-md-6">
     <label for="area">Área de costo </label>
     <select class="form-control area_costo" id="area_costo" name="area_costo" required>
-      <option value="">Selecciona</option>
-      <option value="AREA DE SERVICIOS" @selected( "AREA DE SERVICIOS"==$factura -> area_costo)>AREA DE SERVICIOS</option>
-      <option value="ARRENDAMIENTOS" @selected( "ARRENDAMIENTOS"==$factura -> area_costo)>ARRENDAMIENTOS</option>
-      <option value="CONTRIBUCIONES SERVICIOS PUBLICOS" @selected( "CONTRIBUCIONES SERVICIOS PUBLICOS"==$factura -> area_costo)>CONTRIBUCIONES SERVICIOS PUBLICOS</option>
-      <option value="COORDINACION DE INVENTARIO" @selected( "COORDINACION DE INVENTARIO"==$factura -> area_costo)>COORDINACION DE INVENTARIO</option>
-      <option value="DIRCOMERCIAL" @selected( "DIRCOMERCIAL"==$factura -> area_costo)>DIRCOMERCIAL</option>
-      <option value="DIRCOMPRAS NACIONALES" @selected( "DIRCOMPRAS NACIONALES"==$factura -> area_costo)>DIRCOMPRAS NACIONALES</option>
-      <option value="DIRFINANCIERO" @selected( "DIRCOMPRAS NACIONALES"==$factura -> area_costo)>DIRFINANCIERO</option>
-      <option value="DIRGESTION HUMANA" @selected( "DIRGESTION HUMANA"==$factura -> area_costo)>DIRGESTION HUMANA</option>
-      <option value="DIRLOGISTICA SERVICIOS" @selected( "DIRGESTION HUMANA"==$factura -> area_costo)>DIRLOGISTICA  SERVICIOS</option>
-      <option value="DIRMERCADEO" @selected( "DIRMERCADEO"==$factura -> area_costo)>DIRMERCADEO</option>
-      <option value="GERENCIA GENERAL" @selected( "GERENCIA GENERAL"==$factura -> area_costo)>GERENCIA GENERAL</option>
-      <option value="IMPORTACIONES" @selected( "IMPORTACIONES"==$factura -> area_costo)>IMPORTACIONES</option>
-      <option value="IMPUESTOS" @selected( "IMPUESTOS"==$factura -> area_costo)>IMPUESTOS</option>
-      <option value="INFORMATICA Y MANTENIMIENTO" @selected( "INFORMATICA Y MANTENIMIENTO"==$factura -> area_costo)>INFORMATICA Y MANTENIMIENTO</option>
-      <option value="NOMINA DE GASTOS NO ASIGNADOS" @selected( "NOMINA DE GASTOS NO ASIGNADOS"==$factura -> area_costo)>NOMINA DE GASTOS NO ASIGNADOS</option>
-      <option value="PUNTOS DE VENTA" @selected( "PUNTOS DE VENTA"==$factura -> area_costo)>PUNTOS DE VENTA</option>
-      <option value="TRAMITES LEGALES" @selected( "TRAMITES LEGALES"==$factura -> area_costo)>TRAMITES LEGALES</option>
-    </select>
+            <option value="">Selecciona</option>
+            <option value="AREA DE SERVICIOS" @selected( "AREA DE SERVICIOS"==$factura -> area_costo)>AREA DE SERVICIOS</option>
+            <option value="CONTRIBUCIONES SERVICIOS PUBLICOS" @selected( "CONTRIBUCIONES SERVICIOS PUBLICOS"==$factura -> area_costo)>CONTRIBUCIONES SERVICIOS PUBLICOS</option>
+            <option value="COORDINACION DE INVENTARIO" @selected( "COORDINACION DE INVENTARIO"==$factura -> area_costo)>COORDINACION DE INVENTARIO</option>
+            <option value="DIRCOMERCIAL" @selected( "DIRCOMERCIAL"==$factura -> area_costo)>DIRCOMERCIAL</option>
+            <option value="DIRCOMPRAS NACIONALES" @selected( "DIRCOMPRAS NACIONALES"==$factura -> area_costo)>DIRCOMPRAS NACIONALES</option>
+            <option value="DIRFINANCIERO" @selected( "DIRCOMPRAS NACIONALES"==$factura -> area_costo)>DIRFINANCIERO</option>
+            <option value="DIRGESTION HUMANA" @selected( "DIRGESTION HUMANA"==$factura -> area_costo)>DIRGESTION HUMANA</option>
+            <option value="DIRLOGISTICA SERVICIOS" @selected( "DIRGESTION HUMANA"==$factura -> area_costo)>DIRLOGISTICA  SERVICIOS</option>
+            <option value="DIRMERCADEO" @selected( "DIRMERCADEO"==$factura -> area_costo)>DIRMERCADEO</option>
+            <option value="GERENCIA GENERAL" @selected( "GERENCIA GENERAL"==$factura -> area_costo)>GERENCIA GENERAL</option>
+            <option value="IMPORTACIONES" @selected( "IMPORTACIONES"==$factura -> area_costo)>IMPORTACIONES</option>
+            <option value="INFORMATICA Y MANTENIMIENTO" @selected( "INFORMATICA Y MANTENIMIENTO"==$factura -> area_costo)>INFORMATICA Y MANTENIMIENTO</option>
+           
+          </select>
 </div>
 <div class="form-group col-md-6" id="centro_costo_div">
 <label for="centro_costo">Centro de costo</label>
@@ -1310,6 +1304,10 @@ if (result.isConfirmed) {
           <div id="comprobantesContainer{{$factura->id}}"></div>
           <button type="button" class="btn btn-secondary" onclick="agregarComprobante({{$factura->id}})">Agregar Causación</button>
 
+          <div class="form-group col-md-6">
+                <label for="con_comprobante">Consecutivo - Comprobante</label>
+                <input type="text" class="form-control" id="con_comprobante" name="con_comprobante" value="">
+              </div>
             <div class="form-group col-md-6">
               <label for="note">Nota</label>
               <textarea class="form-control" id="note" name="note">{{$factura->note}}</textarea>
@@ -1548,7 +1546,6 @@ function confirmarCarga(formId, facturaId) {
           <select class="form-control area_costo" id="area_costo" name="area_costo" required>
             <option value="">Selecciona</option>
             <option value="AREA DE SERVICIOS" @selected( "AREA DE SERVICIOS"==$factura -> area_costo)>AREA DE SERVICIOS</option>
-            <option value="ARRENDAMIENTOS" @selected( "ARRENDAMIENTOS"==$factura -> area_costo)>ARRENDAMIENTOS</option>
             <option value="CONTRIBUCIONES SERVICIOS PUBLICOS" @selected( "CONTRIBUCIONES SERVICIOS PUBLICOS"==$factura -> area_costo)>CONTRIBUCIONES SERVICIOS PUBLICOS</option>
             <option value="COORDINACION DE INVENTARIO" @selected( "COORDINACION DE INVENTARIO"==$factura -> area_costo)>COORDINACION DE INVENTARIO</option>
             <option value="DIRCOMERCIAL" @selected( "DIRCOMERCIAL"==$factura -> area_costo)>DIRCOMERCIAL</option>
@@ -1559,11 +1556,8 @@ function confirmarCarga(formId, facturaId) {
             <option value="DIRMERCADEO" @selected( "DIRMERCADEO"==$factura -> area_costo)>DIRMERCADEO</option>
             <option value="GERENCIA GENERAL" @selected( "GERENCIA GENERAL"==$factura -> area_costo)>GERENCIA GENERAL</option>
             <option value="IMPORTACIONES" @selected( "IMPORTACIONES"==$factura -> area_costo)>IMPORTACIONES</option>
-            <option value="IMPUESTOS" @selected( "IMPUESTOS"==$factura -> area_costo)>IMPUESTOS</option>
             <option value="INFORMATICA Y MANTENIMIENTO" @selected( "INFORMATICA Y MANTENIMIENTO"==$factura -> area_costo)>INFORMATICA Y MANTENIMIENTO</option>
-            <option value="NOMINA DE GASTOS NO ASIGNADOS" @selected( "NOMINA DE GASTOS NO ASIGNADOS"==$factura -> area_costo)>NOMINA DE GASTOS NO ASIGNADOS</option>
-            <option value="PUNTOS DE VENTA" @selected( "PUNTOS DE VENTA"==$factura -> area_costo)>PUNTOS DE VENTA</option>
-            <option value="TRAMITES LEGALES" @selected( "TRAMITES LEGALES"==$factura -> area_costo)>TRAMITES LEGALES</option>
+           
           </select>
       </div>
       <div class="form-group col-md-6" id="centro_costo_div">
@@ -1822,7 +1816,6 @@ function confirmarCarga(formId, facturaId) {
           <select class="form-control area_costo" id="area_costo" name="area_costo" required>
             <option value="">Selecciona</option>
             <option value="AREA DE SERVICIOS" @selected( "AREA DE SERVICIOS"==$factura -> area_costo)>AREA DE SERVICIOS</option>
-            <option value="ARRENDAMIENTOS" @selected( "ARRENDAMIENTOS"==$factura -> area_costo)>ARRENDAMIENTOS</option>
             <option value="CONTRIBUCIONES SERVICIOS PUBLICOS" @selected( "CONTRIBUCIONES SERVICIOS PUBLICOS"==$factura -> area_costo)>CONTRIBUCIONES SERVICIOS PUBLICOS</option>
             <option value="COORDINACION DE INVENTARIO" @selected( "COORDINACION DE INVENTARIO"==$factura -> area_costo)>COORDINACION DE INVENTARIO</option>
             <option value="DIRCOMERCIAL" @selected( "DIRCOMERCIAL"==$factura -> area_costo)>DIRCOMERCIAL</option>
@@ -1833,11 +1826,8 @@ function confirmarCarga(formId, facturaId) {
             <option value="DIRMERCADEO" @selected( "DIRMERCADEO"==$factura -> area_costo)>DIRMERCADEO</option>
             <option value="GERENCIA GENERAL" @selected( "GERENCIA GENERAL"==$factura -> area_costo)>GERENCIA GENERAL</option>
             <option value="IMPORTACIONES" @selected( "IMPORTACIONES"==$factura -> area_costo)>IMPORTACIONES</option>
-            <option value="IMPUESTOS" @selected( "IMPUESTOS"==$factura -> area_costo)>IMPUESTOS</option>
             <option value="INFORMATICA Y MANTENIMIENTO" @selected( "INFORMATICA Y MANTENIMIENTO"==$factura -> area_costo)>INFORMATICA Y MANTENIMIENTO</option>
-            <option value="NOMINA DE GASTOS NO ASIGNADOS" @selected( "NOMINA DE GASTOS NO ASIGNADOS"==$factura -> area_costo)>NOMINA DE GASTOS NO ASIGNADOS</option>
-            <option value="PUNTOS DE VENTA" @selected( "PUNTOS DE VENTA"==$factura -> area_costo)>PUNTOS DE VENTA</option>
-            <option value="TRAMITES LEGALES" @selected( "TRAMITES LEGALES"==$factura -> area_costo)>TRAMITES LEGALES</option>
+           
           </select>
       </div>
       <div class="form-group col-md-6" id="centro_costo_div">
@@ -1970,7 +1960,7 @@ function confirmarCarga(formId, facturaId) {
   }
 </script>
 
-        @endforeach
+@endforeach
     </div>
     @endif
 

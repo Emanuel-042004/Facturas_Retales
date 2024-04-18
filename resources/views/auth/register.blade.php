@@ -12,11 +12,29 @@
         <span class="datails">Area</span>
         <select id="area" name="area" required>
           <option value="" disabled selected>Selecciona</option>
-          <option value="Compras">Compras</option>
-          <option value="Financiera">Financiera</option>
-          <option value="Logistica">Logistica</option>
-          <option value="Mantenimiento">Mantenimiento</option>
-          <option value="Tecnologia">Tecnologia</option>
+          <option value="AREA DE SERVICIOS">AREA DE SERVICIOS</option>
+          <option value="COORDINACION DE INVENTARIOS">COORDINACION DE INVENTARIOS</option>
+          <option value="DIRCOMERCIAL">DIRCOMERCIAL</option>
+          <option value="DIRCOMPRAS NACIONALES">DIRCOMPRAS NACIONALES</option>
+          <option value="DIRFINANCIERO">DIRFINANCIERO</option>
+          <option value="DIRGESTION HUMANA">DIRGESTION HUMANA</option>
+          <option value="DIRLOGISTICA">DIRLOGISTICA</option>
+          <option value="GERENCIA GENERAL">GERENCIA GENERAL</option>
+          <option value="INFORMATICA Y MANTENIMIENTO">INFORMATICA Y MANTENIMIENTO</option>
+          <option value="PUNTOS DE VENTA">PUNTOS DE VENTA</option>
+        </select>
+      </div>
+
+      <div class="input_pox">
+        <span class="datails">Rol</span>
+        <select id="rol" name="rol" required>
+          <option value="" disabled selected>Selecciona</option>
+          <option value="Admin">Admin</option>
+          <option value="Aprobador">Aprobador</option>
+          <option value="Causador">Causador</option>
+          <option value="Causador - Pagador">Causador</option>
+          <option value="Digitador">Digitador</option>
+          <option value="Pagador">Pagador</option>
         </select>
       </div>
 

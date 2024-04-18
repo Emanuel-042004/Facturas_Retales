@@ -20,7 +20,8 @@ return new class extends Migration
             $table->string('issuer_name')->nullable();
             $table->string('cude')->nullable();
             $table->date('issue_date')->nullable();
-            $table->enum('subtype', ['Rechazada','Adjuntada','Aprobada','FIN/Rechazada', 'Pag/No Aprobado'])->nullable();
+            $table->text('subtype')->nullable();
+            
             $table->date('arrival_date')->nullable();
             $table->enum('location',['Centro','Octava','Lopez','Alameda','Acopi','Jamundi','Pondaje'])->nullable();
             $table->enum('area',['Compras','Financiera','Logistica','Mantenimiento','Tecnologia'])->nullable();
@@ -52,6 +53,7 @@ return new class extends Migration
             $table->string('comprobante1')->nullable();
             $table->string('comprobante2')->nullable();
             $table->string('comprobante3')->nullable();
+            $table->string('con_comprobante')->nullable();
             $table->string('egreso')->nullable();
             
             $table->foreignId('reembolso_id')->nullable()->constrained('reembolsos');

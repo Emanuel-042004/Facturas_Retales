@@ -300,7 +300,6 @@ function closeDocumentPopup() {
           <select class="form-control area_costo" id="area_costo" name="area_costo" required>
             <option value="">Selecciona</option>
             <option value="AREA DE SERVICIOS" @selected( "AREA DE SERVICIOS"==$factura -> area_costo)>AREA DE SERVICIOS</option>
-            <option value="ARRENDAMIENTOS" @selected( "ARRENDAMIENTOS"==$factura -> area_costo)>ARRENDAMIENTOS</option>
             <option value="CONTRIBUCIONES SERVICIOS PUBLICOS" @selected( "CONTRIBUCIONES SERVICIOS PUBLICOS"==$factura -> area_costo)>CONTRIBUCIONES SERVICIOS PUBLICOS</option>
             <option value="COORDINACION DE INVENTARIO" @selected( "COORDINACION DE INVENTARIO"==$factura -> area_costo)>COORDINACION DE INVENTARIO</option>
             <option value="DIRCOMERCIAL" @selected( "DIRCOMERCIAL"==$factura -> area_costo)>DIRCOMERCIAL</option>
@@ -311,11 +310,8 @@ function closeDocumentPopup() {
             <option value="DIRMERCADEO" @selected( "DIRMERCADEO"==$factura -> area_costo)>DIRMERCADEO</option>
             <option value="GERENCIA GENERAL" @selected( "GERENCIA GENERAL"==$factura -> area_costo)>GERENCIA GENERAL</option>
             <option value="IMPORTACIONES" @selected( "IMPORTACIONES"==$factura -> area_costo)>IMPORTACIONES</option>
-            <option value="IMPUESTOS" @selected( "IMPUESTOS"==$factura -> area_costo)>IMPUESTOS</option>
             <option value="INFORMATICA Y MANTENIMIENTO" @selected( "INFORMATICA Y MANTENIMIENTO"==$factura -> area_costo)>INFORMATICA Y MANTENIMIENTO</option>
-            <option value="NOMINA DE GASTOS NO ASIGNADOS" @selected( "NOMINA DE GASTOS NO ASIGNADOS"==$factura -> area_costo)>NOMINA DE GASTOS NO ASIGNADOS</option>
-            <option value="PUNTOS DE VENTA" @selected( "PUNTOS DE VENTA"==$factura -> area_costo)>PUNTOS DE VENTA</option>
-            <option value="TRAMITES LEGALES" @selected( "TRAMITES LEGALES"==$factura -> area_costo)>TRAMITES LEGALES</option>
+           
           </select>
       </div>
       <div class="form-group col-md-6" id="centro_costo_div">

@@ -48,6 +48,7 @@ class Factura extends Model
       'comprobante1',
       'comprobante2',
       'comprobante3',
+      'con_comprobante',
       'reembolso_id',
       'egreso',
       'centro_costo',

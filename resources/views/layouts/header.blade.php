@@ -27,7 +27,7 @@
                         </span>
                         <h2 class="title">{{Auth::user()->name}}</h2><br>
                     </a>
-                    <h3 class="title">{{Auth::user()->area}}</h3>
+                    <h3 class="title">{{Auth::user()->rol}}</h3>
                 </li>
 
 
@@ -268,13 +268,13 @@
     </script>
 
 
-    <!-- ====== ionicons ======= -->
+     ====== ionicons ======= -->
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
    
     <script src="{{ asset('js/costos.js') }}"></script>
 </body>
-<footer>
+<!--<footer>
     <p>Los Retales Todos los derechos reservados - Desarrollado por Emanuel Chara Gomez</p>
-</footer>
+</footer>-->
 </html> 
