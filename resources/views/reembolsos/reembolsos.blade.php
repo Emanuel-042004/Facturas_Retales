@@ -277,10 +277,12 @@
               <label for="note">Nota</label>
               <textarea class="form-control" id="note" name="note">{{$factura->note}}</textarea>
             </div>
+            @can('aprobar_pendiente')
             <div class="modal-footer">
     <button type="submit" class="btn btn-danger" formaction="{{route('pendientes.rechazar', ['id' => $factura->id])}}">Rechazar</button>
     <button type="submit" class="btn btn-primary">Aprobar</button>
 </div>
+@endcan
           </form>
         </div>
       </div>
@@ -453,12 +455,12 @@
               <label for="note">Nota</label>
               <textarea class="form-control" id="note" name="note">{{$factura->note}}</textarea>
             </div>
+            @can('aprobar_cargada')
             <div class="modal-footer">
-              
             <button type="submit" class="btn btn-danger" formaction="{{route('cargados.rechazar', ['id' => $factura->id])}}">Rechazar</button>
-             
              <button type="submit" class="btn btn-primary">Aprobar</button>
             </div>
+            @endcan
           </form>
         </div>
       </div>
@@ -657,12 +659,14 @@
               <label for="note">Nota</label>
               <textarea class="form-control" id="note" name="note">{{$factura->note}}</textarea>
             </div>
+            @can('causar')
             <div class="modal-footer">
             <button type="submit" class="btn btn-danger" formaction="{{route('cargados.rechazar', ['id' => $factura->id])}}">Rechazar</button>
              
               <button type="button" id="cargarBtn{{$factura->id}}" class="btn btn-primary"
           onclick="confirmarCarga('aprobadaFacturaForm{{$factura->id}}', '{{$factura->id}}')">Causar</button>
             </div>
+            @endcan
           </form>
         </div>
       </div>
@@ -1011,11 +1015,11 @@ function confirmarCarga(formId, facturaId) {
         <label for="note">Nota</label>
         <textarea class="form-control" id="note" name="note">{{$factura->note}}</textarea>
       </div>
+      @can('carga_egreso')
       <div class="modal-footer">
-        
-
     <button type="button" id="cargarBtn{{$factura->id}}" class="btn btn-primary" onclick="confirmarEgreso('{{$factura->id}}')">PAGO</button>
       </div>
+      @endcan
     </form>
   </div>
 </div>
@@ -1312,11 +1316,13 @@ if (result.isConfirmed) {
               <label for="note">Nota</label>
               <textarea class="form-control" id="note" name="note">{{$factura->note}}</textarea>
             </div>
+            @can('carga_egreso')
             <div class="modal-footer">
         <button type="submit" class="btn btn-danger" formaction="{{route('rechazar_p', ['id' => $factura->id])}}">Rechazar</button>
         <button type="button" id="cargarBtn{{$factura->id}}" class="btn btn-primary"
           onclick="confirmarCarga('finalizarFacturaForm{{$factura->id}}', '{{$factura->id}}')">FINALIZAR</button>
       </div>
+      @endcan
     </form>
   </div>
 </div>

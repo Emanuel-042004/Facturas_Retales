@@ -773,12 +773,15 @@ function cambiarTipo(tipo) {
               <label for="note">Nota</label>
               <textarea class="form-control" id="note" name="note">{{$factura->note}}</textarea>
             </div>
+            @can('aprobar_pendiente') 
             <div class="modal-footer">
-            @can('aprobar_pendiente')
+        
     <button type="submit" class="btn btn-danger" formaction="{{route('pendientes.rechazar', ['id' => $factura->id])}}">Rechazar</button>
     <button type="submit" class="btn btn-primary">Aprobar</button>
+   
 </div>
 @endcan
+
           </form>
         </div>
       </div>

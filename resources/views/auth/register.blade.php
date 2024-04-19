@@ -31,10 +31,13 @@
           <option value="" disabled selected>Selecciona</option>
           <option value="Admin">Admin</option>
           <option value="Aprobador">Aprobador</option>
+          <option value="Digitador-Ap">Digitador-Ap</option>
+          <option value="Apro-Car">Apro-Car</option>
           <option value="Causador">Causador</option>
-          <option value="Causador - Pagador">Causador</option>
+          <option value="Cau-Pag">Cau-Pag</option>
           <option value="Digitador">Digitador</option>
           <option value="Pagador">Pagador</option>
+          
         </select>
       </div>
 

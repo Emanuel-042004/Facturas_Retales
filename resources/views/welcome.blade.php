@@ -57,7 +57,7 @@
         <div class="btn-container">
             @if (Route::has('login'))
                 @auth
-                    <a href="{{ url('/home') }}" class="btn">Home</a>
+                    <a href="{{ url('/pendientes') }}" class="btn">Home</a>
                 @else
                     <a href="{{ route('login') }}" class="btn">Iniciar Sesión</a>
 

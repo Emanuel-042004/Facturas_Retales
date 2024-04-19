@@ -39,7 +39,7 @@
                         <span class="title">Home</span>
                     </a>
                 </li>-->
-
+                @can('home')
                 <li>
                     <a href="{{route ('home')}}">
                         <span class="icon">
@@ -48,7 +48,8 @@
                         <span class="title">Importar Archivos</span>
                     </a>
                 </li>
-
+                @endcan
+                @can('cargar_pendiente')
                 <li>
                     <a href="{{route('pendientes.index') }}">
                         <span class="icon">
@@ -59,7 +60,8 @@
                         <span class="tooltip">Pen...</span>
                     </a>
                 </li>
-
+                @endcan
+               
                 <li>
                     <a href="{{route('reembolsos.index') }}">
                         <span class="icon">
@@ -70,7 +72,8 @@
                         <span class="tooltip">Reem...</span>
                     </a>
                 </li>
-
+                
+                @can('causar')
                 <li>
                     <a href="{{route('reembolsos_causados.index') }}">
                         <span class="icon">
@@ -81,7 +84,9 @@
                         <span class="tooltip">Cau/Rbs</span>
                     </a>
                 </li>
-
+                @endcan
+                
+                @can('aprobar_cargada')
                 <li>
                     <a href="{{ route('cargados.index') }}">
                         <span class="icon" id="save-icon">
@@ -92,7 +97,9 @@
                         <span class="tooltip">Cargadas</span>
                     </a>
                 </li>
+                @endcan
 
+                @can('causar')
                 <li>
                     <a href="{{route('aprobadas.index') }}">
                         <span class="icon" id="save-icon">
@@ -103,7 +110,9 @@
                         <span class="tooltip">Aprobadas</span>
                     </a>
                 </li>
-
+                @endcan
+                
+                @can('aprobar_causacion')
                 <li>
                     <a href="{{route('causados.index') }}">
                         <span class="icon">
@@ -114,7 +123,8 @@
                         <span class="tooltip">Causa...</span>
                     </a>
                 </li>
-
+                @endcan
+                @can('carga_egreso')
                 <li>
                     <a href="{{route('pagos.index')}}">
                         <span class="icon">
@@ -125,6 +135,7 @@
                         <span class="tooltip">Pagos</span>
                     </a>
                 </li>
+                @endcan
 
                 
 
