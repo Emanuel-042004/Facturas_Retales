@@ -220,9 +220,8 @@ function cambiarTipo(tipo) {
           <option value="">Selecciona</option>
           <option value="Factura electrónica" @selected( "Factura electrónica"==$factura -> type)>Factura electrónica
           </option>
-          <option value="Nota de crédito electrónica" @selected( "Nota de crédito electrónica"==$factura ->type)>Nota de crédito electrónica</option>
-          <option value="Legalizacion" @selected( "Legalizacion"==$factura -> type) >Legalizacion</option>
-
+          <option value="Documento soporte" @selected( "Documento soporte"==$factura ->type)>Documento soporte</option>
+          <option value="Reembolso" @selected( "Reembolso"==$factura ->type)>Reembolso</option>
         </select>
       </div>
       <div class="form-row">
@@ -362,7 +361,7 @@ function cambiarTipo(tipo) {
           </select>
       </div>
       <div class="form-group col-md-6" id="centro_costo_div">
-    <label for="centro_costo">Subárea de costo</label>
+    <label for="centro_costo">Centro de costo</label>
     <select class="form-control centro_costo" id="centro_costo" name="centro_costo" required>>
         <!-- Las opciones se cargarán dinámicamente aquí --> 
     </select>
@@ -535,15 +534,16 @@ function cambiarTipo(tipo) {
     <form id="crearfactura" action="{{ route('facturas.store') }}" method="POST" enctype="multipart/form-data">
       @csrf
 
-        <div class="form-group col-md-6">
-          <label for="type">Tipo</label>
-          <select class="form-control" id="type" name="type">
-            <option value="">Selecciona</option>
-            <option value="Factura electrónica">Factura electrónica</option>
-            <option value="Nota de crédito electrónica">Nota de crédito electrónica</option>
-            <option value="Legalizacion">Legalizacion</option>
-          </select>
-        </div>
+      <div class="form-group col-md-6">
+        <label for="type">Tipo</label>
+        <select class="form-control" id="type" name="type">
+          <option value="">Selecciona</option>
+          <option value="Factura electrónica">Factura electrónica
+          </option>
+          <option value="Documento soporte" >Documento soporte</option>
+          <option value="Reembolso" >Reembolso</option>
+        </select>
+      </div>
 
         <div class="form-group col-md-6">
           <label for="area">Área</label>

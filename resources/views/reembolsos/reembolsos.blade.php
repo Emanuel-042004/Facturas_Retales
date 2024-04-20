@@ -144,18 +144,15 @@
             @csrf
 
             <div class="form-group col-md-6">
-              <label for="type">Tipo</label>
-              <select class="form-control" id="type" name="type">
-                <option value="">Selecciona</option>
-                <option value="Factura electrónica" @selected( "Factura electrónica"==$factura -> type)>Factura electrónica
-                </option>
-                <option value="Nota de crédito electrónica" @selected( "Nota de crédito electrónica"==$factura ->
-                  type)>Financiera</option>
-                <option value="Reembolso" @selected( "Reembolso"==$factura -> type)>Reembolso</option>
-                <option value="Legalizacion" @selected("Legalizacion" == $factura->type) >Legalizacion</option>
-
-              </select>
-            </div>
+        <label for="type">Tipo</label>
+        <select class="form-control" id="type" name="type">
+          <option value="">Selecciona</option>
+          <option value="Factura electrónica" @selected( "Factura electrónica"==$factura -> type)>Factura electrónica
+          </option>
+          <option value="Documento soporte" @selected( "Documento soporte"==$factura ->type)>Documento soporte</option>
+          <option value="Reembolso" @selected( "Reembolso"==$factura ->type)>Reembolso</option>
+        </select>
+      </div>
             <div class="form-row">
               <div class="form-group col-md-6">
                 <label for="nombre">Nombre</label>
@@ -303,18 +300,15 @@
             @csrf
 
             <div class="form-group col-md-6">
-              <label for="type">Tipo</label>
-              <select class="form-control" id="type" name="type">
-                <option value="">Selecciona</option>
-                <option value="Factura electrónica" @selected( "Factura electrónica"==$factura -> type)>Factura electrónica
-                </option>
-                <option value="Nota de crédito electrónica" @selected( "Nota de crédito electrónica"==$factura ->
-                  type)>Financiera</option>
-                <option value="Reembolso" @selected( "Reembolso"==$factura -> type)>Reembolso</option>
-                <option value="Legalizacion" @selected("Legalizacion" == $factura->type) >Legalizacion</option>
-
-              </select>
-            </div>
+        <label for="type">Tipo</label>
+        <select class="form-control" id="type" name="type">
+          <option value="">Selecciona</option>
+          <option value="Factura electrónica" @selected( "Factura electrónica"==$factura -> type)>Factura electrónica
+          </option>
+          <option value="Documento soporte" @selected( "Documento soporte"==$factura ->type)>Documento soporte</option>
+          <option value="Reembolso" @selected( "Reembolso"==$factura ->type)>Reembolso</option>
+        </select>
+      </div>
             <div class="form-row">
               <div class="form-group col-md-6">
                 <label for="nombre">Nombre</label>
@@ -480,18 +474,15 @@
             @csrf
 
             <div class="form-group col-md-6">
-              <label for="type">Tipo</label>
-              <select class="form-control" id="type" name="type">
-                <option value="">Selecciona</option>
-                <option value="Factura electrónica" @selected( "Factura electrónica"==$factura -> type)>Factura electrónica
-                </option>
-                <option value="Nota de crédito electrónica" @selected( "Nota de crédito electrónica"==$factura ->
-                  type)>Financiera</option>
-                <option value="Reembolso" @selected( "Reembolso"==$factura -> type)>Reembolso</option>
-                <option value="Legalizacion" @selected("Legalizacion" == $factura->type) >Legalizacion</option>
-
-              </select>
-            </div>
+        <label for="type">Tipo</label>
+        <select class="form-control" id="type" name="type">
+          <option value="">Selecciona</option>
+          <option value="Factura electrónica" @selected( "Factura electrónica"==$factura -> type)>Factura electrónica
+          </option>
+          <option value="Documento soporte" @selected( "Documento soporte"==$factura ->type)>Documento soporte</option>
+          <option value="Reembolso" @selected( "Reembolso"==$factura ->type)>Reembolso</option>
+        </select>
+      </div>
             <div class="form-row">
               <div class="form-group col-md-6">
                 <label for="nombre">Nombre</label>
@@ -788,11 +779,8 @@ function confirmarCarga(formId, facturaId) {
           <option value="">Selecciona</option>
           <option value="Factura electrónica" @selected( "Factura electrónica"==$factura -> type)>Factura electrónica
           </option>
-          <option value="Nota de crédito electrónica" @selected( "Nota de crédito electrónica"==$factura ->
-            type)>Financiera</option>
-          <option value="Reembolso" @selected( "Reembolso"==$factura -> type)>Reembolso</option>
-          <option value="Legalizacion" @selected("Legalizacion" == $factura->type) >Legalizacion</option>
-
+          <option value="Documento soporte" @selected( "Documento soporte"==$factura ->type)>Documento soporte</option>
+          <option value="Reembolso" @selected( "Reembolso"==$factura ->type)>Reembolso</option>
         </select>
       </div>
       <div class="form-row">
@@ -1084,18 +1072,15 @@ if (result.isConfirmed) {
             @csrf
 
             <div class="form-group col-md-6">
-              <label for="type">Tipo</label>
-              <select class="form-control" id="type" name="type">
-                <option value="">Selecciona</option>
-                <option value="Factura electrónica" @selected( "Factura electrónica"==$factura -> type)>Factura electrónica
-                </option>
-                <option value="Nota de crédito electrónica" @selected( "Nota de crédito electrónica"==$factura ->
-                  type)>Financiera</option>
-                <option value="Reembolso" @selected( "Reembolso"==$factura -> type)>Reembolso</option>
-                <option value="Legalizacion" @selected("Legalizacion" == $factura->type) >Legalizacion</option>
-
-              </select>
-            </div>
+        <label for="type">Tipo</label>
+        <select class="form-control" id="type" name="type">
+          <option value="">Selecciona</option>
+          <option value="Factura electrónica" @selected( "Factura electrónica"==$factura -> type)>Factura electrónica
+          </option>
+          <option value="Documento soporte" @selected( "Documento soporte"==$factura ->type)>Documento soporte</option>
+          <option value="Reembolso" @selected( "Reembolso"==$factura ->type)>Reembolso</option>
+        </select>
+      </div>
             <div class="form-row">
               <div class="form-group col-md-6">
                 <label for="nombre">Nombre</label>
@@ -1320,7 +1305,7 @@ if (result.isConfirmed) {
             <div class="modal-footer">
         <button type="submit" class="btn btn-danger" formaction="{{route('rechazar_p', ['id' => $factura->id])}}">Rechazar</button>
         <button type="button" id="cargarBtn{{$factura->id}}" class="btn btn-primary"
-          onclick="confirmarCarga('finalizarFacturaForm{{$factura->id}}', '{{$factura->id}}')">FINALIZAR</button>
+          onclick="confirmarCarga3('finalizarFacturaForm{{$factura->id}}', '{{$factura->id}}')">FINALIZAR</button>
       </div>
       @endcan
     </form>
@@ -1348,42 +1333,8 @@ if (result.isConfirmed) {
     }
 }
 
-function confirmarCarga(formId, facturaId) {
-    // Verificar si al menos un archivo ha sido seleccionado
-    var files = document.querySelectorAll(' input[type="file"]');
-    var archivosAdjuntos = false;
-
-    files.forEach(function (fileInput) {
-        if (fileInput.files.length > 0) {
-            archivosAdjuntos = true;
-        }
-    });
-
-    if (!archivosAdjuntos) {
-        // Mostrar una alerta de SweetAlert si no se han adjuntado archivos
-        Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: 'Debes adjuntar el  comprobante',
-            customClass: {
-                container: 'swal-overlay',
-                popup: 'swal-popup',
-                header: 'swal-header',
-                title: 'swal-title',
-                closeButton: 'swal-close-button',
-                icon: 'swal-icon',
-                image: 'swal-image',
-                content: 'swal-content',
-                input: 'swal-input',
-                actions: 'swal-actions',
-                confirmButton: 'swal-confirm-button',
-                cancelButton: 'swal-cancel-button',
-                footer: 'swal-footer'
-            }
-        });
-        return false; // Evita enviar el formulario si no se han adjuntado archivos
-    }
-
+function confirmarCarga3(formId, facturaId) {
+   
     // Mostrar una confirmación de SweetAlert en lugar de la confirmación del navegador
     Swal.fire({
         title: '¿Estás seguro de finalizar el proceso de  la factura?',
@@ -1433,18 +1384,15 @@ function confirmarCarga(formId, facturaId) {
             @csrf
 
             <div class="form-group col-md-6">
-              <label for="type">Tipo</label>
-              <select class="form-control" id="type" name="type">
-                <option value="">Selecciona</option>
-                <option value="Factura electrónica" @selected( "Factura electrónica"==$factura -> type)>Factura electrónica
-                </option>
-                <option value="Nota de crédito electrónica" @selected( "Nota de crédito electrónica"==$factura ->
-                  type)>Financiera</option>
-                <option value="Reembolso" @selected( "Reembolso"==$factura -> type)>Reembolso</option>
-                <option value="Legalizacion" @selected("Legalizacion" == $factura->type) >Legalizacion</option>
-
-              </select>
-            </div>
+        <label for="type">Tipo</label>
+        <select class="form-control" id="type" name="type">
+          <option value="">Selecciona</option>
+          <option value="Factura electrónica" @selected( "Factura electrónica"==$factura -> type)>Factura electrónica
+          </option>
+          <option value="Documento soporte" @selected( "Documento soporte"==$factura ->type)>Documento soporte</option>
+          <option value="Reembolso" @selected( "Reembolso"==$factura ->type)>Reembolso</option>
+        </select>
+      </div>
             <div class="form-row">
               <div class="form-group col-md-6">
                 <label for="nombre">Nombre</label>
@@ -1693,11 +1641,8 @@ function confirmarCarga(formId, facturaId) {
           <option value="">Selecciona</option>
           <option value="Factura electrónica" @selected( "Factura electrónica"==$factura -> type)>Factura electrónica
           </option>
-          <option value="Nota de crédito electrónica" @selected( "Nota de crédito electrónica"==$factura ->
-            type)>Financiera</option>
-          <option value="Reembolso" @selected( "Reembolso"==$factura -> type)>Reembolso</option>
-          <option value="Legalizacion" @selected("Legalizacion" == $factura->type) >Legalizacion</option>
-
+          <option value="Documento soporte" @selected( "Documento soporte"==$factura ->type)>Documento soporte</option>
+          <option value="Reembolso" @selected( "Reembolso"==$factura ->type)>Reembolso</option>
         </select>
       </div>
       <div class="form-row">

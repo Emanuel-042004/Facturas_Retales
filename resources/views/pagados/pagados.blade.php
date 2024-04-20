@@ -180,18 +180,15 @@ function closeDocumentPopup() {
             @csrf
 
             <div class="form-group col-md-6">
-              <label for="type">Tipo</label>
-              <select class="form-control" id="type" name="type">
-                <option value="">Selecciona</option>
-                <option value="Factura electrónica" @selected( "Factura electrónica"==$factura -> type)>Factura electrónica
-                </option>
-                <option value="Nota de crédito electrónica" @selected( "Nota de crédito electrónica"==$factura ->
-                  type)>Financiera</option>
-                <option value="Reembolso" @selected( "Reembolso"==$factura -> type)>Reembolso</option>
-                <option value="Legalizacion" @selected("Legalizacion" == $factura->type) >Legalizacion</option>
-
-              </select>
-            </div>
+        <label for="type">Tipo</label>
+        <select class="form-control" id="type" name="type">
+          <option value="">Selecciona</option>
+          <option value="Factura electrónica" @selected( "Factura electrónica"==$factura -> type)>Factura electrónica
+          </option>
+          <option value="Documento soporte" @selected( "Documento soporte"==$factura ->type)>Documento soporte</option>
+          <option value="Reembolso" @selected( "Reembolso"==$factura ->type)>Reembolso</option>
+        </select>
+      </div>
             <div class="form-row">
               <div class="form-group col-md-6">
                 <label for="nombre">Nombre</label>

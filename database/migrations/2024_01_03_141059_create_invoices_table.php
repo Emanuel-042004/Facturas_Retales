@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('invoices', function (Blueprint $table) {
             $table->id();
-            $table->enum('type', ['Factura electrónica', 'Nota de crédito electrónica', 'Reembolso', 'Legalizacion'])->nullable();
+            $table->string('type')->nullable();
             $table->string('folio', 255)->nullable();
             $table->string('prefix')->nullable();
             $table->string('issuer_nit', 20)->nullable();

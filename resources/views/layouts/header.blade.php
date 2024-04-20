@@ -85,8 +85,8 @@
                     </a>
                 </li>
                 @endcan
-                
-                @can('aprobar_cargada')
+
+                @can('causar')
                 <li>
                     <a href="{{ route('cargados.index') }}">
                         <span class="icon" id="save-icon">
@@ -112,7 +112,7 @@
                 </li>
                 @endcan
                 
-                @can('aprobar_causacion')
+                @can('carga_egreso')
                 <li>
                     <a href="{{route('causados.index') }}">
                         <span class="icon">
